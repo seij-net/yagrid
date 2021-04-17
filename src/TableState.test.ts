@@ -1,5 +1,6 @@
 import { iteratee } from "lodash";
-import { createTableEditDefaultState, tableEditReducer, TableState } from "./TableState";
+import { createReducer, createTableEditDefaultState, tableEditReducer, TableState } from "./TableState";
+import {reducer as pluginDeleteReducer} from "./PluginDelete"
 
 describe("delete", () => {
 
@@ -14,30 +15,31 @@ describe("delete", () => {
         }
     }
     
+    const reducer = createReducer([pluginDeleteReducer])
 
     it("given edit state when action delete then new state is delete_confirm", () => {
-        const s = tableEditReducer(
+        const s = reducer(
             createSampleState({itemState:"edit"}),
             {type: "delete", item: { id: "1234" }}
         )
         expect(s.itemState).toBe("delete_confirm")
     })
     it("given delete_confirm state when delete cancel then new state is edit", () => {
-        const s = tableEditReducer(
+        const s = reducer(
             createSampleState({itemState:"delete_confirm"}),
             {type: "delete_cancel"}
         )
         expect(s.itemState).toBe("edit")
     })
     it("given delete_confirm state when delete commit started then new state delete_commit_pending ", () => {
-        const s = tableEditReducer(
+        const s = reducer(
             createSampleState({itemState:"delete_confirm"}),
             {type: "delete_commit_started"}
         )
         expect(s.itemState).toBe("delete_commit_pending")
     })
     it("given delete_commit_pending state when delete commit success then new state is reset ", () => {
-        const s = tableEditReducer(
+        const s = reducer(
             createSampleState({itemState:"delete_commit_pending"}),
             {type: "edit_commit_succeded"}
         )
@@ -47,7 +49,7 @@ describe("delete", () => {
     })
     it("given delete_commit_pending state when delete commit success then new state is reset ", () => {
         const expectedError = Error("failed")
-        const s = tableEditReducer(
+        const s = reducer(
             createSampleState({itemState:"delete_commit_pending"}),
             {type: "edit_commit_failed", error: expectedError}
         )

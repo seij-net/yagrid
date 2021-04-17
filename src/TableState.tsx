@@ -22,6 +22,8 @@ export interface TableState {
     error: Error | undefined
 }
 
+export type TableStateReducer = (prevState: TableState, action: Action) => TableState
+
 export const createTableEditDefaultState = (identifierProperty: string): TableState => ({
     itemId: undefined,
     itemState: undefined,
@@ -66,24 +68,14 @@ function actionEdit(prevState: TableState, item: any): TableState {
     }
 }
 
-function actionDelete(prevState: TableState, item: any): TableState {
-    return {
-        ...prevState,
-        itemId: item[prevState.identifierProperty],
-        itemState: "delete_confirm",
-        itemValue: cloneDeep(item)
-    }
-}
 
-function actionDeleteCancel(prevState: TableState): TableState {
-    return { ...prevState, itemState: "edit" }
-}
 
-function actionReset(prevState: TableState): TableState {
+
+export function actionReset(prevState: TableState): TableState {
     return { ...prevState, itemId: undefined, itemState: undefined, itemValue: undefined }
 }
 
-function actionToState(prevState: TableState, stateName: TableEditItemStateName): TableState {
+export function actionToState(prevState: TableState, stateName: TableEditItemStateName): TableState {
     return { ...prevState, itemState: stateName }
 }
 
@@ -98,11 +90,8 @@ function actionEditCommitFailed(prevState:TableState, error:Error): TableState {
 function actionAddCommitFailed(prevState:TableState, error:Error): TableState {
     return { ...prevState, itemState:"add", error:error }
 }
-function actionDeleteCommitFailed(prevState:TableState, error:Error): TableState {
-    return { ...prevState, itemState:"delete_confirm", error:error }
-}
 
-export const tableEditReducer = (prevState: TableState, action: Action): TableState => {
+export const tableEditReducer:TableStateReducer = (prevState, action): TableState => {
     let result: TableState;
     switch (action.type) {
         case "item_change":
@@ -122,21 +111,6 @@ export const tableEditReducer = (prevState: TableState, action: Action): TableSt
             break;
         case "edit_commit_failed":
             result = actionEditCommitFailed(prevState, action.error);
-            break;
-        case "delete":
-            result = actionDelete(prevState, action.item)
-            break;
-        case "delete_cancel":
-            result = actionDeleteCancel(prevState)
-            break;
-        case "delete_commit_started":
-            result = actionToState(prevState, "delete_commit_pending")
-            break;
-        case "delete_commit_succeded":
-            result = actionReset(prevState)
-            break;
-        case "delete_commit_failed":
-            result = actionDeleteCommitFailed(prevState, action.error)
             break;
         case "add":
             result = actionAdd(prevState, action.item);
@@ -158,4 +132,11 @@ export const tableEditReducer = (prevState: TableState, action: Action): TableSt
             break;
     }
     return result
+}
+export const createReducer = (pluginReducers: TableStateReducer[]):TableStateReducer =>  {
+    const allReducers = [...pluginReducers, tableEditReducer]
+    const combined: TableStateReducer = (prevState, action) => {
+        return allReducers.reduce((acc, plugin) => plugin(acc, action), prevState)
+    }
+    return combined
 }
