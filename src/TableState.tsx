@@ -50,14 +50,6 @@ export type Action =
     | { type: "add_commit_succeded" }
     | { type: "add_commit_failed", error:Error }
 
-function actionAdd(prevState:TableState, item:any):TableState {
-    return {
-        ...prevState,
-        itemId: item[prevState.identifierProperty],
-        itemState: "add",
-        itemValue: cloneDeep(item)
-    }
-}
 
 function actionEdit(prevState: TableState, item: any): TableState {
     return {
@@ -87,9 +79,7 @@ function actionItemChange(prevState: TableState, item: any): TableState {
 function actionEditCommitFailed(prevState:TableState, error:Error): TableState {
     return { ...prevState, itemState:"edit", error:error }
 }
-function actionAddCommitFailed(prevState:TableState, error:Error): TableState {
-    return { ...prevState, itemState:"add", error:error }
-}
+
 
 export const tableEditReducer:TableStateReducer = (prevState, action): TableState => {
     let result: TableState;
@@ -111,21 +101,6 @@ export const tableEditReducer:TableStateReducer = (prevState, action): TableStat
             break;
         case "edit_commit_failed":
             result = actionEditCommitFailed(prevState, action.error);
-            break;
-        case "add":
-            result = actionAdd(prevState, action.item);
-            break;
-        case "add_cancel":
-            result = actionReset(prevState);
-            break;
-        case "add_commit_started":
-            result = actionToState(prevState, "edit_commit_pending")
-            break;
-        case "add_commit_failed":
-            result = actionAddCommitFailed(prevState, action.error)
-            break;
-        case "add_commit_succeded":
-            result = actionReset(prevState);
             break;
         default:
             result = prevState

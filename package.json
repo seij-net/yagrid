@@ -62,5 +62,8 @@
   "bugs": {
     "url": "https://github.com/seij-net/yagrid/issues"
   },
-  "homepage": "https://github.com/seij-net/yagrid#readme"
+  "homepage": "https://github.com/seij-net/yagrid#readme",
+  "prettier": {
+    "printWidth": 120
+  }
 }

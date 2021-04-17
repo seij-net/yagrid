@@ -10,6 +10,10 @@ import {
 } from "../../TableState";
 import { TablePlugin } from "../../types";
 
+// -----------------------------------------------------------------------------
+// Reducer
+// -----------------------------------------------------------------------------
+
 function actionDeleteCommitFailed(
   prevState: TableState,
   error: Error
@@ -54,6 +58,10 @@ export const reducer: TableStateReducer = (prevState, action) => {
   return result;
 };
 
+// -----------------------------------------------------------------------------
+// Actions
+// -----------------------------------------------------------------------------
+
 export const ACTION_EDIT_DELETE: TableAction = {
   name: "edit_delete",
   displayed: (state, item) =>
@@ -89,9 +97,23 @@ const ConfirmDeleteButton: React.FC<{
   );
 };
 
-export const deletePlugin = (
-  onDelete: (item: any) => Promise<void>
-): TablePlugin<any> => {
+// -----------------------------------------------------------------------------
+// Plugin
+// -----------------------------------------------------------------------------
+
+const PLUGIN_NAME = "edit_delete";
+
+/**
+ * Configuration for delete plugin
+ */
+export interface Config<T> {
+  /**
+   * Provide a callback for deleting specified item from the list
+   */
+  onDelete: (item: T) => Promise<void>;
+}
+
+export function deletePlugin<T>(config: Config<T>): TablePlugin<any> {
   return {
     name: "edit_delete",
     reducer: reducer,
@@ -107,7 +129,7 @@ export const deletePlugin = (
         onDeleteConfirm: async () => {
           try {
             dispatch({ type: "delete_commit_started" });
-            await onDelete(editState.itemValue);
+            await config.onDelete(editState.itemValue);
             dispatch({ type: "delete_commit_succeded" });
           } catch (error) {
             dispatch({ type: "delete_commit_failed", error: error });
@@ -119,4 +141,4 @@ export const deletePlugin = (
       };
     },
   };
-};
+}
