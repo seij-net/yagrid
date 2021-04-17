@@ -7,7 +7,7 @@ import { TableActionTrigger } from "./TableItemActions";
 import { TableRow } from "./TableRow";
 import { TableHeader } from "./TableHeader";
 import { TableEmptyMessage } from "./TableEmptyMessage";
-import { createTableEditDefaultState, tableEditReducer } from "./TableState";
+import { createReducer, createTableEditDefaultState, tableEditReducer } from "./TableState";
 import { createTableActionItemDispatch } from "./TableItemActionListeners";
 
 
@@ -42,7 +42,8 @@ export const Table: React.FC<TableProps<any>> = (
 
 
     const [ columnDefinitions, setColumnDefinitions ] = React.useState<TableColumnDefinitionInternal<any>[]>(columnDefinitionsDefault)
-    const [ editState, dispatchEditState ] = useReducer(tableEditReducer, createTableEditDefaultState(identifierProperty))
+    const reducer = createReducer(plugins.map(it => it.reducer).filter(it=>!isNil(it)))
+    const [ editState, dispatchEditState ] = useReducer(reducer, createTableEditDefaultState(identifierProperty))
 
     const classNames = clsx(className, DEFAULT_TABLE_CLASS)
     const emptyMessageOrDefault = emptyMessage || DEFAULT_EMPTY_MESSAGE

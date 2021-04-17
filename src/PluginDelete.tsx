@@ -1,5 +1,6 @@
 import { cloneDeep } from "lodash-es";
 import { TableState, TableStateReducer, actionReset, actionToState } from "./TableState";
+import { TablePlugin } from "./types";
 function actionDeleteCommitFailed(
   prevState: TableState,
   error: Error
@@ -41,3 +42,15 @@ export const reducer: TableStateReducer = (prevState, action) => {
   }
   return result;
 };
+
+export const deletePlugin = ():TablePlugin<any> => {
+    return {
+        name: "edit_delete",
+        reducer: reducer,
+        dataListTransform: (editState, data) => data,
+        actionGenericList: [],
+        actionGenericListeners: (e,d) =>({}),
+        actionItemList: [],
+        actionItemListeners: (e,d,i) =>({})
+    }
+}

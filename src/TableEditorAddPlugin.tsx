@@ -42,6 +42,7 @@ export function editorAdd<T>(config: Config<T>): TableEditorAddPlugin<T> {
 
     return {
         name: PLUGIN_NAME,
+        reducer: (s,a) => s,
         actionGenericList: [ACTION_ADD],
         actionItemList: [ACTION_ADD_OK, ACTION_ADD_CANCEL],
         actionGenericListeners: (editState: TableState, dispatch: Dispatch<Action>): { [p: string]: () => Promise<void> } => {

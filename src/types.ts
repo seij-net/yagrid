@@ -1,6 +1,6 @@
 import { Dispatch, ReactElement } from "react";
 import { TableTypeRenderer, TableTypesRegistry } from "./TableTypesRegistry";
-import { Action, TableState } from "./TableState";
+import { Action, TableState, TableStateReducer } from "./TableState";
 
 
 export type TableActionHandler = (on: any) => void
@@ -31,6 +31,7 @@ export type TableCellEditorFactory<T> = (data: T, onValueChange: TableCellEditor
 export interface TablePlugin<T> {
     /** Plugin unique name */
     name:string
+    reducer: TableStateReducer
     dataListTransform: (editState:TableState, data:T[])=>T[],
     actionGenericList: TableActionList,
     actionGenericListeners(editState: TableState, dispatchEditState: Dispatch<Action>): { [p: string]: () => Promise<void> };
