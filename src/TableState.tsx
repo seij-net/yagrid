@@ -157,6 +157,5 @@ export const tableEditReducer = (prevState: TableState, action: Action): TableSt
             result = prevState
             break;
     }
-    console.log("action", action, "prevState", prevState, "result", result)
     return result
 }
