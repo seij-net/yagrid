@@ -1,6 +1,6 @@
 import { iteratee } from "lodash";
-import { createReducer, createTableEditDefaultState, tableEditReducer, TableState } from "./TableState";
-import {reducer as pluginDeleteReducer} from "./PluginDelete"
+import { createReducer, createTableEditDefaultState, tableEditReducer, TableState } from "../../TableState";
+import {reducer as pluginDeleteReducer} from "./edit-delete"
 
 describe("delete", () => {
 

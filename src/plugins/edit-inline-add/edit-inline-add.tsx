@@ -1,5 +1,5 @@
-import { TableAction, TablePlugin } from "./types";
-import { Action, TableState } from "./TableState";
+import { TableAction, TablePlugin } from "../../types";
+import { Action, TableState } from "../../TableState";
 import React, { Dispatch } from "react";
 
 const PLUGIN_NAME = "editor_add"

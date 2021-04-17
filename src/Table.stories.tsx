@@ -1,11 +1,11 @@
 import { Meta, Story } from "@storybook/react";
 import { isNil, minBy } from "lodash-es";
-import { deletePlugin } from "./PluginDelete";
+import { deletePlugin } from "./plugins/edit-delete/edit-delete";
 import React, { useState } from "react";
 
 import { Table } from "./Table";
 import { ACTION_EDIT, ACTION_EDIT_CANCEL, ACTION_EDIT_OK } from "./TableActionButtons";
-import { editorAdd } from "./TableEditorAddPlugin";
+import { editorAdd } from "./plugins/edit-inline-add/edit-inline-add";
 import { TableColumnDefinition, TablePlugin, TableProps } from "./types";
 
 

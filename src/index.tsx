@@ -8,7 +8,7 @@ import {
     TableProps,
 } from "./types";
 import {Table} from "./Table"
-import {TableEditorAddPlugin} from "./TableEditorAddPlugin"
+import {TableEditorAddPlugin} from "./plugins/edit-inline-add/edit-inline-add"
 export {
     Table,
     TableEditorAddPlugin,
