@@ -1,13 +1,19 @@
 {
   "name": "@seij/yagrid",
-  "version": "0.0.2",
+  "version": "0.0.0",
   "description": "Yet another grid. A tool for building dynamic tables and grids with built-in editor and type registry. Targeted to management software.",
   "main": "index.js",
   "dependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "publish": "npm publish --access public"
