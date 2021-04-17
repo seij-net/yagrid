@@ -1,6 +1,6 @@
 import { Meta, Story } from "@storybook/react";
 import { isNil, minBy } from "lodash-es";
-import { deletePlugin } from "PluginDelete";
+import { deletePlugin } from "./PluginDelete";
 import React, { useState } from "react";
 
 import { Table } from "./Table";
@@ -70,7 +70,7 @@ const TableEditable: React.FC<TableProps<any>> = (props) => {
             onAddTemplate: handleAdd,
             onAddConfirm: handleAddConfirm
         }),
-        deletePlugin()
+        deletePlugin(handleDelete)
     ]
     return <Table { ...props }
                   dataProperties={ COLUMN_DEFINITIONS }

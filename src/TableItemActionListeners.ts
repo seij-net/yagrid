@@ -28,22 +28,7 @@ export function createTableActionItemDispatch<T>(
                     dispatch({ type: "edit_commit_failed", error: error })
                 }
             },
-            onDelete: (evt) => {
-                dispatch({ type: "delete", item: item })
-            },
-            onDeleteConfirm: async (evt) => {
-                try {
-                    dispatch({ type: "delete_commit_started" })
-                    await onDelete(editState.itemValue)
-                    dispatch({ type: "delete_commit_succeded" })
-                } catch (error) {
-                    dispatch({ type: "delete_commit_failed", error: error })
-                }
-
-            },
-            onDeleteCancel: (evt) => {
-                dispatch({ type: "delete_cancel" })
-            },
+            
         }
     }
     return handleAction
