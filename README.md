@@ -14,7 +14,6 @@ We export this component as
 * [CommonJS module](https://nodejs.org/docs/latest/api/modules.html) (located in `dist/index.js`)
 
 
-
 # Structure
 
 YAGrid is build with Typescript. Unfortunatly a bug with `@rollup/plugin-typescript` doesn't generate Typescript definition files
@@ -22,4 +21,13 @@ YAGrid is build with Typescript. Unfortunatly a bug with `@rollup/plugin-typescr
 # Known issues
 
 * @rollup/plugin-typescript doesn't generate Typescript definition files
+
+# Build
+
+After cloning use the classic `npm install` and `npm run build` commands to build. 
+Build is taken care of by [Rollup](https://rollupjs.org/). 
+
+To launch the Storybook interface, use `npm run storybook`.
+
+Launch `npm run test` for unit tests.
 

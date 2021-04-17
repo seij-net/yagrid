@@ -1,8 +1,22 @@
-import React from "react"
-import { mult } from "./test/mult"
-import { TestComponent } from "./test/TestComponent"
-
-const test = ""
-export const cp: React.FC<{text:string}> = ({text}) => (<div>{text}</div>)
-export const other:React.FC<{}> = (props) =><div><TestComponent title="hello"/></div>
-console.log(mult(10,20))
+import {
+    ActionGenericHandler,
+    ActionItemHandler,
+    TableAction,
+    TableActionHandler,
+    TableActionList,
+    TableColumnDefinition,
+    TableProps,
+} from "./types";
+import {Table} from "./Table"
+import {TableEditorAddPlugin} from "./TableEditorAddPlugin"
+export {
+    Table,
+    TableEditorAddPlugin,
+    TableProps,
+    TableColumnDefinition,
+    TableActionList,
+    TableAction,
+    ActionItemHandler,
+    ActionGenericHandler,
+    TableActionHandler
+}
