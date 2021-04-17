@@ -1,5 +1,8 @@
 import React from "react"
-import {other} from "./test/test"
+import { mult } from "./test/mult"
+import { TestComponent } from "./test/TestComponent"
+
 const test = ""
 export const cp: React.FC<{text:string}> = ({text}) => (<div>{text}</div>)
-console.log(test, other)
+export const other:React.FC<{}> = (props) =><div><TestComponent title="hello"/></div>
+console.log(mult(10,20))
