@@ -17,4 +17,9 @@ We export this component as
 
 # Structure
 
-YAGrid is build with Typescript. 
+YAGrid is build with Typescript. Unfortunatly a bug with `@rollup/plugin-typescript` doesn't generate Typescript definition files
+
+# Known issues
+
+* @rollup/plugin-typescript doesn't generate Typescript definition files
+
