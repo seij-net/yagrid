@@ -9,7 +9,7 @@ export type TableEditItemStateName =
     | "add"
     | "add_commit_pending"
 
-export interface TableEditState {
+export interface TableState {
     /** Identifier of item under edition or undefined if not editing */
     itemId: string | undefined,
     /** State of edition */
@@ -22,7 +22,7 @@ export interface TableEditState {
     error: Error | undefined
 }
 
-export const createTableEditDefaultState = (identifierProperty: string): TableEditState => ({
+export const createTableEditDefaultState = (identifierProperty: string): TableState => ({
     itemId: undefined,
     itemState: undefined,
     itemValue: undefined,
@@ -48,7 +48,7 @@ export type Action =
     | { type: "add_commit_succeded" }
     | { type: "add_commit_failed", error:Error }
 
-function actionAdd(prevState:TableEditState, item:any):TableEditState {
+function actionAdd(prevState:TableState, item:any):TableState {
     return {
         ...prevState,
         itemId: item[prevState.identifierProperty],
@@ -57,7 +57,7 @@ function actionAdd(prevState:TableEditState, item:any):TableEditState {
     }
 }
 
-function actionEdit(prevState: TableEditState, item: any): TableEditState {
+function actionEdit(prevState: TableState, item: any): TableState {
     return {
         ...prevState,
         itemId: item[prevState.identifierProperty],
@@ -66,7 +66,7 @@ function actionEdit(prevState: TableEditState, item: any): TableEditState {
     }
 }
 
-function actionDelete(prevState: TableEditState, item: any): TableEditState {
+function actionDelete(prevState: TableState, item: any): TableState {
     return {
         ...prevState,
         itemId: item[prevState.identifierProperty],
@@ -75,35 +75,35 @@ function actionDelete(prevState: TableEditState, item: any): TableEditState {
     }
 }
 
-function actionDeleteCancel(prevState: TableEditState): TableEditState {
+function actionDeleteCancel(prevState: TableState): TableState {
     return { ...prevState, itemState: "edit" }
 }
 
-function actionReset(prevState: TableEditState): TableEditState {
+function actionReset(prevState: TableState): TableState {
     return { ...prevState, itemId: undefined, itemState: undefined, itemValue: undefined }
 }
 
-function actionToState(prevState: TableEditState, stateName: TableEditItemStateName): TableEditState {
+function actionToState(prevState: TableState, stateName: TableEditItemStateName): TableState {
     return { ...prevState, itemState: stateName }
 }
 
-function actionItemChange(prevState: TableEditState, item: any): TableEditState {
+function actionItemChange(prevState: TableState, item: any): TableState {
     if (isEqual(item, prevState.itemValue)) return prevState
     return { ...prevState, itemValue: item }
 }
 
-function actionEditCommitFailed(prevState:TableEditState, error:Error): TableEditState {
+function actionEditCommitFailed(prevState:TableState, error:Error): TableState {
     return { ...prevState, itemState:"edit", error:error }
 }
-function actionAddCommitFailed(prevState:TableEditState, error:Error): TableEditState {
+function actionAddCommitFailed(prevState:TableState, error:Error): TableState {
     return { ...prevState, itemState:"add", error:error }
 }
-function actionDeleteCommitFailed(prevState:TableEditState, error:Error): TableEditState {
+function actionDeleteCommitFailed(prevState:TableState, error:Error): TableState {
     return { ...prevState, itemState:"delete_confirm", error:error }
 }
 
-export const tableEditReducer = (prevState: TableEditState, action: Action): TableEditState => {
-    let result: TableEditState;
+export const tableEditReducer = (prevState: TableState, action: Action): TableState => {
+    let result: TableState;
     switch (action.type) {
         case "item_change":
             result = actionItemChange(prevState, action.item)

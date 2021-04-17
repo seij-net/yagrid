@@ -3,11 +3,11 @@ import { TableTypesRegistry } from "./TableTypesRegistry";
 import React from "react";
 import { TableCell } from "./TableCell";
 import { TableItemActions } from "./TableItemActions";
-import { TableEditState } from "./TableEditManager";
+import { TableState } from "./TableState";
 
 export interface TableRowProps<T> {
     /** indique si la ligne est en cours d'édition */
-    editingState: TableEditState,
+    editingState: TableState,
     /** indique si la ligne a des boutons d'action, cad. on affiche les boutons pour éditer sur une colonne*/
     actionsItemDisplay: boolean,
     /** Actions d'une ligne */

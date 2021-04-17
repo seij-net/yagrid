@@ -1,6 +1,6 @@
 import { Dispatch, ReactElement } from "react";
 import { TableTypeRenderer, TableTypesRegistry } from "./TableTypesRegistry";
-import { Action, TableEditState } from "./TableEditManager";
+import { Action, TableState } from "./TableState";
 
 
 export type TableActionHandler = (on: any) => void
@@ -9,8 +9,8 @@ export type TableActionDispatch = {
 }
 export interface TableAction {
     name: string,
-    displayed?: (state: TableEditState, item: any) => boolean,
-    render: (state:TableEditState, dispatch: TableActionDispatch) => ReactElement
+    displayed?: (state: TableState, item: any) => boolean,
+    render: (state:TableState, dispatch: TableActionDispatch) => ReactElement
 }
 
 export type TableActionList = TableAction[]
@@ -31,11 +31,11 @@ export type TableCellEditorFactory<T> = (data: T, onValueChange: TableCellEditor
 export interface TablePlugin<T> {
     /** Plugin unique name */
     name:string
-    dataListTransform: (editState:TableEditState, data:T[])=>T[],
+    dataListTransform: (editState:TableState, data:T[])=>T[],
     actionGenericList: TableActionList,
-    actionGenericListeners(editState: TableEditState, dispatchEditState: Dispatch<Action>): { [p: string]: () => Promise<void> };
+    actionGenericListeners(editState: TableState, dispatchEditState: Dispatch<Action>): { [p: string]: () => Promise<void> };
     actionItemList: TableActionList,
-    actionItemListeners(editState: TableEditState, dispatchEditState: Dispatch<Action>, item:T): { [p: string]: () => Promise<void> };
+    actionItemListeners(editState: TableState, dispatchEditState: Dispatch<Action>, item:T): { [p: string]: () => Promise<void> };
 }
 export type TablePluginList<T> = TablePlugin<T>[]
 /**

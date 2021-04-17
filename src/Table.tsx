@@ -7,7 +7,7 @@ import { TableActionTrigger } from "./TableItemActions";
 import { TableRow } from "./TableRow";
 import { TableHeader } from "./TableHeader";
 import { TableEmptyMessage } from "./TableEmptyMessage";
-import { createTableEditDefaultState, tableEditReducer } from "./TableEditManager";
+import { createTableEditDefaultState, tableEditReducer } from "./TableState";
 import { createTableActionItemDispatch } from "./TableItemActionListeners";
 
 

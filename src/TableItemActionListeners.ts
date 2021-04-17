@@ -1,10 +1,10 @@
 import { TableActionDispatch } from "./types";
-import { Action, TableEditState } from "./TableEditManager";
+import { Action, TableState } from "./TableState";
 import { Dispatch } from "react";
 
 
 export function createTableActionItemDispatch<T>(
-    editState: TableEditState,
+    editState: TableState,
     dispatch: Dispatch<Action>,
     item: T,
     onEdit: (nextItem: T) => Promise<void>,

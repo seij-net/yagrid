@@ -1,5 +1,5 @@
 import { TableAction, TablePlugin } from "./types";
-import { Action, TableEditState } from "./TableEditManager";
+import { Action, TableState } from "./TableState";
 import React, { Dispatch } from "react";
 
 const PLUGIN_NAME = "editor_add"
@@ -44,7 +44,7 @@ export function editorAdd<T>(config: Config<T>): TableEditorAddPlugin<T> {
         name: PLUGIN_NAME,
         actionGenericList: [ACTION_ADD],
         actionItemList: [ACTION_ADD_OK, ACTION_ADD_CANCEL],
-        actionGenericListeners: (editState: TableEditState, dispatch: Dispatch<Action>): { [p: string]: () => Promise<void> } => {
+        actionGenericListeners: (editState: TableState, dispatch: Dispatch<Action>): { [p: string]: () => Promise<void> } => {
             return {
                 onAddItem: async () => {
                     try {
@@ -56,7 +56,7 @@ export function editorAdd<T>(config: Config<T>): TableEditorAddPlugin<T> {
                 },
             }
         },
-        actionItemListeners: (editState: TableEditState, dispatch: Dispatch<Action>, item: T): { [p: string]: () => Promise<void> } => {
+        actionItemListeners: (editState: TableState, dispatch: Dispatch<Action>, item: T): { [p: string]: () => Promise<void> } => {
             return {
                 onAddItemConfirm: async () => {
                     try {
