@@ -1,9 +1,10 @@
 import { Meta, Story } from "@storybook/react";
 import { isNil, minBy } from "lodash-es";
+import { deletePlugin } from "PluginDelete";
 import React, { useState } from "react";
 
 import { Table } from "./Table";
-import { ACTION_EDIT, ACTION_EDIT_CANCEL, ACTION_EDIT_DELETE, ACTION_EDIT_OK } from "./TableActionButtons";
+import { ACTION_EDIT, ACTION_EDIT_CANCEL, ACTION_EDIT_OK } from "./TableActionButtons";
 import { editorAdd } from "./TableEditorAddPlugin";
 import { TableColumnDefinition, TablePlugin, TableProps } from "./types";
 
@@ -68,7 +69,8 @@ const TableEditable: React.FC<TableProps<any>> = (props) => {
         editorAdd({
             onAddTemplate: handleAdd,
             onAddConfirm: handleAddConfirm
-        })
+        }),
+        deletePlugin()
     ]
     return <Table { ...props }
                   dataProperties={ COLUMN_DEFINITIONS }
@@ -105,6 +107,6 @@ Vide.args = {};
 export const RempliEditable = Template.bind({});
 RempliEditable.args = {
     editable: true,
-    actionItemList: [ ACTION_EDIT, ACTION_EDIT_OK, ACTION_EDIT_CANCEL, ACTION_EDIT_DELETE],
+    actionItemList: [ ACTION_EDIT, ACTION_EDIT_OK, ACTION_EDIT_CANCEL],
     data: sampledata
 };
