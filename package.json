@@ -1,0 +1,32 @@
+{
+  "name": "@seij/yagrid",
+  "version": "0.0.2",
+  "description": "Yet another grid. A tool for building dynamic tables and grids with built-in editor and type registry. Targeted to management software.",
+  "main": "index.js",
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "publish": "npm publish --access public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seij-net/yagrid.git"
+  },
+  "keywords": [
+    "react",
+    "table",
+    "grid",
+    "javascript",
+    "typescript"
+  ],
+  "author": "Seij",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/seij-net/yagrid/issues"
+  },
+  "homepage": "https://github.com/seij-net/yagrid#readme"
+}
