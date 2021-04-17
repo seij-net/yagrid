@@ -1,6 +1,5 @@
 import { Meta, Story } from "@storybook/react";
-import { isNil } from "./utils/lang";
-import minBy from "lodash-es/minBy";
+import { isNil, minBy } from "lodash-es";
 import React, { useState } from "react";
 
 import { Table } from "./Table";
