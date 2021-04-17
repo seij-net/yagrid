@@ -98,7 +98,7 @@ export function editorAdd<T>(config: Config<T>): TableEditorAddPlugin<T> {
 
   return {
     name: PLUGIN_NAME,
-    reducer: (s, a) => s,
+    reducer: reducer,
     actionGenericList: [ACTION_ADD],
     actionItemList: [ACTION_ADD_OK, ACTION_ADD_CANCEL],
     actionGenericListeners: (

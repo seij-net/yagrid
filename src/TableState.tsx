@@ -1,117 +1,112 @@
 import cloneDeep from "lodash-es/cloneDeep";
-import isEqual from "lodash-es/isEqual"
+import isEqual from "lodash-es/isEqual";
 
 export type TableEditItemStateName =
-    "edit"
-    | "edit_commit_pending"
-    | "delete_confirm"
-    | "delete_commit_pending"
-    | "add"
-    | "add_commit_pending"
+  | "edit"
+  | "edit_commit_pending"
+  | "delete_confirm"
+  | "delete_commit_pending"
+  | "add"
+  | "add_commit_pending";
 
 export interface TableState {
-    /** Identifier of item under edition or undefined if not editing */
-    itemId: string | undefined,
-    /** State of edition */
-    itemState: undefined | TableEditItemStateName
-    /** Current value. Holds a temporary item value which is a copy of original item value, pending confirmation */
-    itemValue: any | undefined,
-    /** Column used as identifier */
-    identifierProperty: string,
-    /** Error if any */
-    error: Error | undefined
+  /** Identifier of item under edition or undefined if not editing */
+  itemId: string | undefined;
+  /** State of edition */
+  itemState: undefined | TableEditItemStateName;
+  /** Current value. Holds a temporary item value which is a copy of original item value, pending confirmation */
+  itemValue: any | undefined;
+  /** Column used as identifier */
+  identifierProperty: string;
+  /** Error if any */
+  error: Error | undefined;
 }
 
-export type TableStateReducer = (prevState: TableState, action: Action) => TableState
+export type TableStateReducer = (prevState: TableState, action: Action) => TableState;
 
 export const createTableEditDefaultState = (identifierProperty: string): TableState => ({
-    itemId: undefined,
-    itemState: undefined,
-    itemValue: undefined,
-    identifierProperty: identifierProperty,
-    error: undefined
-})
+  itemId: undefined,
+  itemState: undefined,
+  itemValue: undefined,
+  identifierProperty: identifierProperty,
+  error: undefined,
+});
 
 export type Action =
-    | { type: "item_change", item: any }
-    | { type: "edit", item: any }
-    | { type: "edit_cancel" }
-    | { type: "edit_commit_started" }
-    | { type: "edit_commit_succeded" }
-    | { type: "edit_commit_failed", error: Error }
-    | { type: "delete", item: any }
-    | { type: "delete_cancel" }
-    | { type: "delete_commit_started" }
-    | { type: "delete_commit_succeded" }
-    | { type: "delete_commit_failed", error: Error }
-    | { type: "add", item: any }
-    | { type: "add_cancel" }
-    | { type: "add_commit_started" }
-    | { type: "add_commit_succeded" }
-    | { type: "add_commit_failed", error:Error }
-
+  | { type: "item_change"; item: any }
+  | { type: "edit"; item: any }
+  | { type: "edit_cancel" }
+  | { type: "edit_commit_started" }
+  | { type: "edit_commit_succeded" }
+  | { type: "edit_commit_failed"; error: Error }
+  | { type: "delete"; item: any }
+  | { type: "delete_cancel" }
+  | { type: "delete_commit_started" }
+  | { type: "delete_commit_succeded" }
+  | { type: "delete_commit_failed"; error: Error }
+  | { type: "add"; item: any }
+  | { type: "add_cancel" }
+  | { type: "add_commit_started" }
+  | { type: "add_commit_succeded" }
+  | { type: "add_commit_failed"; error: Error };
 
 function actionEdit(prevState: TableState, item: any): TableState {
-    return {
-        ...prevState,
-        itemId: item[prevState.identifierProperty],
-        itemState: "edit",
-        itemValue: cloneDeep(item)
-    }
+  return {
+    ...prevState,
+    itemId: item[prevState.identifierProperty],
+    itemState: "edit",
+    itemValue: cloneDeep(item),
+  };
 }
 
-
-
-
 export function actionReset(prevState: TableState): TableState {
-    return { ...prevState, itemId: undefined, itemState: undefined, itemValue: undefined }
+  return { ...prevState, itemId: undefined, itemState: undefined, itemValue: undefined };
 }
 
 export function actionToState(prevState: TableState, stateName: TableEditItemStateName): TableState {
-    return { ...prevState, itemState: stateName }
+  return { ...prevState, itemState: stateName };
 }
 
 function actionItemChange(prevState: TableState, item: any): TableState {
-    if (isEqual(item, prevState.itemValue)) return prevState
-    return { ...prevState, itemValue: item }
+  if (isEqual(item, prevState.itemValue)) return prevState;
+  return { ...prevState, itemValue: item };
 }
 
-function actionEditCommitFailed(prevState:TableState, error:Error): TableState {
-    return { ...prevState, itemState:"edit", error:error }
+function actionEditCommitFailed(prevState: TableState, error: Error): TableState {
+  return { ...prevState, itemState: "edit", error: error };
 }
 
-
-export const tableEditReducer:TableStateReducer = (prevState, action): TableState => {
-    let result: TableState;
-    switch (action.type) {
-        case "item_change":
-            result = actionItemChange(prevState, action.item)
-            break;
-        case "edit":
-            result = actionEdit(prevState, action.item);
-            break;
-        case "edit_cancel":
-            result = actionReset(prevState);
-            break;
-        case "edit_commit_started":
-            result = actionToState(prevState, "edit_commit_pending")
-            break;
-        case "edit_commit_succeded":
-            result = actionReset(prevState);
-            break;
-        case "edit_commit_failed":
-            result = actionEditCommitFailed(prevState, action.error);
-            break;
-        default:
-            result = prevState
-            break;
-    }
-    return result
-}
-export const createReducer = (pluginReducers: TableStateReducer[]):TableStateReducer =>  {
-    const allReducers = [...pluginReducers, tableEditReducer]
-    const combined: TableStateReducer = (prevState, action) => {
-        return allReducers.reduce((acc, plugin) => plugin(acc, action), prevState)
-    }
-    return combined
-}
+export const tableEditReducer: TableStateReducer = (prevState, action): TableState => {
+  let result: TableState;
+  switch (action.type) {
+    case "item_change":
+      result = actionItemChange(prevState, action.item);
+      break;
+    case "edit":
+      result = actionEdit(prevState, action.item);
+      break;
+    case "edit_cancel":
+      result = actionReset(prevState);
+      break;
+    case "edit_commit_started":
+      result = actionToState(prevState, "edit_commit_pending");
+      break;
+    case "edit_commit_succeded":
+      result = actionReset(prevState);
+      break;
+    case "edit_commit_failed":
+      result = actionEditCommitFailed(prevState, action.error);
+      break;
+    default:
+      result = prevState;
+      break;
+  }
+  return result;
+};
+export const createReducer = (pluginReducers: TableStateReducer[]): TableStateReducer => {
+  const allReducers = [...pluginReducers, tableEditReducer];
+  const combined: TableStateReducer = (prevState, action) => {
+    return allReducers.reduce((acc, plugin) => plugin(acc, action), prevState);
+  };
+  return combined;
+};

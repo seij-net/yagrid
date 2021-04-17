@@ -2,22 +2,14 @@ import React from "react";
 import { cloneDeep } from "lodash-es";
 import { TableAction } from "../..";
 
-import {
-  actionReset,
-  actionToState,
-  TableState,
-  TableStateReducer,
-} from "../../TableState";
+import { actionReset, actionToState, TableState, TableStateReducer } from "../../TableState";
 import { TablePlugin } from "../../types";
 
 // -----------------------------------------------------------------------------
 // Reducer
 // -----------------------------------------------------------------------------
 
-function actionDeleteCommitFailed(
-  prevState: TableState,
-  error: Error
-): TableState {
+function actionDeleteCommitFailed(prevState: TableState, error: Error): TableState {
   return { ...prevState, itemState: "delete_confirm", error: error };
 }
 
@@ -65,9 +57,9 @@ export const reducer: TableStateReducer = (prevState, action) => {
 export const ACTION_EDIT_DELETE: TableAction = {
   name: "edit_delete",
   displayed: (state, item) =>
-    state.itemId === item.id &&
-    (state.itemState === "edit" || state.itemState === "delete_confirm"),
+    state.itemId === item.id && (state.itemState === "edit" || state.itemState === "delete_confirm"),
   render: (state, dispatch) => {
+    console.log(state);
     return (
       <ConfirmDeleteButton
         onDelete={dispatch.listeners.onDelete}
@@ -89,9 +81,9 @@ const ConfirmDeleteButton: React.FC<{
 }> = ({ onDelete, onDeleteCancel, onDeleteConfirm, confirm }) => {
   return (
     <>
-      {!confirm && <button onClick={onDeleteConfirm}>Supprimer</button>}
+      {!confirm && <button onClick={onDelete}>Supprimer</button>}
       {confirm && "Supprimer ? "}
-      {confirm && <button onClick={onDelete}>OK</button>}
+      {confirm && <button onClick={onDeleteConfirm}>OK</button>}
       {confirm && <button onClick={onDeleteCancel}>Annuler</button>}
     </>
   );
