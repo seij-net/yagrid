@@ -17,41 +17,41 @@ describe("delete", () => {
 
   const reducer = createReducer([pluginDeleteReducer])
 
-  it("given edit state when action delete then new state is delete_confirm", () => {
+  it("edit -> delete -> delete_confirm", () => {
     const s = reducer(
       createSampleState({ itemState: "edit" }),
       { type: "delete", item: { id: "1234" } }
     )
     expect(s.itemState).toBe("delete_confirm")
   })
-  it("given delete_confirm state when delete cancel then new state is edit", () => {
+  it("delete_confirm -> delete_cancel -> edit", () => {
     const s = reducer(
       createSampleState({ itemState: "delete_confirm" }),
       { type: "delete_cancel" }
     )
     expect(s.itemState).toBe("edit")
   })
-  it("given delete_confirm state when delete commit started then new state delete_commit_pending ", () => {
+  it("delete_confirm -> delete_commit_started -> delete_commit_pending ", () => {
     const s = reducer(
       createSampleState({ itemState: "delete_confirm" }),
       { type: "delete_commit_started" }
     )
     expect(s.itemState).toBe("delete_commit_pending")
   })
-  it("given delete_commit_pending state when delete commit success then new state is reset ", () => {
+  it("delete_commit_pending -> delete_commit_succeded -> initial", () => {
     const s = reducer(
       createSampleState({ itemState: "delete_commit_pending" }),
-      { type: "edit_commit_succeded" }
+      { type: "delete_commit_succeded" }
     )
     expect(s.itemState).toBeUndefined()
     expect(s.itemValue).toBeUndefined()
     expect(s.itemId).toBeUndefined()
   })
-  it("given delete_commit_pending state when delete commit success then new state is reset ", () => {
+  it("delete_commit_pending -> edit_commit_failed -> edit ", () => {
     const expectedError = Error("failed")
     const s = reducer(
       createSampleState({ itemState: "delete_commit_pending" }),
-      { type: "edit_commit_failed", error: expectedError }
+      { type: "delete_commit_failed", error: expectedError }
     )
     expect(s.itemState).toBe("edit")
     expect(s.itemValue).toBeDefined()

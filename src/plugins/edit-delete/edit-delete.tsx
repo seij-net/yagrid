@@ -10,7 +10,7 @@ import { TablePlugin, TableState, TableStateReducer } from "../../types";
 // -----------------------------------------------------------------------------
 
 function actionDeleteCommitFailed(prevState: TableState, error: Error): TableState {
-  return { ...prevState, itemState: "delete_confirm", error: error };
+  return { ...prevState, itemState: "edit", error: error };
 }
 
 function actionDeleteCancel(prevState: TableState): TableState {
