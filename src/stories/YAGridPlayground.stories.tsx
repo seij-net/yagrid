@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { deletePlugin } from "../plugins/edit-delete/edit-delete";
 import { editorAdd } from "../plugins/edit-inline-add/edit-inline-add";
 import { editInline } from "../plugins/edit-inline/edit-inline";
-import { YAGridPlayground } from "./YAGridPlayground";
+import { customTypes, YAGridPlayground } from "./YAGridPlayground";
 import { Table } from "../Table";
 import { GridProps } from "../types";
 
@@ -69,6 +69,7 @@ const TableEditable: React.FC<GridProps<any>> = (props) => {
       },
     ],
     data: data,
+    types: customTypes,
     plugins: [
       editInline({
         onEdit: handleEdit,

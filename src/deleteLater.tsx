@@ -1,0 +1,1 @@
+import { renderToReactElement } from "./TableTypesRegistry";
