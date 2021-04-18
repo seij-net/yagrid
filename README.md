@@ -1,7 +1,12 @@
 # yagrid
 Yet another grid. A tool for building dynamic tables and grids with built-in editor and type registry. Targeted to management software.
 
-Under heavy development. Do not use yet.
+![heavy development](https://img.shields.io/badge/-under_heavy_development-darkred.svg?style=flat)
+![production ready](https://img.shields.io/badge/Production_ready-not_yet-darkred.svg?style=flat)
+
+![test and build](https://github.com/seij-net/yagrid/actions/workflows/node.js.yml/badge.svg)
+
+
 
 # Installation
 
