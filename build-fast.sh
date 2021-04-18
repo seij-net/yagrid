@@ -4,5 +4,6 @@
 
 rm -rf dist
 npm run test
+./node_modules/.bin/tsc -d
 npm run build
 ls -lh dist/
