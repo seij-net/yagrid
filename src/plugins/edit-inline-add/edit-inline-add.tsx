@@ -11,9 +11,7 @@ export const ACTION_ADD: TableAction = {
   displayed: (state, item) => true,
   render: (state, dispatch) => {
     return (
-      <button disabled={state.editedItemState !== undefined} onClick={dispatch.listeners.onAddItem}>
-        Ajouter
-      </button>
+      <button disabled={state.editedItemState !== undefined} onClick={dispatch.listeners.onAddItem}>➕</button>
     );
   },
 };
@@ -21,14 +19,14 @@ export const ACTION_ADD_OK: TableAction = {
   name: "add_ok",
   displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
   render: (state, dispatch) => {
-    return <button onClick={dispatch.listeners.onAddItemConfirm}>Ajouter</button>;
+    return <button onClick={dispatch.listeners.onAddItemConfirm}>➕</button>;
   },
 };
 export const ACTION_ADD_CANCEL: TableAction = {
   name: "add_cancel",
   displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
   render: (state, dispatch) => {
-    return <button onClick={dispatch.listeners.onAddItemCancel}>Annuler</button>;
+    return <button onClick={dispatch.listeners.onAddItemCancel}>⬅️</button>;
   },
 };
 

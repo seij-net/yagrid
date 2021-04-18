@@ -1,8 +1,32 @@
+import React from "react";
 import { cloneDeep, isEqual } from "lodash";
-import {  actionReset, actionToState } from "../../TableState";
-import { GridPlugin, GridState, GridStateReducer } from "../../types";
+import { actionReset, actionToState } from "../../TableState";
+import { GridPlugin, GridState, GridStateReducer, TableAction } from "../../types";
 
 const PLUGIN_NAME = "edit_inline";
+
+export const ACTION_EDIT: TableAction = {
+  name: "edit",
+  displayed: (state, item) => state.editedItemState === undefined,
+  render: (state, dispatch) => {
+    return <button onClick={dispatch.listeners.onEditItem}>📝</button>;
+  },
+};
+export const ACTION_EDIT_OK: TableAction = {
+  name: "edit_ok",
+  displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "edit",
+  render: (state, dispatch) => {
+    return <button onClick={dispatch.listeners.onEditItemCommit}>✅</button>;
+  },
+};
+
+export const ACTION_EDIT_CANCEL: TableAction = {
+  name: "edit_cancel",
+  displayed: (state, item) => item.id === state.editedItemId && state.editedItemState === "edit",
+  render: (state, dispatch) => {
+    return <button onClick={dispatch.listeners.onEditItemCancel}>⬅️</button>;
+  },
+};
 
 function actionEdit(prevState: GridState, item: any): GridState {
   return {
@@ -58,7 +82,7 @@ export function editInline<T>(config: Config<T>): GridPlugin<T> {
     name: PLUGIN_NAME,
     reducer: tableEditReducer,
     actionGenericList: [],
-    actionItemList: [],
+    actionItemList: [ACTION_EDIT, ACTION_EDIT_OK, ACTION_EDIT_CANCEL],
     actionGenericListeners: (editState, dispatch) => ({}),
     actionItemListeners: (editState, dispatch, item) => ({
       onEditItem: async () => {

@@ -81,10 +81,7 @@ const ConfirmDeleteButton: React.FC<{
 }> = ({ onDelete, onDeleteCancel, onDeleteConfirm, confirm }) => {
   return (
     <>
-      {!confirm && <button onClick={onDelete}>Supprimer</button>}
-      {confirm && "Supprimer ? "}
-      {confirm && <button onClick={onDeleteConfirm}>OK</button>}
-      {confirm && <button onClick={onDeleteCancel}>Annuler</button>}
+      {!confirm && <button onClick={onDelete}>❌</button>}{confirm && "Confirm ? "}{confirm && <button onClick={onDeleteConfirm}>❌</button>}{confirm && <button onClick={onDeleteCancel}>⬅️</button>}
     </>
   );
 };

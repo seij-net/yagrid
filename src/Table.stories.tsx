@@ -20,7 +20,7 @@ const TableEditable: React.FC<GridProps<any>> = (props) => {
   const handleEdit = async (item: any) =>
     setData((prevState) => prevState.map((it) => (it.id === item.id ? item : it)));
   const handleAdd = async () => {
-    return { id: "___NEW___", description: "", cb: false, amount: 0, label: "Nouveau placement" } as SampleItem;
+    return { id: "___NEW___", description: "", cb: false, amount: 0, label: "New item" } as SampleItem;
   };
   const handleAddConfirm = async (item: any) => {
     setData((prevState) => {
@@ -94,9 +94,9 @@ interface SampleItem {
 }
 
 const sampledata: SampleItem[] = [
-  { id: "1", label: "libellé 1", description: "description 1", amount: 123456, cb: true },
-  { id: "2", label: "libellé 2", description: "description 2", amount: 978654, cb: false },
-  { id: "3", label: "ligne presque vide", description: null, amount: null, cb: null },
+  { id: "1", label: "item 1", description: "description 1", amount: 123456, cb: true },
+  { id: "2", label: "item 2", description: "description 2", amount: 978654, cb: false },
+  { id: "3", label: "item almost empty", description: null, amount: null, cb: null },
 ];
 
 export const Vide = Template.bind({});
