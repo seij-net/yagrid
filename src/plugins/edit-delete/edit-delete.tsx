@@ -2,8 +2,8 @@ import React from "react";
 import { cloneDeep } from "lodash-es";
 import { TableAction } from "../..";
 
-import { actionReset, actionToState, TableState, TableStateReducer } from "../../TableState";
-import { TablePlugin } from "../../types";
+import { actionReset, actionToState } from "../../TableState";
+import { TablePlugin, TableState, TableStateReducer } from "../../types";
 
 // -----------------------------------------------------------------------------
 // Reducer

@@ -2,7 +2,7 @@ import React from "react";
 
 import { TableCell } from "./TableCell";
 import { TableItemActions } from "./TableItemActions";
-import { TableState } from "./TableState";
+import { TableState } from "./types";
 import { TableTypesRegistry } from "./TableTypesRegistry";
 import { TableActionDispatch, TableActionList, TableColumnDefinitionInternal } from "./types";
 

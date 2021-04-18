@@ -1,7 +1,7 @@
 import { Dispatch, ReactElement } from "react";
 
-import { Action, TableState, TableStateReducer } from "./TableState";
-import { TableTypeRenderer, TableTypesRegistry } from "./TableTypesRegistry";
+import { Action, TableState, TableStateReducer } from "./state";
+import { TableTypeRenderer, TableTypesRegistry } from "../TableTypesRegistry";
 
 
 export type TableActionHandler = (on: any) => void

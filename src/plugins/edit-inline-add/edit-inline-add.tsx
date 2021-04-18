@@ -1,5 +1,5 @@
-import { TableAction, TablePlugin } from "../../types";
-import { Action, TableState, TableStateReducer, actionReset, actionToState } from "../../TableState";
+import { Action, TableAction, TablePlugin, TableState, TableStateReducer } from "../../types";
+import { actionReset, actionToState } from "../../TableState";
 import React, { Dispatch } from "react";
 import { cloneDeep } from "lodash";
 

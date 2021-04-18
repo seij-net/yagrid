@@ -1,6 +1,6 @@
 import { cloneDeep, isEqual } from "lodash";
-import { TableState, TableStateReducer, actionReset, actionToState } from "../../TableState";
-import { TablePlugin } from "../../types";
+import {  actionReset, actionToState } from "../../TableState";
+import { TablePlugin, TableState, TableStateReducer } from "../../types";
 
 const PLUGIN_NAME = "edit_inline";
 

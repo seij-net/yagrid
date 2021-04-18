@@ -1,7 +1,7 @@
 import isNil from "lodash-es/isNil";
 import React, { ReactElement } from "react";
 
-import { TableState } from "./TableState";
+import { TableState } from "./types";
 import { TableAction, TableActionDispatch, TableActionList } from "./types";
 
 export interface TableItemActionsProps<T> {

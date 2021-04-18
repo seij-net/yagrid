@@ -1,4 +1,5 @@
-import { createReducer, TableState } from "../../TableState";
+import { createReducer } from "../../TableState";
+import { TableState } from "../../types";
 import { reducer as pluginDeleteReducer } from "./edit-delete";
 
 describe("delete", () => {
