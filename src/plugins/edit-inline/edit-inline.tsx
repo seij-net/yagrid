@@ -1,6 +1,6 @@
 import { cloneDeep, isEqual } from "lodash";
 import {  actionReset, actionToState } from "../../TableState";
-import { TablePlugin, GridState, GridStateReducer } from "../../types";
+import { GridPlugin, GridState, GridStateReducer } from "../../types";
 
 const PLUGIN_NAME = "edit_inline";
 
@@ -52,7 +52,7 @@ export const tableEditReducer: GridStateReducer = (prevState, action): GridState
 export interface Config<T> {
   onEdit: (nextItem: T) => Promise<void>;
 }
-export function editInline<T>(config: Config<T>): TablePlugin<T> {
+export function editInline<T>(config: Config<T>): GridPlugin<T> {
   const { onEdit } = config;
   return {
     name: PLUGIN_NAME,

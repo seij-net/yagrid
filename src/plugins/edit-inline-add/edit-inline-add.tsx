@@ -1,4 +1,4 @@
-import { Action, TableAction, TablePlugin, GridState, GridStateReducer } from "../../types";
+import { Action, TableAction, GridPlugin, GridState, GridStateReducer } from "../../types";
 import { actionReset, actionToState } from "../../TableState";
 import React, { Dispatch } from "react";
 import { cloneDeep } from "lodash";
@@ -89,7 +89,7 @@ export interface Config<T> {
   onAddConfirm: (item: T) => Promise<void>;
 }
 
-export interface TableEditorAddPlugin<T> extends TablePlugin<T> {}
+export interface TableEditorAddPlugin<T> extends GridPlugin<T> {}
 
 export type PluginFactory<T = {}> = (config: Config<T>) => TableEditorAddPlugin<T>;
 

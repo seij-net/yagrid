@@ -3,7 +3,7 @@ import { cloneDeep } from "lodash-es";
 import { TableAction } from "../..";
 
 import { actionReset, actionToState } from "../../TableState";
-import { TablePlugin, GridState, GridStateReducer } from "../../types";
+import { GridPlugin, GridState, GridStateReducer } from "../../types";
 
 // -----------------------------------------------------------------------------
 // Reducer
@@ -105,7 +105,7 @@ export interface Config<T> {
   onDelete: (item: T) => Promise<void>;
 }
 
-export function deletePlugin<T>(config: Config<T>): TablePlugin<any> {
+export function deletePlugin<T>(config: Config<T>): GridPlugin<any> {
   return {
     name: "edit_delete",
     reducer: reducer,

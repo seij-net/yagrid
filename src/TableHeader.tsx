@@ -1,11 +1,11 @@
 import React from "react";
 
-import { TableColumnDefinitionInternal } from "./types";
+import { GridColumnDefinitionInternal } from "./types";
 
 export interface TableHeaderProps {
   /** indique si la table est editable */
   displayActions: boolean;
-  columnDefinitions: TableColumnDefinitionInternal<any>[];
+  columnDefinitions: GridColumnDefinitionInternal<any>[];
 }
 
 export const TableHeader: React.FC<TableHeaderProps> = ({ columnDefinitions, displayActions }) => {

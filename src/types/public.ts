@@ -1,78 +1,94 @@
 /*
+ * -----------------------------------------------------------------------------
  * Public API types. Those are re-exported for public use.
+ * ----------------------------------------------------------------------------- 
  */
 
 import { ReactElement } from "react";
 import { TableTypesRegistry } from "../TableTypesRegistry";
-import { TablePluginList } from "./plugins";
+import { GridPluginList } from "./plugins";
 import { GridState } from "./state";
 
 
 /**
- * Propriétés d'affichage de la table.
- * <T> est le type d'un item
+ * Grid configuration properties.
+ * <T> is the type of item that the grid displays. 
  */
-export interface TableProps<T> {
+export interface GridProps<T> {
   /**
-   * Nom de classe CSS à appliquer à toute la table
+   * Name of CSS class to apply to table.
+   * Can be used like usual `className` property
    */
   className?: string,
+
   /**
-   * Définition des colonnes
+   * Types registry. If not provided we'll use a default one (quite restrictive)
    */
-  dataProperties: TableColumnDefinition<T>[],
+   types?: TableTypesRegistry,
+
   /**
-   * Données a afficher, une liste d'items
+   * Definition of data properties to display. For example the columns when
+   * displayed as table.
+   * 
+   * We don't define here all properties of the data but what's displayed and how.
+   * This is named 'columns' because even if the grid is not displaying a table, 
+   * the concept of columns is maybe easier to understand, hence the name. 
+   */
+  columns: GridColumnDefinition<T>[],
+  /**
+   * Data itself. 
+   * 
+   * In future releases, you'll get a callback that must return
+   * a promise. Plugins will be able to post-process the data for their
+   * usage but whatever, the original data shall never be altered so you
+   * can keep full control over it.
    */
   data: T[],
   /**
-   * Plugins à activer avec leur configuration
+   * Plugins used
    */
-  plugins?: TablePluginList<T>
+  plugins?: GridPluginList<T>
   /**
-   * Nom de la propriété qui sert d'identifiant
+   * Name of the data property used as identifier. Defaults to 'id'. Identifier
+   * property be a string. For example `{ id: "1234" }` NOT `{ id: 1234 }`.
+   * 
+   * Each item MUST have an id, otherwise you'll get unpredictable results 
+   * (and in future releases an exception)
    */
   identifierProperty?: string,
   /**
-   * Message à afficher si vide
+   * Message to display if data is empty. 
+   * @deprecated must be in a plugin
    */
   emptyMessage?: string,
   /**
-   * Indique si c'est éditable globalement ou pas
+   * Tells if table is editable or not. As edition is a core feature, we use
+   * this to transmit information to edition plugins. 
+   * 
+   * For example, you may include your table in a form that makes the table
+   * not editable anymore while saving. This is the way to do it. 
    */
   editable: boolean,
   /**
-   * Permet de savoir si une ligne en particulier peut être éditée.
-   * (au sens où on va afficher les widgets d'édition ou pas)
-   * Si non spécifié, par défaut la ligne est éditable si le tableau est editable
-   * @param item l'élément en cours d'affichage
+   * Tells if a particular data item is editable or not. Makes the plugins
+   * adjust based on each data. If left empty we assume that the data is
+   * editable if the table is editable. 
+   * @deprecated shall be moved edit-inline plugin
+   * @param item item currently displayed (the row data in a table)
    */
   editableItem?: (item: T) => boolean,
 
   /**
-   * Liste des actions possibles sur un item
-   */
-  actionItemList?: TableActionList,
-
-
-  /**
-   * Quand une action est lancée globalement
+   * Callback when an generic action is launched (from the toolbar for example)
    */
   onActionGeneric?: ActionGenericHandler,
 
-  /**
-   * Registry de types, si non fourni on utilise celle par défaut
-   */
-  types?: TableTypesRegistry,
-
-  onEdit: (item: T) => Promise<void>,
-  onDelete: (item: T) => Promise<void>
 }
 
 export type TableCellEditorValueChangeHandler<T> = (previousValue: T) => T
 export type TableCellEditorFactory<T> = (data: T, onValueChange: TableCellEditorValueChangeHandler<T>) => ReactElement | null | undefined
 
-export interface TableColumnDefinition<T> {
+export interface GridColumnDefinition<T> {
   name: string,
   label?: string,
   type?: string,

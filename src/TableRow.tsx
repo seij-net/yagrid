@@ -4,7 +4,7 @@ import { TableCell } from "./TableCell";
 import { TableItemActions } from "./TableItemActions";
 import { GridState } from "./types";
 import { TableTypesRegistry } from "./TableTypesRegistry";
-import { TableActionDispatch, TableActionList, TableColumnDefinitionInternal } from "./types";
+import { TableActionDispatch, TableActionList, GridColumnDefinitionInternal } from "./types";
 
 export interface TableRowProps<T> {
   /** indique si la ligne est en cours d'édition */
@@ -16,7 +16,7 @@ export interface TableRowProps<T> {
   /** données à afficher pour cette ligne */
   item: T;
   /** définition des colonnes */
-  itemDefinitions: TableColumnDefinitionInternal<T>[];
+  itemDefinitions: GridColumnDefinitionInternal<T>[];
   /** quand une action est lancée. On récupère l'action, la donnée de la ligne et l'évènement source  */
   onActionItemDispatch: TableActionDispatch;
   types: TableTypesRegistry;

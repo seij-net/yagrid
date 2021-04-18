@@ -6,51 +6,15 @@ import { deletePlugin } from "./plugins/edit-delete/edit-delete";
 import { editorAdd } from "./plugins/edit-inline-add/edit-inline-add";
 import { editInline } from "./plugins/edit-inline/edit-inline";
 import { Table } from "./Table";
-import { ACTION_EDIT, ACTION_EDIT_CANCEL, ACTION_EDIT_OK } from "./TableActionButtons";
-import { TableColumnDefinition, TablePlugin, TableProps } from "./types";
+import { GridProps } from "./types";
 
 export default {
   title: "TableComponents/Table",
   component: Table,
 } as Meta;
 
-const TableEditable: React.FC<TableProps<any>> = (props) => {
+const TableEditable: React.FC<GridProps<any>> = (props) => {
   const [data, setData] = useState(props.data);
-
-  const COLUMN_DEFINITIONS: TableColumnDefinition<SampleItem>[] = [
-    { name: "label" },
-    {
-      name: "description",
-      editor: (data, onValueChange) => (
-        <input
-          type="text"
-          defaultValue={data.description || ""}
-          onChange={(evt) => onValueChange({ ...data, description: evt.target.value })}
-        />
-      ),
-    },
-    {
-      name: "amount",
-      label: "Montant entier",
-      type: "monetaryAmountInt",
-      editor: (data, onValueChange) => (
-        <input
-          type="number"
-          defaultValue={data.amount || ""}
-          onChange={(evt) => onValueChange({ ...data, amount: parseInt(evt.target.value) })}
-        />
-      ),
-    },
-    {
-      name: "cb",
-      label: "Checkbox",
-      type: "boolean",
-      editor: (data, onValueChange) =>
-        isNil(data.cb) ? null : (
-          <input type="checkbox" checked={data.cb || false} onChange={() => onValueChange({ ...data, cb: !data })} />
-        ),
-    },
-  ];
 
   const handleDelete = async (item: any) => setData((prevState) => prevState.filter((it) => it.id !== item.id));
   const handleEdit = async (item: any) =>
@@ -65,32 +29,61 @@ const TableEditable: React.FC<TableProps<any>> = (props) => {
       return [...prevState, { ...item, id: newId }];
     });
   };
-  const plugins: TablePlugin<SampleItem>[] = [
-    editInline({
-      onEdit: handleEdit,
-    }),
-    editorAdd({
-      onAddTemplate: handleAdd,
-      onAddConfirm: handleAddConfirm,
-    }),
-    deletePlugin({
-      onDelete: handleDelete,
-    }),
-  ];
-  return (
-    <Table
-      {...props}
-      dataProperties={COLUMN_DEFINITIONS}
-      data={data}
-      plugins={plugins}
-      onDelete={handleDelete}
-      onEdit={handleEdit}
-    />
-  );
-  // return <Table {...props} />
+
+  const gridProps: GridProps<SampleItem> = {
+    ...props,
+    columns: [
+      { name: "label" },
+      {
+        name: "description",
+        editor: (data, onValueChange) => (
+          <input
+            type="text"
+            defaultValue={data.description || ""}
+            onChange={(evt) => onValueChange({ ...data, description: evt.target.value })}
+          />
+        ),
+      },
+      {
+        name: "amount",
+        label: "Montant entier",
+        type: "monetaryAmountInt",
+        editor: (data, onValueChange) => (
+          <input
+            type="number"
+            defaultValue={data.amount || ""}
+            onChange={(evt) => onValueChange({ ...data, amount: parseInt(evt.target.value) })}
+          />
+        ),
+      },
+      {
+        name: "cb",
+        label: "Checkbox",
+        type: "boolean",
+        editor: (data, onValueChange) =>
+          isNil(data.cb) ? null : (
+            <input type="checkbox" checked={data.cb || false} onChange={() => onValueChange({ ...data, cb: !data })} />
+          ),
+      },
+    ],
+    data: data,
+    plugins: [
+      editInline({
+        onEdit: handleEdit,
+      }),
+      editorAdd({
+        onAddTemplate: handleAdd,
+        onAddConfirm: handleAddConfirm,
+      }),
+      deletePlugin({
+        onDelete: handleDelete,
+      }),
+    ],
+  };
+  return <Table {...gridProps} />;
 };
 
-const Template: Story<TableProps<any>> = (args) => <TableEditable {...args} />;
+const Template: Story<GridProps<any>> = (args) => <TableEditable {...args} />;
 
 interface SampleItem {
   id: string;
@@ -112,6 +105,5 @@ Vide.args = {};
 export const RempliEditable = Template.bind({});
 RempliEditable.args = {
   editable: true,
-  actionItemList: [ACTION_EDIT, ACTION_EDIT_OK, ACTION_EDIT_CANCEL],
   data: sampledata,
 };
