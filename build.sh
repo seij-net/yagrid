@@ -7,3 +7,4 @@ rm -rf node_modules
 npm i 
 npm run test
 npm run build
+ls -lh dist/

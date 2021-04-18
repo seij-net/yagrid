@@ -20,7 +20,6 @@ export const Table: React.FC<GridProps<any>> = ({
   className,
   identifierProperty = "id",
   emptyMessage,
-  editable,
   plugins = [],
   types,
 }) => {
@@ -42,7 +41,13 @@ export const Table: React.FC<GridProps<any>> = ({
 
   const classNames = clsx(className, DEFAULT_TABLE_CLASS);
   const emptyMessageOrDefault = emptyMessage || DEFAULT_EMPTY_MESSAGE;
-  const columnCount = columnDefinitions.length + (editable ? 1 : 0);
+  
+  const actionGenericListAll: TableActionList = pluginCompose(plugins, (plugin) => plugin.actionGenericList);
+  const actionItemListAll: TableActionList = pluginCompose(plugins, (plugin) => plugin.actionItemList, []);
+  
+  const somePluginsProvideItemAction = actionItemListAll.length > 0
+  const somePluginsProvideGenericActions = actionGenericListAll.length > 0
+  const columnCount = columnDefinitions.length + (actionItemListAll.length > 0 ? 1 : 0);
 
   let actionListeners = {};
   plugins.forEach((plugin) => {
@@ -51,7 +56,7 @@ export const Table: React.FC<GridProps<any>> = ({
       actionListeners = { ...actionListeners, ...pluginListeners };
     }
   });
-  const actionGenericListAll: TableActionList = pluginCompose(plugins, (plugin) => plugin.actionGenericList);
+  
   const actionGenericComponents = actionGenericListAll.map((it) => {
     return (
       <TableActionTrigger
@@ -75,13 +80,13 @@ export const Table: React.FC<GridProps<any>> = ({
       actionListeners = { ...actionListeners, ...pluginListeners };
     });
     
-    const actionItemListAll = pluginCompose(plugins, (plugin) => plugin.actionItemList, []);
+    
 
     return (
       <TableRow
         key={id}
         actionsItem={actionItemListAll}
-        actionsItemDisplay={editable}
+        actionsItemDisplay={somePluginsProvideItemAction}
         editingState={editState}
         item={it}
         onActionItemDispatch={{ listeners: actionListeners }}
@@ -96,7 +101,7 @@ export const Table: React.FC<GridProps<any>> = ({
     <>
       {actionGenericComponents}
       <table className={classNames}>
-        <TableHeader displayActions={editable} columnDefinitions={columnDefinitions} />
+        <TableHeader displayActions={somePluginsProvideGenericActions} columnDefinitions={columnDefinitions} />
         <tbody>{rows}</tbody>
         <TableEmptyMessage size={rows.length} columnsSize={columnCount} emptyMessage={emptyMessageOrDefault} />
       </table>

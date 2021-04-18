@@ -1,0 +1,12 @@
+.yagrid-table-playground {
+    border-collapse: collapse;
+}
+.yagrid-table-playground td, .yagrid-table-playground th {
+    padding:0.2em;
+    border: 1px solid #aaa;
+}
+.yagrid-table-playground thead tr th{ 
+    background-color: #eee;
+}
+.yagrid-table-playground tbody tr td{
+}

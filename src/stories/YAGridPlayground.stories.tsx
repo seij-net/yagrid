@@ -1,16 +1,16 @@
 import { Meta, Story } from "@storybook/react";
 import { isNil, minBy } from "lodash-es";
 import React, { useState } from "react";
-import "bulma/css/bulma.css"
-import { deletePlugin } from "./plugins/edit-delete/edit-delete";
-import { editorAdd } from "./plugins/edit-inline-add/edit-inline-add";
-import { editInline } from "./plugins/edit-inline/edit-inline";
-import { Table } from "./Table";
-import { GridProps } from "./types";
+import { deletePlugin } from "../plugins/edit-delete/edit-delete";
+import { editorAdd } from "../plugins/edit-inline-add/edit-inline-add";
+import { editInline } from "../plugins/edit-inline/edit-inline";
+import { YAGridPlayground } from "./YAGridPlayground";
+import { Table } from "../Table";
+import { GridProps } from "../types";
 
 export default {
-  title: "TableComponents/Table",
-  component: Table,
+  title: "Playground/YAGridPlayground",
+  component: YAGridPlayground,
 } as Meta;
 
 const TableEditable: React.FC<GridProps<any>> = (props) => {
@@ -32,9 +32,10 @@ const TableEditable: React.FC<GridProps<any>> = (props) => {
 
   const gridProps: GridProps<SampleItem> = {
     ...props,
-    className:"table",
     columns: [
+      { name: "id", label: "#"},
       { name: "label" },
+      
       {
         name: "description",
         editor: (data, onValueChange) => (
@@ -82,17 +83,10 @@ const TableEditable: React.FC<GridProps<any>> = (props) => {
       }),
     ],
   };
-  return <div>
-    <h1 className="title">Playground</h1>
-    <p>
-      Note that YAGrid doesn't provide any CSS or style to stay style-agnostic. Here we use Bulma for a default styling.
-      edit-inline, edit-add and edit-delete plugins are provided. 
-    </p>
-    <p>&nbsp;</p>
-    <div><Table {...gridProps} /></div></div>;
+  return <YAGridPlayground {...gridProps} />;
 };
 
-const Template: Story<GridProps<any>> = (args) => <TableEditable {...args} />;
+
 
 interface SampleItem {
   id: string;
@@ -109,6 +103,8 @@ const sampledata: SampleItem[] = [
   { id: "3", label: "item almost empty", description: null, amount: null, cb: null },
   { id: "4", label: "not editable", description: null, amount: null, cb: null, readonly:true },
 ];
+
+const Template: Story<GridProps<any>> = (args) => <TableEditable {...args}></TableEditable>;
 
 export const Empty = Template.bind({});
 Empty.args = {};

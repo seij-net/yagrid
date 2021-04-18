@@ -1,5 +1,5 @@
 import React from "react";
-import { cloneDeep, isEqual, isNil } from "lodash";
+import { cloneDeep, isEqual, isNil } from "lodash-es";
 import { actionReset, actionToState } from "../../TableState";
 import { GridPlugin, GridState, GridStateReducer, TableAction } from "../../types";
 
