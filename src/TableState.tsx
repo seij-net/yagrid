@@ -1,27 +1,27 @@
-import { TableEditItemStateName, TableState, TableStateReducer } from "./types";
+import { GridEditedItemStateName, GridState, GridStateReducer } from "./types";
 
 
 
-export const createTableEditDefaultState = (identifierProperty: string): TableState => ({
-  itemId: undefined,
-  itemState: undefined,
-  itemValue: undefined,
+export const createTableEditDefaultState = (identifierProperty: string): GridState => ({
+  editedItemId: undefined,
+  editedItemState: undefined,
+  editedItemValue: undefined,
   identifierProperty: identifierProperty,
   error: undefined,
 });
 
 
-export function actionReset(prevState: TableState): TableState {
-  return { ...prevState, itemId: undefined, itemState: undefined, itemValue: undefined };
+export function actionReset(prevState: GridState): GridState {
+  return { ...prevState, editedItemId: undefined, editedItemState: undefined, editedItemValue: undefined };
 }
 
-export function actionToState(prevState: TableState, stateName: TableEditItemStateName): TableState {
-  return { ...prevState, itemState: stateName };
+export function actionToState(prevState: GridState, stateName: GridEditedItemStateName): GridState {
+  return { ...prevState, editedItemState: stateName };
 }
 
-export const createReducer = (pluginReducers: TableStateReducer[]): TableStateReducer => {
+export const createReducer = (pluginReducers: GridStateReducer[]): GridStateReducer => {
   const allReducers = [...pluginReducers];
-  const combined: TableStateReducer = (prevState, action) => {
+  const combined: GridStateReducer = (prevState, action) => {
     return allReducers.reduce((acc, plugin) => plugin(acc, action), prevState);
   };
   return combined;

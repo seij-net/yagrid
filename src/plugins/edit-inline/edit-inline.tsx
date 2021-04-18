@@ -1,29 +1,29 @@
 import { cloneDeep, isEqual } from "lodash";
 import {  actionReset, actionToState } from "../../TableState";
-import { TablePlugin, TableState, TableStateReducer } from "../../types";
+import { TablePlugin, GridState, GridStateReducer } from "../../types";
 
 const PLUGIN_NAME = "edit_inline";
 
-function actionEdit(prevState: TableState, item: any): TableState {
+function actionEdit(prevState: GridState, item: any): GridState {
   return {
     ...prevState,
-    itemId: item[prevState.identifierProperty],
-    itemState: "edit",
-    itemValue: cloneDeep(item),
+    editedItemId: item[prevState.identifierProperty],
+    editedItemState: "edit",
+    editedItemValue: cloneDeep(item),
   };
 }
 
-function actionItemChange(prevState: TableState, item: any): TableState {
-  if (isEqual(item, prevState.itemValue)) return prevState;
-  return { ...prevState, itemValue: item };
+function actionItemChange(prevState: GridState, item: any): GridState {
+  if (isEqual(item, prevState.editedItemValue)) return prevState;
+  return { ...prevState, editedItemValue: item };
 }
 
-function actionEditCommitFailed(prevState: TableState, error: Error): TableState {
-  return { ...prevState, itemState: "edit", error: error };
+function actionEditCommitFailed(prevState: GridState, error: Error): GridState {
+  return { ...prevState, editedItemState: "edit", error: error };
 }
 
-export const tableEditReducer: TableStateReducer = (prevState, action): TableState => {
-  let result: TableState;
+export const tableEditReducer: GridStateReducer = (prevState, action): GridState => {
+  let result: GridState;
   switch (action.type) {
     case "item_change":
       result = actionItemChange(prevState, action.item);
@@ -70,7 +70,7 @@ export function editInline<T>(config: Config<T>): TablePlugin<T> {
       onEditItemCommit: async () => {
         try {
           dispatch({ type: "edit_commit_started" });
-          await onEdit(editState.itemValue);
+          await onEdit(editState.editedItemValue);
           dispatch({ type: "edit_commit_succeded" });
         } catch (error) {
           dispatch({ type: "edit_commit_failed", error: error });

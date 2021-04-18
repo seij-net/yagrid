@@ -1,12 +1,12 @@
 import isNil from "lodash-es/isNil";
 import React, { ReactElement } from "react";
 
-import { TableState } from "./types";
+import { GridState } from "./types";
 import { TableAction, TableActionDispatch, TableActionList } from "./types";
 
 export interface TableItemActionsProps<T> {
   item: T;
-  editingState: TableState;
+  editingState: GridState;
   actionItemList: TableActionList;
   handleAction: TableActionDispatch;
 }
@@ -49,6 +49,6 @@ export const TableActionTrigger: React.FC<TableActionTriggerProps> = ({
 
 interface TableActionTriggerProps {
   action: TableAction;
-  editingState: TableState;
+  editingState: GridState;
   dispatch: TableActionDispatch;
 }

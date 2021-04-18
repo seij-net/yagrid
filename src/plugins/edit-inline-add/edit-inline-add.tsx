@@ -1,4 +1,4 @@
-import { Action, TableAction, TablePlugin, TableState, TableStateReducer } from "../../types";
+import { Action, TableAction, TablePlugin, GridState, GridStateReducer } from "../../types";
 import { actionReset, actionToState } from "../../TableState";
 import React, { Dispatch } from "react";
 import { cloneDeep } from "lodash";
@@ -11,7 +11,7 @@ export const ACTION_ADD: TableAction = {
   displayed: (state, item) => true,
   render: (state, dispatch) => {
     return (
-      <button disabled={state.itemState !== undefined} onClick={dispatch.listeners.onAddItem}>
+      <button disabled={state.editedItemState !== undefined} onClick={dispatch.listeners.onAddItem}>
         Ajouter
       </button>
     );
@@ -19,14 +19,14 @@ export const ACTION_ADD: TableAction = {
 };
 export const ACTION_ADD_OK: TableAction = {
   name: "add_ok",
-  displayed: (state, item) => state.itemId === item.id && state.itemState === "add",
+  displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
   render: (state, dispatch) => {
     return <button onClick={dispatch.listeners.onAddItemConfirm}>Ajouter</button>;
   },
 };
 export const ACTION_ADD_CANCEL: TableAction = {
   name: "add_cancel",
-  displayed: (state, item) => state.itemId === item.id && state.itemState === "add",
+  displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
   render: (state, dispatch) => {
     return <button onClick={dispatch.listeners.onAddItemCancel}>Annuler</button>;
   },
@@ -36,18 +36,18 @@ export const ACTION_ADD_CANCEL: TableAction = {
 // Reducer
 // -----------------------------------------------------------------------------
 
-function actionAdd(prevState: TableState, item: any): TableState {
+function actionAdd(prevState: GridState, item: any): GridState {
   return {
     ...prevState,
-    itemId: item[prevState.identifierProperty],
-    itemState: "add",
-    itemValue: cloneDeep(item),
+    editedItemId: item[prevState.identifierProperty],
+    editedItemState: "add",
+    editedItemValue: cloneDeep(item),
   };
 }
-function actionAddCommitFailed(prevState: TableState, error: Error): TableState {
-  return { ...prevState, itemState: "add", error: error };
+function actionAddCommitFailed(prevState: GridState, error: Error): GridState {
+  return { ...prevState, editedItemState: "add", error: error };
 }
-export const reducer: TableStateReducer = (prevState, action) => {
+export const reducer: GridStateReducer = (prevState, action) => {
   let result;
   switch (action.type) {
     case "add":
@@ -102,7 +102,7 @@ export function editorAdd<T>(config: Config<T>): TableEditorAddPlugin<T> {
     actionGenericList: [ACTION_ADD],
     actionItemList: [ACTION_ADD_OK, ACTION_ADD_CANCEL],
     actionGenericListeners: (
-      editState: TableState,
+      editState: GridState,
       dispatch: Dispatch<Action>
     ): { [p: string]: () => Promise<void> } => {
       return {
@@ -117,7 +117,7 @@ export function editorAdd<T>(config: Config<T>): TableEditorAddPlugin<T> {
       };
     },
     actionItemListeners: (
-      editState: TableState,
+      editState: GridState,
       dispatch: Dispatch<Action>,
       item: T
     ): { [p: string]: () => Promise<void> } => {
@@ -125,7 +125,7 @@ export function editorAdd<T>(config: Config<T>): TableEditorAddPlugin<T> {
         onAddItemConfirm: async () => {
           try {
             dispatch({ type: "add_commit_started" });
-            await onAddConfirm(editState.itemValue);
+            await onAddConfirm(editState.editedItemValue);
             dispatch({ type: "add_commit_succeded" });
           } catch (error) {
             dispatch({ type: "add_commit_failed", error: error });
@@ -138,8 +138,8 @@ export function editorAdd<T>(config: Config<T>): TableEditorAddPlugin<T> {
     },
     dataListTransform: (editState, data) => {
       const newList = [] as T[];
-      if (editState.itemState === "add" || editState.itemState === "add_commit_pending") {
-        newList.push(editState.itemValue);
+      if (editState.editedItemState === "add" || editState.editedItemState === "add_commit_pending") {
+        newList.push(editState.editedItemValue);
       }
       if (data) {
         newList.push(...data);

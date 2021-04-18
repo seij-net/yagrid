@@ -2,13 +2,13 @@ import React from "react";
 
 import { TableCell } from "./TableCell";
 import { TableItemActions } from "./TableItemActions";
-import { TableState } from "./types";
+import { GridState } from "./types";
 import { TableTypesRegistry } from "./TableTypesRegistry";
 import { TableActionDispatch, TableActionList, TableColumnDefinitionInternal } from "./types";
 
 export interface TableRowProps<T> {
   /** indique si la ligne est en cours d'édition */
-  editingState: TableState;
+  editingState: GridState;
   /** indique si la ligne a des boutons d'action, cad. on affiche les boutons pour éditer sur une colonne*/
   actionsItemDisplay: boolean;
   /** Actions d'une ligne */
@@ -33,7 +33,7 @@ export const TableRow: React.FC<TableRowProps<any>> = ({
   onEditItemChange,
 }) => {
   const cells = itemDefinitions.map((def) => {
-    const editing = item[editingState.identifierProperty] === editingState.itemId;
+    const editing = item[editingState.identifierProperty] === editingState.editedItemId;
     return (
       <TableCell
         key={def.name}

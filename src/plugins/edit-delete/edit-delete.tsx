@@ -3,30 +3,30 @@ import { cloneDeep } from "lodash-es";
 import { TableAction } from "../..";
 
 import { actionReset, actionToState } from "../../TableState";
-import { TablePlugin, TableState, TableStateReducer } from "../../types";
+import { TablePlugin, GridState, GridStateReducer } from "../../types";
 
 // -----------------------------------------------------------------------------
 // Reducer
 // -----------------------------------------------------------------------------
 
-function actionDeleteCommitFailed(prevState: TableState, error: Error): TableState {
-  return { ...prevState, itemState: "edit", error: error };
+function actionDeleteCommitFailed(prevState: GridState, error: Error): GridState {
+  return { ...prevState, editedItemState: "edit", error: error };
 }
 
-function actionDeleteCancel(prevState: TableState): TableState {
-  return { ...prevState, itemState: "edit" };
+function actionDeleteCancel(prevState: GridState): GridState {
+  return { ...prevState, editedItemState: "edit" };
 }
 
-function actionDelete(prevState: TableState, item: any): TableState {
+function actionDelete(prevState: GridState, item: any): GridState {
   return {
     ...prevState,
-    itemId: item[prevState.identifierProperty],
-    itemState: "delete_confirm",
-    itemValue: cloneDeep(item),
+    editedItemId: item[prevState.identifierProperty],
+    editedItemState: "delete_confirm",
+    editedItemValue: cloneDeep(item),
   };
 }
 
-export const reducer: TableStateReducer = (prevState, action) => {
+export const reducer: GridStateReducer = (prevState, action) => {
   let result;
   switch (action.type) {
     case "delete":
@@ -57,16 +57,16 @@ export const reducer: TableStateReducer = (prevState, action) => {
 export const ACTION_EDIT_DELETE: TableAction = {
   name: "edit_delete",
   displayed: (state, item) =>
-    state.itemId === item.id && (state.itemState === "edit" || state.itemState === "delete_confirm"),
+    state.editedItemId === item.id && (state.editedItemState === "edit" || state.editedItemState === "delete_confirm"),
   render: (state, dispatch) => {
     console.log(state);
     return (
       <ConfirmDeleteButton
         onDelete={dispatch.listeners.onDelete}
-        confirm={state.itemState === "delete_confirm"}
+        confirm={state.editedItemState === "delete_confirm"}
         onDeleteCancel={dispatch.listeners.onDeleteCancel}
         onDeleteConfirm={dispatch.listeners.onDeleteConfirm}
-        disabled={state.itemState === "delete_commit_pending"}
+        disabled={state.editedItemState === "delete_commit_pending"}
       />
     );
   },
@@ -121,7 +121,7 @@ export function deletePlugin<T>(config: Config<T>): TablePlugin<any> {
         onDeleteConfirm: async () => {
           try {
             dispatch({ type: "delete_commit_started" });
-            await config.onDelete(editState.itemValue);
+            await config.onDelete(editState.editedItemValue);
             dispatch({ type: "delete_commit_succeded" });
           } catch (error) {
             dispatch({ type: "delete_commit_failed", error: error });

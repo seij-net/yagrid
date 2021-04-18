@@ -1,4 +1,14 @@
-export type TableEditItemStateName =
+/**
+ * State types. 
+ * 
+ * Those are re-exported for plugin developers.
+ */
+
+
+/**
+ * Built-in state names for currently active edited item. 
+ */
+export type GridEditedItemStateName =
   | "edit"
   | "edit_commit_pending"
   | "delete_confirm"
@@ -7,22 +17,36 @@ export type TableEditItemStateName =
   | "add_commit_pending";
 
 
-
-export interface TableState {
+/**
+ * Main state
+ */
+export interface GridState {
   /** Identifier of item under edition or undefined if not editing */
-  itemId: string | undefined;
+  editedItemId: string | undefined;
   /** State of edition */
-  itemState: undefined | TableEditItemStateName;
+  editedItemState: undefined | GridEditedItemStateName;
   /** Current value. Holds a temporary item value which is a copy of original item value, pending confirmation */
-  itemValue: any | undefined;
-  /** Column used as identifier */
+  editedItemValue: any | undefined;
+  /** Property used as identifier for items in data source */
   identifierProperty: string;
   /** Error if any */
   error: Error | undefined;
 }
 
-export type TableStateReducer = (prevState: TableState, action: Action) => TableState;
+/**
+ * Reducer to manipulate grid state
+ */
+export type GridStateReducer = (prevState: GridState, action: Action) => GridState;
 
+/**
+ * For the moment actions are declared here but we need to put them separated 
+ * in each plugin. 
+ * 
+ * Core shall provide only core actions. Each plugin shall enrich possible actions
+ * and keep actions for themselves
+ * 
+ * https://github.com/seij-net/yagrid/issues/21
+ */
 export type Action =
   | { type: "item_change"; item: any }
   | { type: "edit"; item: any }
