@@ -1,32 +1,9 @@
 import React from "react";
-import { cloneDeep, isEqual } from "lodash";
+import { cloneDeep, isEqual, isNil } from "lodash";
 import { actionReset, actionToState } from "../../TableState";
 import { GridPlugin, GridState, GridStateReducer, TableAction } from "../../types";
 
 const PLUGIN_NAME = "edit_inline";
-
-export const ACTION_EDIT: TableAction = {
-  name: "edit",
-  displayed: (state, item) => state.editedItemState === undefined,
-  render: (state, dispatch) => {
-    return <button onClick={dispatch.listeners.onEditItem}>📝</button>;
-  },
-};
-export const ACTION_EDIT_OK: TableAction = {
-  name: "edit_ok",
-  displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "edit",
-  render: (state, dispatch) => {
-    return <button onClick={dispatch.listeners.onEditItemCommit}>✅</button>;
-  },
-};
-
-export const ACTION_EDIT_CANCEL: TableAction = {
-  name: "edit_cancel",
-  displayed: (state, item) => item.id === state.editedItemId && state.editedItemState === "edit",
-  render: (state, dispatch) => {
-    return <button onClick={dispatch.listeners.onEditItemCancel}>⬅️</button>;
-  },
-};
 
 function actionEdit(prevState: GridState, item: any): GridState {
   return {
@@ -74,10 +51,41 @@ export const tableEditReducer: GridStateReducer = (prevState, action): GridState
   return result;
 };
 export interface Config<T> {
+  /**
+   * Called when an item is successfully edited and need to be saved
+   */
   onEdit: (nextItem: T) => Promise<void>;
+  /**
+   * Tells if an item is editable
+   */
+  editable?: (item: T) => boolean;
 }
 export function editInline<T>(config: Config<T>): GridPlugin<T> {
-  const { onEdit } = config;
+  const { onEdit, editable } = config;
+  const editableSafe = isNil(editable) ? ()=>true : editable
+  const ACTION_EDIT: TableAction = {
+    name: "edit",
+    displayed: (state, item) => editableSafe(item) && state.editedItemState === undefined,
+    render: (state, dispatch) => {
+      return <button onClick={dispatch.listeners.onEditItem}>📝</button>;
+    },
+  };
+  const ACTION_EDIT_OK: TableAction = {
+    name: "edit_ok",
+    displayed: (state, item) => editableSafe(item) && state.editedItemId === item.id && state.editedItemState === "edit",
+    render: (state, dispatch) => {
+      return <button onClick={dispatch.listeners.onEditItemCommit}>✅</button>;
+    },
+  };
+
+  const ACTION_EDIT_CANCEL: TableAction = {
+    name: "edit_cancel",
+    displayed: (state, item) => editableSafe(item) && item.id === state.editedItemId && state.editedItemState === "edit",
+    render: (state, dispatch) => {
+      return <button onClick={dispatch.listeners.onEditItemCancel}>⬅️</button>;
+    },
+  };
+
   return {
     name: PLUGIN_NAME,
     reducer: tableEditReducer,

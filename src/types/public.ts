@@ -47,7 +47,7 @@ export interface GridProps<T> {
   /**
    * Plugins used
    */
-  plugins?: GridPluginList<T>
+  plugins: GridPluginList<T>
   /**
    * Name of the data property used as identifier. Defaults to 'id'. Identifier
    * property be a string. For example `{ id: "1234" }` NOT `{ id: 1234 }`.
@@ -69,14 +69,6 @@ export interface GridProps<T> {
    * not editable anymore while saving. This is the way to do it. 
    */
   editable: boolean,
-  /**
-   * Tells if a particular data item is editable or not. Makes the plugins
-   * adjust based on each data. If left empty we assume that the data is
-   * editable if the table is editable. 
-   * @deprecated shall be moved edit-inline plugin
-   * @param item item currently displayed (the row data in a table)
-   */
-  editableItem?: (item: T) => boolean,
 
   /**
    * Callback when an generic action is launched (from the toolbar for example)

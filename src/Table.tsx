@@ -12,7 +12,7 @@ import { TableActionList, GridColumnDefinitionInternal, GridPlugin, GridPluginLi
 
 const NOT_EDITABLE = (rowData: any) => false;
 const DEFAULT_TABLE_CLASS = "data";
-const DEFAULT_EMPTY_MESSAGE = "Aucun élément à afficher";
+const DEFAULT_EMPTY_MESSAGE = "";
 
 export const Table: React.FC<GridProps<any>> = ({
   columns: dataProperties,
@@ -22,7 +22,6 @@ export const Table: React.FC<GridProps<any>> = ({
   emptyMessage,
   editable,
   plugins = [],
-  editableItem,
   types,
 }) => {
   const typesOrDefault = types || TableTypesRegistryDefault;
