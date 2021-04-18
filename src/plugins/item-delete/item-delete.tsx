@@ -102,7 +102,7 @@ export interface Config<T> {
   onDelete: (item: T) => Promise<void>;
 }
 
-export function deletePlugin<T>(config: Config<T>): GridPlugin<any> {
+export function create<T>(config: Config<T>): GridPlugin<any> {
   return {
     name: "edit_delete",
     reducer: reducer,

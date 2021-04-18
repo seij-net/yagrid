@@ -1,6 +1,6 @@
 import { createReducer } from "../../TableState";
 import { GridState } from "../../types";
-import { reducer as pluginDeleteReducer } from "./edit-delete";
+import { reducer as pluginDeleteReducer } from "./item-delete";
 
 describe("delete", () => {
 

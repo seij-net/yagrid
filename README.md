@@ -96,3 +96,36 @@ Note that in this example nullish data are handled differently depending on the 
 in many cases. For example, on one table you don't want "0" numbers to appear, on others you want them whatever.
 
 
+# Provided plugins
+
+Currently provided plugins
+
+| Name | Description |
+|------|-------------|
+| item-add | ItemAdd | Provides a toolbar button to add an item. When user clicks, an editable row opens to edit the item. Provides confirm, cancel button and a temporary item to be able to cancel. |
+| item-edit | ItemEdit | Provides row editing features. A button triggers row editing, then user can validate or cancel the row. Also manages a temporary item to be able to cancel. |
+| item-delete | ItemDelete | Provides row button to delete item, confirm and cancel buttons. |
+
+# Plugin development
+
+## Naming
+
+Internal plugins as well a third-party plugins shall expose a `Config` object and a `create(cfg:Config)` function.
+
+The goal is to provide an unified naming for importing and instanciating plugins. 
+
+```typescript
+// Could be third party plugins
+import { EditItem, DeleteItem, AddItem } from "@seij/yagrid";
+// When creating the grid
+const props: GridProps<ItemType> = {
+    // ...
+    plugins: [
+        EditItem.create({ /** edit item config */ }),
+        DeleteItem.create({ /** edit item config */ }),
+        AddItem.create({ /** edit item config */ }),
+        // ...
+    ]
+}
+return <Grid {...props} />
+```

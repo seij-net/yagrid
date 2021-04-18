@@ -8,13 +8,13 @@ import {
     GridProps,
 } from "./types";
 import {Table} from "./Table"
-export * as EditInline from "./plugins/edit-inline"
-export * as EditDelete from "./plugins/edit-delete"
-export * as EditInlineAdd from "./plugins/edit-inline-add"
+export * as ItemEdit from "./plugins/item-edit"
+export * as ItemDelete from "./plugins/item-delete"
+export * as ItemAdd from "./plugins/item-add"
 
 export {
     Table,
-    GridProps as TableProps,
+    GridProps,
     GridColumnDefinition as TableColumnDefinition,
     TableActionList,
     TableAction,

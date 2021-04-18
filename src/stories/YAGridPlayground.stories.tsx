@@ -1,12 +1,9 @@
 import { Meta, Story } from "@storybook/react";
 import { isNil, minBy } from "lodash-es";
 import React, { useState } from "react";
-import { deletePlugin } from "../plugins/edit-delete/edit-delete";
-import { editorAdd } from "../plugins/edit-inline-add/edit-inline-add";
-import { editInline } from "../plugins/edit-inline/edit-inline";
+
+import { ItemDelete, ItemEdit, ItemAdd, GridProps } from "..";
 import { customTypes, YAGridPlayground } from "./YAGridPlayground";
-import { Table } from "../Table";
-import { GridProps } from "../types";
 
 export default {
   title: "Playground/YAGridPlayground",
@@ -71,15 +68,15 @@ const TableEditable: React.FC<GridProps<any>> = (props) => {
     data: data,
     types: customTypes,
     plugins: [
-      editInline({
+      ItemEdit.create({
         onEdit: handleEdit,
         editable: (item) => !item.readonly
       }),
-      editorAdd({
+      ItemAdd.create({
         onAddTemplate: handleAdd,
         onAddConfirm: handleAddConfirm,
       }),
-      deletePlugin({
+      ItemDelete.create({
         onDelete: handleDelete,
       }),
     ],

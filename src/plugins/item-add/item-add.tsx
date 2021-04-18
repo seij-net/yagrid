@@ -65,7 +65,7 @@ export interface TableEditorAddPlugin<T> extends GridPlugin<T> {}
 
 export type PluginFactory<T = {}> = (config: Config<T>) => TableEditorAddPlugin<T>;
 
-export function editorAdd<T>(config: Config<T>): TableEditorAddPlugin<T> {
+export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
   const { onAddTemplate, onAddConfirm } = config;
   const ACTION_ADD: TableAction = {
     name: "add",

@@ -60,7 +60,7 @@ export interface Config<T> {
    */
   editable?: (item: T) => boolean;
 }
-export function editInline<T>(config: Config<T>): GridPlugin<T> {
+export function create<T>(config: Config<T>): GridPlugin<T> {
   const { onEdit, editable } = config;
   const editableSafe = isNil(editable) ? ()=>true : editable
   const ACTION_EDIT: TableAction = {
