@@ -102,9 +102,9 @@ Currently provided plugins
 
 | Name | Description |
 |------|-------------|
-| (item-add)[./src/plugins/item-add/Readme.md] | ItemAdd | Provides a toolbar button to add an item. When user clicks, an editable row opens to edit the item. Provides confirm, cancel button and a temporary item to be able to cancel. |
-| (item-edit)[./src/plugins/item-edit/Readme.md] | ItemEdit | Provides row editing features. A button triggers row editing, then user can validate or cancel the row. Also manages a temporary item to be able to cancel. |
-| (item-delete)[./src/plugins/item-edit/Readme.md] | ItemDelete | Provides row button to delete item, confirm and cancel buttons. |
+| [item-add](./src/plugins/item-add/Readme.md) | ItemAdd | Provides a toolbar button to add an item. When user clicks, an editable row opens to edit the item. Provides confirm, cancel button and a temporary item to be able to cancel. |
+| [item-edit](./src/plugins/item-edit/Readme.md) | ItemEdit | Provides row editing features. A button triggers row editing, then user can validate or cancel the row. Also manages a temporary item to be able to cancel. |
+| [item-delete](./src/plugins/item-edit/Readme.md) | ItemDelete | Provides row button to delete item, confirm and cancel buttons. |
 
 Each plugin comes with its own documentation. Be sure to take a look at it
 
