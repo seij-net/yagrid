@@ -36,16 +36,16 @@ export const ACTION_ADD_CANCEL: TableAction = {
 // Reducer
 // -----------------------------------------------------------------------------
 
-function actionAdd(prevState:TableState, item:any):TableState {
+function actionAdd(prevState: TableState, item: any): TableState {
   return {
-      ...prevState,
-      itemId: item[prevState.identifierProperty],
-      itemState: "add",
-      itemValue: cloneDeep(item)
-  }
+    ...prevState,
+    itemId: item[prevState.identifierProperty],
+    itemState: "add",
+    itemValue: cloneDeep(item),
+  };
 }
-function actionAddCommitFailed(prevState:TableState, error:Error): TableState {
-  return { ...prevState, itemState:"add", error:error }
+function actionAddCommitFailed(prevState: TableState, error: Error): TableState {
+  return { ...prevState, itemState: "add", error: error };
 }
 export const reducer: TableStateReducer = (prevState, action) => {
   let result;

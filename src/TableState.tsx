@@ -50,15 +50,6 @@ export type Action =
   | { type: "add_commit_succeded" }
   | { type: "add_commit_failed"; error: Error };
 
-function actionEdit(prevState: TableState, item: any): TableState {
-  return {
-    ...prevState,
-    itemId: item[prevState.identifierProperty],
-    itemState: "edit",
-    itemValue: cloneDeep(item),
-  };
-}
-
 export function actionReset(prevState: TableState): TableState {
   return { ...prevState, itemId: undefined, itemState: undefined, itemValue: undefined };
 }
@@ -67,44 +58,8 @@ export function actionToState(prevState: TableState, stateName: TableEditItemSta
   return { ...prevState, itemState: stateName };
 }
 
-function actionItemChange(prevState: TableState, item: any): TableState {
-  if (isEqual(item, prevState.itemValue)) return prevState;
-  return { ...prevState, itemValue: item };
-}
-
-function actionEditCommitFailed(prevState: TableState, error: Error): TableState {
-  return { ...prevState, itemState: "edit", error: error };
-}
-
-export const tableEditReducer: TableStateReducer = (prevState, action): TableState => {
-  let result: TableState;
-  switch (action.type) {
-    case "item_change":
-      result = actionItemChange(prevState, action.item);
-      break;
-    case "edit":
-      result = actionEdit(prevState, action.item);
-      break;
-    case "edit_cancel":
-      result = actionReset(prevState);
-      break;
-    case "edit_commit_started":
-      result = actionToState(prevState, "edit_commit_pending");
-      break;
-    case "edit_commit_succeded":
-      result = actionReset(prevState);
-      break;
-    case "edit_commit_failed":
-      result = actionEditCommitFailed(prevState, action.error);
-      break;
-    default:
-      result = prevState;
-      break;
-  }
-  return result;
-};
 export const createReducer = (pluginReducers: TableStateReducer[]): TableStateReducer => {
-  const allReducers = [...pluginReducers, tableEditReducer];
+  const allReducers = [...pluginReducers];
   const combined: TableStateReducer = (prevState, action) => {
     return allReducers.reduce((acc, plugin) => plugin(acc, action), prevState);
   };

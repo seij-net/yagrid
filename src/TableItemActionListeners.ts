@@ -13,21 +13,7 @@ export function createTableActionItemDispatch<T>(
     const handleAction: TableActionDispatch = {
         listeners: {
 
-            onEditItem: (evt) => {
-                dispatch({ type: "edit", item: item })
-            },
-            onEditItemCancel: (evt) => {
-                dispatch({ type: "edit_cancel" })
-            },
-            onEditItemCommit: async (evt) => {
-                try {
-                    dispatch({ type: "edit_commit_started" })
-                    await onEdit(editState.itemValue)
-                    dispatch({ type: "edit_commit_succeded" })
-                } catch (error) {
-                    dispatch({ type: "edit_commit_failed", error: error })
-                }
-            },
+            
             
         }
     }

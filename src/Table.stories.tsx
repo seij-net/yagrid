@@ -7,6 +7,7 @@ import { Table } from "./Table";
 import { ACTION_EDIT, ACTION_EDIT_CANCEL, ACTION_EDIT_OK } from "./TableActionButtons";
 import { editorAdd } from "./plugins/edit-inline-add/edit-inline-add";
 import { TableColumnDefinition, TablePlugin, TableProps } from "./types";
+import { editInline } from "./plugins/edit-inline/edit-inline";
 
 export default {
   title: "TableComponents/Table",
@@ -65,6 +66,9 @@ const TableEditable: React.FC<TableProps<any>> = (props) => {
     });
   };
   const plugins: TablePlugin<SampleItem>[] = [
+    editInline({
+      onEdit: handleEdit
+    }),
     editorAdd({
       onAddTemplate: handleAdd,
       onAddConfirm: handleAddConfirm,
