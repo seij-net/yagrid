@@ -51,10 +51,10 @@ export class TableTypesRegistry {
   }
 }
 
-export class TableTypesRegistryBuilder {
+export class TypesRegistryBuilder {
   private types: TableTypeManager<any>[] = [];
 
-  add<T>(name: string, renderer?: TableTypeRenderer<T>): TableTypesRegistryBuilder {
+  add<T>(name: string, renderer?: TableTypeRenderer<T>): TypesRegistryBuilder {
     const rendererFinal = isNil(renderer) ? findDefaultRenderer(name) : renderer;
     this.types.push({ name, renderer: rendererFinal });
     return this;
@@ -72,4 +72,4 @@ export class TableTypesRegistryBuilder {
   }
 }
 
-export const TableTypesRegistryDefault: TableTypesRegistry = new TableTypesRegistryBuilder().build();
+export const TableTypesRegistryDefault: TableTypesRegistry = new TypesRegistryBuilder().build();

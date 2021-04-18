@@ -4,7 +4,7 @@ import "tailwindcss/dist/tailwind.min.css";
 import "@tailwindcss/forms/dist/forms.min.css";
 import "./YAGridPlayground.css";
 import { Table } from "../Table";
-import { renderToReactElement, TableTypesRegistryBuilder } from "../TableTypesRegistry";
+import { renderToReactElement, TypesRegistryBuilder } from "../TableTypesRegistry";
 export const YAGridPlayground: React.FC<GridProps<any>> = ({ children, ...args }) => {
   return (
     <div>
@@ -57,7 +57,7 @@ const MONETARY_AMOUNT_DECIMAL_RENDERER = renderToReactElement((data: any) =>
 const PERCENT_RENDERER = renderToReactElement((data: any) => NumberFormatPercent.format(data));
 
 
-export const customTypes = new TableTypesRegistryBuilder()
+export const customTypes = new TypesRegistryBuilder()
   .add("monetaryAmountInt", MONETARY_AMOUNT_INT_RENDERER)
   .add("monetaryAmountDecimal", MONETARY_AMOUNT_DECIMAL_RENDERER)
   .add("boolean", BOOLEAN_RENDERER)

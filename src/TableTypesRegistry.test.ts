@@ -1,4 +1,4 @@
-import { DEFAULT_RENDERERS, TableTypesRegistryBuilder, TableTypesRegistryDefault, renderToReactElement } from "./TableTypesRegistry";
+import { DEFAULT_RENDERERS, TypesRegistryBuilder, TableTypesRegistryDefault, renderToReactElement } from "./TableTypesRegistry";
 const testData = (type: string, data: any, expected: string) => ({ type, data, expected })
 describe("TableTypesRegistryDefault", () => {
   it("is defined", () => expect(TableTypesRegistryDefault).toBeDefined())
@@ -34,7 +34,7 @@ describe("TableTypesRegistryDefault", () => {
 
 describe("TableTypesRegistryCustom", () => {
 
-  const custom = new TableTypesRegistryBuilder()
+  const custom = new TypesRegistryBuilder()
     .add("monetaryAmountInt", renderToReactElement((data: any) => ""+data+"€"))
     .add("monetaryAmountDecimal", renderToReactElement((data: any) => ""+data+"€decimal"))
     .build()
