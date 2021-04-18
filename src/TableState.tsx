@@ -1,6 +1,3 @@
-import cloneDeep from "lodash-es/cloneDeep";
-import isEqual from "lodash-es/isEqual";
-
 export type TableEditItemStateName =
   | "edit"
   | "edit_commit_pending"

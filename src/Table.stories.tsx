@@ -1,13 +1,13 @@
 import { Meta, Story } from "@storybook/react";
 import { isNil, minBy } from "lodash-es";
-import { deletePlugin } from "./plugins/edit-delete/edit-delete";
 import React, { useState } from "react";
 
+import { deletePlugin } from "./plugins/edit-delete/edit-delete";
+import { editorAdd } from "./plugins/edit-inline-add/edit-inline-add";
+import { editInline } from "./plugins/edit-inline/edit-inline";
 import { Table } from "./Table";
 import { ACTION_EDIT, ACTION_EDIT_CANCEL, ACTION_EDIT_OK } from "./TableActionButtons";
-import { editorAdd } from "./plugins/edit-inline-add/edit-inline-add";
 import { TableColumnDefinition, TablePlugin, TableProps } from "./types";
-import { editInline } from "./plugins/edit-inline/edit-inline";
 
 export default {
   title: "TableComponents/Table",
@@ -67,7 +67,7 @@ const TableEditable: React.FC<TableProps<any>> = (props) => {
   };
   const plugins: TablePlugin<SampleItem>[] = [
     editInline({
-      onEdit: handleEdit
+      onEdit: handleEdit,
     }),
     editorAdd({
       onAddTemplate: handleAdd,
