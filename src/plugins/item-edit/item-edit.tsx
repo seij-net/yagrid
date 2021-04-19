@@ -1,5 +1,6 @@
-import React from "react";
 import { cloneDeep, isEqual, isNil } from "lodash-es";
+import React from "react";
+
 import { actionReset, actionToState } from "../../TableState";
 import { GridPlugin, GridState, GridStateReducer, TableAction } from "../../types";
 
@@ -62,7 +63,7 @@ export interface Config<T> {
 }
 export function create<T>(config: Config<T>): GridPlugin<T> {
   const { onEdit, editable } = config;
-  const editableSafe = isNil(editable) ? ()=>true : editable
+  const editableSafe = isNil(editable) ? () => true : editable;
   const ACTION_EDIT: TableAction = {
     name: "edit",
     displayed: (state, item) => editableSafe(item) && state.editedItemState === undefined,
@@ -72,7 +73,8 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
   };
   const ACTION_EDIT_OK: TableAction = {
     name: "edit_ok",
-    displayed: (state, item) => editableSafe(item) && state.editedItemId === item.id && state.editedItemState === "edit",
+    displayed: (state, item) =>
+      editableSafe(item) && state.editedItemId === item.id && state.editedItemState === "edit",
     render: (state, dispatch) => {
       return <button onClick={dispatch.listeners.onEditItemCommit}>✅</button>;
     },
@@ -80,7 +82,8 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
 
   const ACTION_EDIT_CANCEL: TableAction = {
     name: "edit_cancel",
-    displayed: (state, item) => editableSafe(item) && item.id === state.editedItemId && state.editedItemState === "edit",
+    displayed: (state, item) =>
+      editableSafe(item) && item.id === state.editedItemId && state.editedItemState === "edit",
     render: (state, dispatch) => {
       return <button onClick={dispatch.listeners.onEditItemCancel}>⬅️</button>;
     },
@@ -89,6 +92,9 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
   return {
     name: PLUGIN_NAME,
     reducer: tableEditReducer,
+    isEditing: (state, item, property) =>
+      (item as any)[state.identifierProperty] === state.editedItemId &&
+      (state.editedItemState === "edit" || state.editedItemState === "edit_commit_pending"),
     actionGenericList: [],
     actionItemList: [ACTION_EDIT, ACTION_EDIT_OK, ACTION_EDIT_CANCEL],
     actionGenericListeners: (editState, dispatch) => ({}),

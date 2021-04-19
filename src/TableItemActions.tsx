@@ -24,7 +24,6 @@ export const TableItemActions: React.FC<TableItemActionsProps<any>> = ({
     // Si aucune condition n'existe pour l'action, on l'affiche quoi qu'il arrive
     if (isNil(action.displayed)) return true;
     const displayed = action.displayed(editingState, item);
-    console.log("test display action", editingState, action, displayed);
     return displayed;
   });
 

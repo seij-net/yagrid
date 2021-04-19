@@ -10,20 +10,24 @@ export default {
   component: YAGridPlayground,
 } as Meta;
 
+const nextMinId = (data:SampleItem[]):string => {
+  let minIdItem = minBy(data, (it) => parseInt(it.id));
+  let minId = isNil(minIdItem) ? -1 : parseInt(minIdItem.id)
+  return "" + ((minId===0 || minId===1) ? -1 : minId - 1) 
+}
+
 const TableEditable: React.FC<GridProps<any>> = (props) => {
   const [data, setData] = useState(props.data);
 
   const handleDelete = async (item: any) => setData((prevState) => prevState.filter((it) => it.id !== item.id));
   const handleEdit = async (item: any) =>
     setData((prevState) => prevState.map((it) => (it.id === item.id ? item : it)));
-  const handleAdd = async () => {
-    return { id: "___NEW___", description: "", cb: false, amount: 0, label: "New item" } as SampleItem;
+  const handleAddTemplate = async () => {
+    return { id: nextMinId(data), description: "", cb: false, amount: 0, label: "New item" } as SampleItem;
   };
   const handleAddConfirm = async (item: any) => {
     setData((prevState) => {
-      let minIdItem = minBy(prevState, (it) => parseInt(it.id));
-      const newId = (minIdItem?.id ?? 0) - 1;
-      return [...prevState, { ...item, id: newId }];
+      return [...prevState, { ...item, id: nextMinId(prevState) }];
     });
   };
 
@@ -73,11 +77,12 @@ const TableEditable: React.FC<GridProps<any>> = (props) => {
         editable: (item) => !item.readonly
       }),
       ItemAdd.create({
-        onAddTemplate: handleAdd,
+        onAddTemplate: handleAddTemplate,
         onAddConfirm: handleAddConfirm,
       }),
       ItemDelete.create({
         onDelete: handleDelete,
+        deletable: (item) => isNil(item.deletable) ? true : item.deletable
       }),
     ],
   };
@@ -92,14 +97,16 @@ interface SampleItem {
   description: string | null;
   amount: number | null;
   cb: boolean | null;
-  readonly?: boolean
+  readonly?: boolean,
+  deletable?: boolean
 }
 
 const sampledata: SampleItem[] = [
   { id: "1", label: "item 1", description: "description 1", amount: 123456, cb: true },
   { id: "2", label: "item 2", description: "description 2", amount: 978654, cb: false },
   { id: "3", label: "item almost empty", description: null, amount: null, cb: null },
-  { id: "4", label: "not editable", description: null, amount: null, cb: null, readonly:true },
+  { id: "4", label: "not editable but delete ok", description: null, amount: null, cb: null, readonly:true },
+  { id: "5", label: "editable but can not be deleted", description: null, amount: null, cb: null, readonly:false, deletable: false },
 ];
 
 const Template: Story<GridProps<any>> = (args) => <TableEditable {...args}></TableEditable>;

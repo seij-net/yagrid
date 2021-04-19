@@ -1,8 +1,8 @@
-import { Action, TableAction, GridPlugin, GridState, GridStateReducer } from "../../types";
-import { actionReset, actionToState } from "../../TableState";
-import React, { Dispatch } from "react";
 import { cloneDeep } from "lodash-es";
+import React, { Dispatch } from "react";
 
+import { actionReset, actionToState } from "../../TableState";
+import { Action, GridPlugin, GridState, GridStateReducer, TableAction } from "../../types";
 
 // -----------------------------------------------------------------------------
 // Reducer
@@ -72,7 +72,9 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
     displayed: (state, item) => true,
     render: (state, dispatch) => {
       return (
-        <button disabled={state.editedItemState !== undefined} onClick={dispatch.listeners.onAddItem}>➕</button>
+        <button disabled={state.editedItemState !== undefined} onClick={dispatch.listeners.onAddItem}>
+          ➕
+        </button>
       );
     },
   };
@@ -95,6 +97,9 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
     reducer: reducer,
     actionGenericList: [ACTION_ADD],
     actionItemList: [ACTION_ADD_OK, ACTION_ADD_CANCEL],
+    isEditing: (state, item, itemPropertyName) =>
+      (item as any)[state.identifierProperty] === state.editedItemId &&
+      (state.editedItemState === "add" || state.editedItemState === "add_commit_pending"),
     actionGenericListeners: (
       editState: GridState,
       dispatch: Dispatch<Action>

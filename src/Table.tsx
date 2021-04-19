@@ -87,12 +87,13 @@ export const Table: React.FC<GridProps<any>> = ({
         key={id}
         actionsItem={actionItemListAll}
         actionsItemDisplay={somePluginsProvideItemAction}
-        editingState={editState}
+        gridState={editState}
         item={it}
         onActionItemDispatch={{ listeners: actionListeners }}
         onEditItemChange={handleEditItemChange}
         itemDefinitions={columnDefinitions}
         types={typesOrDefault}
+        plugins={plugins}
       />
     );
   });

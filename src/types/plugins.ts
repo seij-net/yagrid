@@ -27,6 +27,10 @@ export interface GridPlugin<T> {
    */
   dataListTransform: (editState: GridState, data: T[]) => T[],
   /**
+   * Returns true if the specified cell is currently being edited
+   */
+  isEditing?: (gridstate:GridState, item: T, itemPropertyName: string) => boolean
+  /**
    * List of actions to provide to main toolbar
    */
   actionGenericList: TableActionList,

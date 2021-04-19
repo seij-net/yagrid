@@ -10,11 +10,11 @@ import { GridPlugin, GridState, GridStateReducer } from "../../types";
 // -----------------------------------------------------------------------------
 
 function actionDeleteCommitFailed(prevState: GridState, error: Error): GridState {
-  return { ...prevState, editedItemState: "edit", error: error };
+  return { ...actionReset(prevState), error: error };
 }
 
 function actionDeleteCancel(prevState: GridState): GridState {
-  return { ...prevState, editedItemState: "edit" };
+  return actionReset(prevState);
 }
 
 function actionDelete(prevState: GridState, item: any): GridState {
@@ -54,24 +54,6 @@ export const reducer: GridStateReducer = (prevState, action) => {
 // Actions
 // -----------------------------------------------------------------------------
 
-export const ACTION_EDIT_DELETE: TableAction = {
-  name: "edit_delete",
-  displayed: (state, item) =>
-    state.editedItemId === item.id && (state.editedItemState === "edit" || state.editedItemState === "delete_confirm"),
-  render: (state, dispatch) => {
-    console.log(state);
-    return (
-      <ConfirmDeleteButton
-        onDelete={dispatch.listeners.onDelete}
-        confirm={state.editedItemState === "delete_confirm"}
-        onDeleteCancel={dispatch.listeners.onDeleteCancel}
-        onDeleteConfirm={dispatch.listeners.onDeleteConfirm}
-        disabled={state.editedItemState === "delete_commit_pending"}
-      />
-    );
-  },
-};
-
 const ConfirmDeleteButton: React.FC<{
   onDelete: (evt: any) => void;
   onDeleteCancel: (evt: any) => void;
@@ -81,7 +63,10 @@ const ConfirmDeleteButton: React.FC<{
 }> = ({ onDelete, onDeleteCancel, onDeleteConfirm, confirm }) => {
   return (
     <>
-      {!confirm && <button onClick={onDelete}>❌</button>}{confirm && "Confirm ? "}{confirm && <button onClick={onDeleteConfirm}>❌</button>}{confirm && <button onClick={onDeleteCancel}>⬅️</button>}
+      {!confirm && <button onClick={onDelete}>❌</button>}
+      {confirm && "Confirm ? "}
+      {confirm && <button onClick={onDeleteConfirm}>❌</button>}
+      {confirm && <button onClick={onDeleteCancel}>⬅️</button>}
     </>
   );
 };
@@ -100,9 +85,38 @@ export interface Config<T> {
    * Provide a callback for deleting specified item from the list
    */
   onDelete: (item: T) => Promise<void>;
+  /**
+   * Tells if item can be deleted or not. Defaults to true if not specified
+   */
+  deletable?: (item: T) => boolean;
 }
 
 export function create<T>(config: Config<T>): GridPlugin<any> {
+  const ACTION_EDIT_DELETE: TableAction = {
+    name: "edit_delete",
+    displayed: (state, item) => {
+      // If item can not be deleted, whatever happens, do not the display feature
+      if (config.deletable && !config.deletable(item)) return false;
+      return (
+        state.editedItemState === undefined ||
+        (state.editedItemState === "delete_confirm" && state.editedItemId === item.id)
+      );
+    },
+    // state.editedItemId === item.id && (state.editedItemState === "edit" || state.editedItemState === "delete_confirm"),
+    render: (state, dispatch) => {
+      // We do not double-check that item is deletable or not, we assume the
+      // grid did its job by calling displayed
+      return (
+        <ConfirmDeleteButton
+          onDelete={dispatch.listeners.onDelete}
+          confirm={state.editedItemState === "delete_confirm"}
+          onDeleteCancel={dispatch.listeners.onDeleteCancel}
+          onDeleteConfirm={dispatch.listeners.onDeleteConfirm}
+          disabled={state.editedItemState === "delete_commit_pending"}
+        />
+      );
+    },
+  };
   return {
     name: "edit_delete",
     reducer: reducer,

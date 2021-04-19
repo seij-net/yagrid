@@ -24,12 +24,14 @@ describe("delete", () => {
     )
     expect(s.editedItemState).toBe("delete_confirm")
   })
-  it("delete_confirm -> delete_cancel -> edit", () => {
+  it("delete_confirm -> delete_cancel -> reset", () => {
     const s = reducer(
-      createSampleState({ editedItemState: "delete_confirm" }),
+      createSampleState({ editedItemState: undefined }),
       { type: "delete_cancel" }
     )
-    expect(s.editedItemState).toBe("edit")
+    expect(s.editedItemState).toBeUndefined()
+    expect(s.editedItemValue).toBeUndefined()
+    expect(s.editedItemId).toBeUndefined()
   })
   it("delete_confirm -> delete_commit_started -> delete_commit_pending ", () => {
     const s = reducer(
@@ -47,15 +49,15 @@ describe("delete", () => {
     expect(s.editedItemValue).toBeUndefined()
     expect(s.editedItemId).toBeUndefined()
   })
-  it("delete_commit_pending -> edit_commit_failed -> edit ", () => {
+  it("delete_commit_pending -> edit_commit_failed -> undefined ", () => {
     const expectedError = Error("failed")
     const s = reducer(
       createSampleState({ editedItemState: "delete_commit_pending" }),
       { type: "delete_commit_failed", error: expectedError }
     )
-    expect(s.editedItemState).toBe("edit")
-    expect(s.editedItemValue).toBeDefined()
-    expect(s.editedItemId).toBeDefined()
+    expect(s.editedItemState).toBeUndefined()
+    expect(s.editedItemValue).toBeUndefined()
+    expect(s.editedItemId).toBeUndefined()
     expect(s.error).toBe(expectedError)
   })
 
