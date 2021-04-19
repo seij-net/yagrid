@@ -1,9 +1,9 @@
 import { Meta, Story } from "@storybook/react";
-import { isNil, minBy } from "lodash-es";
+import { isNil } from "lodash-es";
 import React, { useState } from "react";
 
-import { ItemDelete, ItemEdit, ItemAdd, GridProps } from "..";
-import { sampledata, SampleItem } from "./commons/SampleItem";
+import { GridProps, ItemDelete } from "..";
+import { sampledata, SampleItem, useData } from "./commons/SampleItem";
 import { customTypes, YAGridPlayground } from "./YAGridPlayground";
 
 export default {
@@ -11,17 +11,19 @@ export default {
   component: YAGridPlayground,
 } as Meta;
 
-const DEFAULT_COLUMNS = [{ name: "id", label: "#" }, { name: "label" }, { name: "description" }, { name: "amount" }]
-const SAMPLE_DATA:SampleItem[] = [1,2,3,4,5,6].map(it=>({id: ""+it, label:"item "+it, description: "", amount: it*10, cb:true}))
+const SAMPLE_DATA: SampleItem[] = [1, 2, 3, 4, 5, 6].map((it) => ({
+  id: "" + it,
+  label: "item " + it,
+  description: "",
+  amount: it * 10,
+  cb: true,
+}));
 
 const TableEditable: React.FC<GridProps<any>> = (props) => {
-  const [data, setData] = useState(props.data);
-
-  const handleDelete = async (item: any) => setData((prevState) => prevState.filter((it) => it.id !== item.id));
-
+  const { data, sampleColumns, handleDelete } = useData(props.data);
   const gridProps: GridProps<SampleItem> = {
     ...props,
-    columns: DEFAULT_COLUMNS,
+    columns: sampleColumns,
     data: data,
     types: customTypes,
     plugins: [
@@ -38,7 +40,7 @@ const Template: Story<GridProps<any>> = (args) => <TableEditable {...args}></Tab
 
 export const Empty = Template.bind({});
 Empty.args = {
-  data: []
+  data: [],
 };
 
 export const Filled = Template.bind({});
@@ -48,36 +50,40 @@ Filled.args = {
 };
 
 export const CustomLabelsString: Story<{}> = (props) => {
+  const { data, sampleColumns, handleDelete } = useData(SAMPLE_DATA);
   const gridProps: GridProps<SampleItem> = {
-    data: SAMPLE_DATA,
-    columns: DEFAULT_COLUMNS,
+    data: data,
+    columns: sampleColumns,
     editable: true,
+    types: customTypes,
     plugins: [
       ItemDelete.create({
-        onDelete: ()=>Promise.resolve(),
+        onDelete: handleDelete,
         labelDeleteButton: "Supprimer",
         labelDeleteConfirm: "Confirmer : ",
         labelDeleteConfirmButton: "OK",
         labelDeleteCancelButton: "Annuler",
       }),
-    ]
-  }
+    ],
+  };
   return <YAGridPlayground {...gridProps} />;
-}
+};
 export const CustomLabelsReact: Story<{}> = (props) => {
+  const { data, sampleColumns, handleDelete } = useData(SAMPLE_DATA);
   const gridProps: GridProps<SampleItem> = {
-    data: SAMPLE_DATA,
-    columns: DEFAULT_COLUMNS,
+    data: data,
+    columns: sampleColumns,
     editable: true,
+    types: customTypes,
     plugins: [
       ItemDelete.create({
-        onDelete: ()=>Promise.resolve(),
-        labelDeleteButton: <span style={{backgroundColor:'yellow'}}>Supprimer</span>,
-        labelDeleteConfirm: <span style={{backgroundColor:'yellow'}}>Confirmer?</span>,
-        labelDeleteConfirmButton: <span style={{backgroundColor:'yellow'}}>OK</span>,
-        labelDeleteCancelButton: <span style={{backgroundColor:'yellow'}}>Annuler</span>,
+        onDelete: () => Promise.resolve(),
+        labelDeleteButton: <span style={{ backgroundColor: "yellow" }}>Supprimer</span>,
+        labelDeleteConfirm: <span style={{ backgroundColor: "yellow" }}>Confirmer?</span>,
+        labelDeleteConfirmButton: <span style={{ backgroundColor: "yellow" }}>OK</span>,
+        labelDeleteCancelButton: <span style={{ backgroundColor: "yellow" }}>Annuler</span>,
       }),
-    ]
-  }
+    ],
+  };
   return <YAGridPlayground {...gridProps} />;
-}
+};
