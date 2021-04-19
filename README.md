@@ -105,6 +105,7 @@ Currently provided plugins
 | [item-add](./src/plugins/item-add/Readme.md)  | Provides a toolbar button to add an item. When user clicks, an editable row opens to edit the item. Provides confirm, cancel button and a temporary item to be able to cancel. |
 | [item-edit](./src/plugins/item-edit/Readme.md)  | Provides row editing features. A button triggers row editing, then user can validate or cancel the row. Also manages a temporary item to be able to cancel. |
 | [item-delete](./src/plugins/item-edit/Readme.md)  | Provides row button to delete item, confirm and cancel buttons. |
+| [empty-message](./src/plugins/empty-message/Readme.md) | Displays a custom empty message or component if data is empty
 
 Each plugin comes with its own documentation. Be sure to take a look at it
 
