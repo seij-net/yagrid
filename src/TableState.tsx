@@ -1,4 +1,5 @@
-import { isEqual, result } from "lodash";
+import { isEqual } from "lodash-es";
+
 import { GridEditedItemStateName, GridState, GridStateReducer } from "./types";
 
 export const createTableEditDefaultState = (identifierProperty: string): GridState => ({

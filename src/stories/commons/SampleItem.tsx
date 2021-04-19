@@ -1,4 +1,4 @@
-import { isNil, minBy } from "lodash";
+import { isNil, minBy } from "lodash-es";
 import React from "react";
 import { useState } from "react";
 
