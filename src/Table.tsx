@@ -14,7 +14,7 @@ const NOT_EDITABLE = (rowData: any) => false;
 const DEFAULT_TABLE_CLASS = "data";
 const DEFAULT_EMPTY_MESSAGE = "";
 
-export const Table: React.FC<GridProps<any>> = ({
+export const Grid: React.FC<GridProps<any>> = ({
   columns: dataProperties,
   data,
   className,
@@ -110,7 +110,7 @@ export const Table: React.FC<GridProps<any>> = ({
   );
 };
 
-export const TableEdixit: React.FC<GridProps<any>> = (props) => <Table {...props} className="data" />;
+export const TableEdixit: React.FC<GridProps<any>> = (props) => <Grid {...props} className="data" />;
 
 function pluginCompose<T, R>(
   plugins: GridPluginList<T>,

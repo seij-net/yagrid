@@ -3,7 +3,7 @@ import { GridProps } from "../types";
 import "tailwindcss/dist/tailwind.min.css";
 import "@tailwindcss/forms/dist/forms.min.css";
 import "./YAGridPlayground.css";
-import { Table } from "../Table";
+import { Grid } from "../Table";
 import { renderToReactElement, TypesRegistryBuilder } from "../TableTypesRegistry";
 export const YAGridPlayground: React.FC<GridProps<any>> = ({ children, ...args }) => {
   return (
@@ -16,7 +16,7 @@ export const YAGridPlayground: React.FC<GridProps<any>> = ({ children, ...args }
         OK it's ugly, but useful for component design-time.
       </p>
       <p>&nbsp;</p>
-      <Table className="table-auto yagrid-table-playground" {...args} />
+      <Grid className="table-auto yagrid-table-playground" {...args} />
     </div>
   );
 };

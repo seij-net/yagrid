@@ -7,13 +7,13 @@ import {
     GridColumnDefinition,
     GridProps,
 } from "./types";
-import {Table} from "./Table"
+import {Grid} from "./Table"
 export * as ItemEdit from "./plugins/item-edit"
 export * as ItemDelete from "./plugins/item-delete"
 export * as ItemAdd from "./plugins/item-add"
 
 export {
-    Table,
+    Grid,
     GridProps,
     GridColumnDefinition as TableColumnDefinition,
     TableActionList,
