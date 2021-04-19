@@ -15,11 +15,6 @@ function actionEdit(prevState: GridState, item: any): GridState {
   };
 }
 
-function actionItemChange(prevState: GridState, item: any): GridState {
-  if (isEqual(item, prevState.editedItemValue)) return prevState;
-  return { ...prevState, editedItemValue: item };
-}
-
 function actionEditCommitFailed(prevState: GridState, error: Error): GridState {
   return { ...prevState, editedItemState: "edit", error: error };
 }
@@ -27,9 +22,6 @@ function actionEditCommitFailed(prevState: GridState, error: Error): GridState {
 export const tableEditReducer: GridStateReducer = (prevState, action): GridState => {
   let result: GridState;
   switch (action.type) {
-    case "item_change":
-      result = actionItemChange(prevState, action.item);
-      break;
     case "edit":
       result = actionEdit(prevState, action.item);
       break;
