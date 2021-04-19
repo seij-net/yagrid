@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash-es";
-import React, { Dispatch } from "react";
+import React, { Dispatch, ReactNode } from "react";
 
 import { actionReset, actionToState } from "../../TableState";
 import { Action, GridPlugin, GridState, GridStateReducer, TableAction } from "../../types";
@@ -59,6 +59,18 @@ export interface Config<T> {
    * edited item.
    */
   onAddConfirm: (item: T) => Promise<void>;
+  /**
+   * Label for add button, when using default buttons
+   */
+  labelAddButton?: ReactNode;
+  /**
+   * Label for add confirm button, when using default buttons
+   */
+  labelAddButtonConfirm?: ReactNode;
+  /**
+   * Label for add cancel button, when using default buttons
+   */
+  labelAddButtonCancel?: ReactNode;
 }
 
 export interface TableEditorAddPlugin<T> extends GridPlugin<T> {}
@@ -66,14 +78,20 @@ export interface TableEditorAddPlugin<T> extends GridPlugin<T> {}
 export type PluginFactory<T = {}> = (config: Config<T>) => TableEditorAddPlugin<T>;
 
 export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
-  const { onAddTemplate, onAddConfirm } = config;
+  const {
+    onAddTemplate,
+    onAddConfirm,
+    labelAddButton = "➕",
+    labelAddButtonConfirm = "➕",
+    labelAddButtonCancel = "⬅️",
+  } = config;
   const ACTION_ADD: TableAction = {
     name: "add",
     displayed: (state, item) => true,
     render: (state, dispatch) => {
       return (
         <button disabled={state.editedItemState !== undefined} onClick={dispatch.listeners.onAddItem}>
-          ➕
+          {labelAddButton}
         </button>
       );
     },
@@ -82,14 +100,14 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
     name: "add_ok",
     displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
     render: (state, dispatch) => {
-      return <button onClick={dispatch.listeners.onAddItemConfirm}>➕</button>;
+      return <button onClick={dispatch.listeners.onAddItemConfirm}>{labelAddButtonConfirm}</button>;
     },
   };
   const ACTION_ADD_CANCEL: TableAction = {
     name: "add_cancel",
     displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
     render: (state, dispatch) => {
-      return <button onClick={dispatch.listeners.onAddItemCancel}>⬅️</button>;
+      return <button onClick={dispatch.listeners.onAddItemCancel}>{labelAddButtonCancel}</button>;
     },
   };
   return {
