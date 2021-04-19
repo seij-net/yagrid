@@ -3,6 +3,7 @@ import { isNil, minBy } from "lodash-es";
 import React, { useState } from "react";
 
 import { ItemDelete, ItemEdit, ItemAdd, GridProps } from "..";
+import { SampleItem } from "./commons/SampleItem";
 import { customTypes, YAGridPlayground } from "./YAGridPlayground";
 
 export default {
@@ -90,17 +91,6 @@ const TableEditable: React.FC<GridProps<any>> = (props) => {
 };
 
 
-
-interface SampleItem {
-  id: string;
-  label: string;
-  description: string | null;
-  amount: number | null;
-  cb: boolean | null;
-  readonly?: boolean,
-  deletable?: boolean
-}
-
 const sampledata: SampleItem[] = [
   { id: "1", label: "item 1", description: "description 1", amount: 123456, cb: true },
   { id: "2", label: "item 2", description: "description 2", amount: 978654, cb: false },
@@ -119,3 +109,4 @@ Filled.args = {
   editable: true,
   data: sampledata,
 };
+

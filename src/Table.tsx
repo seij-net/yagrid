@@ -102,7 +102,7 @@ export const Grid: React.FC<GridProps<any>> = ({
     <>
       {actionGenericComponents}
       <table className={classNames}>
-        <TableHeader displayActions={somePluginsProvideGenericActions} columnDefinitions={columnDefinitions} />
+        <TableHeader displayActions={somePluginsProvideItemAction} columnDefinitions={columnDefinitions} />
         <tbody>{rows}</tbody>
         <TableEmptyMessage size={rows.length} columnsSize={columnCount} emptyMessage={emptyMessageOrDefault} />
       </table>
