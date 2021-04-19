@@ -47,7 +47,7 @@ Filled.args = {
   data: sampledata,
 };
 
-export const CustomRendering: Story<{}> = (props) => {
+export const CustomLabelsString: Story<{}> = (props) => {
   const gridProps: GridProps<SampleItem> = {
     data: SAMPLE_DATA,
     columns: DEFAULT_COLUMNS,
@@ -59,6 +59,23 @@ export const CustomRendering: Story<{}> = (props) => {
         labelDeleteConfirm: "Confirmer : ",
         labelDeleteConfirmButton: "OK",
         labelDeleteCancelButton: "Annuler",
+      }),
+    ]
+  }
+  return <YAGridPlayground {...gridProps} />;
+}
+export const CustomLabelsReact: Story<{}> = (props) => {
+  const gridProps: GridProps<SampleItem> = {
+    data: SAMPLE_DATA,
+    columns: DEFAULT_COLUMNS,
+    editable: true,
+    plugins: [
+      ItemDelete.create({
+        onDelete: ()=>Promise.resolve(),
+        labelDeleteButton: <span style={{backgroundColor:'yellow'}}>Supprimer</span>,
+        labelDeleteConfirm: <span style={{backgroundColor:'yellow'}}>Confirmer?</span>,
+        labelDeleteConfirmButton: <span style={{backgroundColor:'yellow'}}>OK</span>,
+        labelDeleteCancelButton: <span style={{backgroundColor:'yellow'}}>Annuler</span>,
       }),
     ]
   }
