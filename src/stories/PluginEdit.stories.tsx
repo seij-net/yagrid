@@ -52,3 +52,42 @@ export const NotEmpty: Story<{}> = (props) => {
   }
   return <YAGridPlayground {...gridProps} />
 }
+
+export const CustomLabels: Story<{}> = (props) => {
+  const {data, sampleColumns, handleEdit} = useData(SAMPLE_DATA)
+  const gridProps: GridProps<SampleItem> = {
+    data: data,
+    columns: sampleColumns,
+    editable: true,
+    types: customTypes,
+    plugins: [
+      ItemEdit.create({
+        onEdit: handleEdit,
+        editable: (item) => true,
+        labelEditButton: "Modifier",
+        labelEditButtonCancel: "Annuler",
+        labelEditButtonConfirm: "OK",
+      })
+    ]
+  }
+  return <YAGridPlayground {...gridProps} />
+}
+export const CustomLabelsReact: Story<{}> = (props) => {
+  const {data, sampleColumns, handleEdit} = useData(SAMPLE_DATA)
+  const gridProps: GridProps<SampleItem> = {
+    data: data,
+    columns: sampleColumns,
+    editable: true,
+    types: customTypes,
+    plugins: [
+      ItemEdit.create({
+        onEdit: handleEdit,
+        editable: (item) => true,
+        labelEditButton: <span style={{backgroundColor:"yellow"}}>Modifier</span>,
+        labelEditButtonCancel: <span style={{backgroundColor:"yellow"}}>Annuler</span>,
+        labelEditButtonConfirm: <span style={{backgroundColor:"yellow"}}>OK</span>,
+      })
+    ]
+  }
+  return <YAGridPlayground {...gridProps} />
+}

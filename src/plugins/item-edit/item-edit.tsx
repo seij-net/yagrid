@@ -1,5 +1,5 @@
 import { cloneDeep, isEqual, isNil } from "lodash-es";
-import React from "react";
+import React, { ReactNode } from "react";
 
 import { actionReset, actionToState } from "../../TableState";
 import { GridPlugin, GridState, GridStateReducer, TableAction } from "../../types";
@@ -60,15 +60,33 @@ export interface Config<T> {
    * Tells if an item is editable
    */
   editable?: (item: T) => boolean;
+  /**
+   * Label for edit button, when using default buttons
+   */
+  labelEditButton?: ReactNode;
+  /**
+   * Label for edit confirm button, when using default buttons
+   */
+  labelEditButtonConfirm?: ReactNode;
+  /**
+   * Label for edit cancel button, when using default buttons
+   */
+  labelEditButtonCancel?: ReactNode;
 }
 export function create<T>(config: Config<T>): GridPlugin<T> {
-  const { onEdit, editable } = config;
+  const {
+    onEdit,
+    editable,
+    labelEditButton = "📝",
+    labelEditButtonConfirm = "✅",
+    labelEditButtonCancel = "⬅️",
+  } = config;
   const editableSafe = isNil(editable) ? () => true : editable;
   const ACTION_EDIT: TableAction = {
     name: "edit",
     displayed: (state, item) => editableSafe(item) && state.editedItemState === undefined,
     render: (state, dispatch) => {
-      return <button onClick={dispatch.listeners.onEditItem}>📝</button>;
+      return <button onClick={dispatch.listeners.onEditItem}>{labelEditButton}</button>;
     },
   };
   const ACTION_EDIT_OK: TableAction = {
@@ -76,7 +94,7 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
     displayed: (state, item) =>
       editableSafe(item) && state.editedItemId === item.id && state.editedItemState === "edit",
     render: (state, dispatch) => {
-      return <button onClick={dispatch.listeners.onEditItemCommit}>✅</button>;
+      return <button onClick={dispatch.listeners.onEditItemCommit}>{labelEditButtonConfirm}</button>;
     },
   };
 
@@ -85,7 +103,7 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
     displayed: (state, item) =>
       editableSafe(item) && item.id === state.editedItemId && state.editedItemState === "edit",
     render: (state, dispatch) => {
-      return <button onClick={dispatch.listeners.onEditItemCancel}>⬅️</button>;
+      return <button onClick={dispatch.listeners.onEditItemCancel}>{labelEditButtonCancel}</button>;
     },
   };
 

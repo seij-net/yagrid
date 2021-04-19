@@ -15,3 +15,8 @@ Provides editing features to cells.
 |----------|------|-------|
 | editable | editable?: (item: T) => boolean | tells if an item is editable
 | onEdit   | onEdit: (nextItem: T) => Promise&lt;void&gt; | called when user clicked on ok button to validate the item and save it. You must throw an exception to display an error
+| labelEditButton? | ReactNode | Label for edit button, when using default buttons
+| labelEditButtonConfirm? | ReactNode | Label for edit confirm button, when using default buttons
+| labelEditButtonCancel? | ReactNode | Label for edit cancel button, when using default buttons
+
+`labelXXX` are optional. They provide a label, as a React element or a string to default buttons when they are used.
