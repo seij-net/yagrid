@@ -2,13 +2,12 @@ import clsx from "clsx";
 import isNil from "lodash-es/isNil";
 import React, { useReducer } from "react";
 
-import { TableEmptyMessage } from "./TableEmptyMessage";
 import { TableHeader } from "./TableHeader";
 import { TableActionTrigger } from "./TableItemActions";
 import { TableRow } from "./TableRow";
 import { createReducer, createTableEditDefaultState } from "./TableState";
 import { TableTypesRegistryDefault } from "./TableTypesRegistry";
-import { TableActionList, GridColumnDefinitionInternal, GridPlugin, GridPluginList, GridProps } from "./types";
+import { GridColumnDefinitionInternal, GridPlugin, GridPluginList, GridProps, TableActionList } from "./types";
 
 const NOT_EDITABLE = (rowData: any) => false;
 const DEFAULT_TABLE_CLASS = "data";
@@ -41,12 +40,12 @@ export const Grid: React.FC<GridProps<any>> = ({
 
   const classNames = clsx(className, DEFAULT_TABLE_CLASS);
   const emptyMessageOrDefault = emptyMessage || DEFAULT_EMPTY_MESSAGE;
-  
+
   const actionGenericListAll: TableActionList = pluginCompose(plugins, (plugin) => plugin.actionGenericList);
   const actionItemListAll: TableActionList = pluginCompose(plugins, (plugin) => plugin.actionItemList, []);
-  
-  const somePluginsProvideItemAction = actionItemListAll.length > 0
-  const somePluginsProvideGenericActions = actionGenericListAll.length > 0
+
+  const somePluginsProvideItemAction = actionItemListAll.length > 0;
+  const somePluginsProvideGenericActions = actionGenericListAll.length > 0;
   const columnCount = columnDefinitions.length + (actionItemListAll.length > 0 ? 1 : 0);
 
   let actionListeners = {};
@@ -56,7 +55,7 @@ export const Grid: React.FC<GridProps<any>> = ({
       actionListeners = { ...actionListeners, ...pluginListeners };
     }
   });
-  
+
   const actionGenericComponents = actionGenericListAll.map((it) => {
     return (
       <TableActionTrigger
@@ -79,8 +78,6 @@ export const Grid: React.FC<GridProps<any>> = ({
       const pluginListeners = plugin.actionItemListeners(editState, dispatchEditState, it);
       actionListeners = { ...actionListeners, ...pluginListeners };
     });
-    
-    
 
     return (
       <TableRow
@@ -98,13 +95,25 @@ export const Grid: React.FC<GridProps<any>> = ({
     );
   });
 
+  const footers = plugins
+    .map((it) => {
+      if (it.footer?.span) {
+        return (
+          <tr key={it.name}>
+            <td colSpan={columnCount}>{it.footer.span(data)}</td>
+          </tr>
+        );
+      }
+    })
+    .filter((it) => it);
+
   return (
     <>
       {actionGenericComponents}
       <table className={classNames}>
         <TableHeader displayActions={somePluginsProvideItemAction} columnDefinitions={columnDefinitions} />
         <tbody>{rows}</tbody>
-        <TableEmptyMessage size={rows.length} columnsSize={columnCount} emptyMessage={emptyMessageOrDefault} />
+        {footers && <tfoot>{footers}</tfoot>}
       </table>
     </>
   );

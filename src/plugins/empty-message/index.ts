@@ -1,0 +1,1 @@
+export {Config, create} from "./empty-message"

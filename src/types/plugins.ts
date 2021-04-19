@@ -1,4 +1,4 @@
-import { Dispatch } from "react";
+import { Dispatch, ReactNode } from "react";
 import { TableActionList } from "./public";
 import { Action, GridState, GridStateReducer } from "./state";
 
@@ -46,6 +46,18 @@ export interface GridPlugin<T> {
    * Shall disapear
    */
   actionItemListeners(editState: GridState, dispatchEditState: Dispatch<Action>, item: T): { [p: string]: () => Promise<void> };
+  /**
+   * Footer extension point
+   */
+  footer?: FooterExtensionPoint<T>
+}
+
+/**
+ * Extension point for footer plugins
+ */
+export interface FooterExtensionPoint<T> {
+  /** Element to display on full span */
+  span: (data:T[])=>ReactNode
 }
 
 /**
