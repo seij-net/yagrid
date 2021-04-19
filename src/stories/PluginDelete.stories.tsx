@@ -11,6 +11,9 @@ export default {
   component: YAGridPlayground,
 } as Meta;
 
+const DEFAULT_COLUMNS = [{ name: "id", label: "#" }, { name: "label" }, { name: "description" }, { name: "amount" }]
+const SAMPLE_DATA:SampleItem[] = [1,2,3,4,5,6].map(it=>({id: ""+it, label:"item "+it, description: "", amount: it*10, cb:true}))
+
 const TableEditable: React.FC<GridProps<any>> = (props) => {
   const [data, setData] = useState(props.data);
 
@@ -18,7 +21,7 @@ const TableEditable: React.FC<GridProps<any>> = (props) => {
 
   const gridProps: GridProps<SampleItem> = {
     ...props,
-    columns: [{ name: "id", label: "#" }, { name: "label" }, { name: "description" }, { name: "amount" }],
+    columns: DEFAULT_COLUMNS,
     data: data,
     types: customTypes,
     plugins: [
@@ -43,3 +46,21 @@ Filled.args = {
   editable: true,
   data: sampledata,
 };
+
+export const CustomRendering: Story<{}> = (props) => {
+  const gridProps: GridProps<SampleItem> = {
+    data: SAMPLE_DATA,
+    columns: DEFAULT_COLUMNS,
+    editable: true,
+    plugins: [
+      ItemDelete.create({
+        onDelete: ()=>Promise.resolve(),
+        labelDeleteButton: "Supprimer",
+        labelDeleteConfirm: "Confirmer : ",
+        labelDeleteConfirmButton: "OK",
+        labelDeleteCancelButton: "Annuler",
+      }),
+    ]
+  }
+  return <YAGridPlayground {...gridProps} />;
+}

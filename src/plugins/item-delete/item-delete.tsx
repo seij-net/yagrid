@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { cloneDeep } from "lodash-es";
 import { TableAction } from "../..";
 
@@ -58,15 +58,28 @@ const ConfirmDeleteButton: React.FC<{
   onDelete: (evt: any) => void;
   onDeleteCancel: (evt: any) => void;
   onDeleteConfirm: (evt: any) => void;
+  labelDeleteButton?: ReactNode;
+  labelDeleteConfirm?: ReactNode;
+  labelDeleteConfirmButton?: ReactNode;
+  labelDeleteCancelButton?: ReactNode;
   confirm: boolean;
   disabled: boolean;
-}> = ({ onDelete, onDeleteCancel, onDeleteConfirm, confirm }) => {
+}> = ({
+  onDelete,
+  onDeleteCancel,
+  onDeleteConfirm,
+  confirm,
+  labelDeleteButton = "❌",
+  labelDeleteConfirm = "Confirm ?",
+  labelDeleteConfirmButton = "❌",
+  labelDeleteCancelButton = "⬅️",
+}) => {
   return (
     <>
-      {!confirm && <button onClick={onDelete}>❌</button>}
-      {confirm && "Confirm ? "}
-      {confirm && <button onClick={onDeleteConfirm}>❌</button>}
-      {confirm && <button onClick={onDeleteCancel}>⬅️</button>}
+      {!confirm && <button onClick={onDelete}>{labelDeleteButton}</button>}
+      {confirm && labelDeleteConfirm}
+      {confirm && <button onClick={onDeleteConfirm}>{labelDeleteConfirmButton}</button>}
+      {confirm && <button onClick={onDeleteCancel}>{labelDeleteCancelButton}</button>}
     </>
   );
 };
@@ -89,6 +102,22 @@ export interface Config<T> {
    * Tells if item can be deleted or not. Defaults to true if not specified
    */
   deletable?: (item: T) => boolean;
+  /**
+   * When using default buttons, label or component for delete button
+   */
+  labelDeleteButton?: ReactNode;
+  /**
+   * When using default buttons, label or component for delete confirmation text
+   */
+  labelDeleteConfirm?: ReactNode;
+  /**
+   * When using default buttons, label or component for delete confirmation button
+   */
+  labelDeleteConfirmButton?: ReactNode;
+  /**
+   * When using default buttons, label or component for delete cancel button
+   */
+   labelDeleteCancelButton?: ReactNode;
 }
 
 export function create<T>(config: Config<T>): GridPlugin<any> {
@@ -113,6 +142,10 @@ export function create<T>(config: Config<T>): GridPlugin<any> {
           onDeleteCancel={dispatch.listeners.onDeleteCancel}
           onDeleteConfirm={dispatch.listeners.onDeleteConfirm}
           disabled={state.editedItemState === "delete_commit_pending"}
+          labelDeleteButton={config.labelDeleteButton}
+          labelDeleteConfirm={config.labelDeleteConfirm}
+          labelDeleteCancelButton={config.labelDeleteCancelButton}
+          labelDeleteConfirmButton={config.labelDeleteConfirmButton}
         />
       );
     },
