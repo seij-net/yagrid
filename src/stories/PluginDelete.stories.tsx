@@ -12,7 +12,7 @@ export default {
 } as Meta;
 
 const SAMPLE_DATA: SampleItem[] = [1, 2, 3, 4, 5, 6].map((it) => ({
-  id: "" + it,
+  id: it,
   label: "item " + it,
   description: "",
   amount: it * 10,

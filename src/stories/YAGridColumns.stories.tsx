@@ -1,6 +1,6 @@
 import { Meta, Story } from "@storybook/react";
-import { isNil, minBy } from "lodash-es";
-import React, { FC, useState } from "react";
+import { isNil } from "lodash-es";
+import React, { FC } from "react";
 
 import { ItemDelete, ItemEdit, ItemAdd, GridProps } from "..";
 import { SampleItem, useData, sampledata } from "./commons/SampleItem";

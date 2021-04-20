@@ -1,5 +1,5 @@
 import { Meta, Story } from "@storybook/react";
-import React, { useState } from "react";
+import React from "react";
 
 import { EmptyMessage, GridProps, ItemAdd } from "..";
 import { SampleItem, useData } from "./commons/SampleItem";
@@ -11,7 +11,7 @@ export default {
 } as Meta;
 
 const SAMPLE_DATA: SampleItem[] = [1, 2, 3, 4, 5, 6].map((it) => ({
-  id: "" + it,
+  id: it,
   label: "item " + it,
   description: "",
   amount: it * 10,

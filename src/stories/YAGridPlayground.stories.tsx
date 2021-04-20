@@ -1,8 +1,8 @@
 import { Meta, Story } from "@storybook/react";
-import { isNil, minBy } from "lodash-es";
-import React, { useState } from "react";
+import { isNil } from "lodash-es";
+import React from "react";
 
-import { ItemDelete, ItemEdit, ItemAdd, GridProps } from "..";
+import { ItemDelete, ItemEdit, ItemAdd, GridProps, EmptyMessage } from "..";
 import { SampleItem, useData, sampledata } from "./commons/SampleItem";
 import { customTypes, YAGridPlayground } from "./YAGridPlayground";
 
@@ -34,6 +34,9 @@ const TableEditable: React.FC<GridProps<any>> = (props) => {
         onDelete: handleDelete,
         deletable: (item) => isNil(item.deletable) ? true : item.deletable
       }),
+      EmptyMessage.create({
+        message: <div style={{color:"grey", textAlign:"center"}}>Empty message</div>
+      })
     ],
   };
   return <YAGridPlayground {...gridProps} />;

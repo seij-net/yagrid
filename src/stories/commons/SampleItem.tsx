@@ -1,11 +1,11 @@
-import { isNil, minBy } from "lodash-es";
+import { isNil, maxBy } from "lodash-es";
 import React from "react";
 import { useState } from "react";
 
 import { GridColumnDefinition } from "../../types";
 
 export interface SampleItem {
-  id: string;
+  id: number;
   label: string;
   description: string | null;
   amount: number | null;
@@ -15,12 +15,12 @@ export interface SampleItem {
 }
 
 export const sampledata: SampleItem[] = [
-  { id: "1", label: "item 1", description: "description 1", amount: 123456, cb: true },
-  { id: "2", label: "item 2", description: "description 2", amount: 978654, cb: false },
-  { id: "3", label: "item almost empty", description: null, amount: null, cb: null },
-  { id: "4", label: "not editable but delete ok", description: null, amount: null, cb: null, readonly: true },
+  { id: 1, label: "item 1", description: "description 1", amount: 123456, cb: true },
+  { id: 2, label: "item 2", description: "description 2", amount: 978654, cb: false },
+  { id: 3, label: "item almost empty", description: null, amount: null, cb: null },
+  { id: 4, label: "not editable but delete ok", description: null, amount: null, cb: null, readonly: true },
   {
-    id: "5",
+    id: 5,
     label: "editable but can not be deleted",
     description: null,
     amount: null,
@@ -30,24 +30,24 @@ export const sampledata: SampleItem[] = [
   },
 ];
 
-export const nextMinId = (data: SampleItem[]): string => {
-  let minIdItem = minBy(data, (it) => parseInt(it.id));
-  let minId = isNil(minIdItem) ? -1 : parseInt(minIdItem.id);
-  return "" + (minId === 0 || minId === 1 ? -1 : minId - 1);
+export const nextId = (data: SampleItem[]): number => {
+  if (data.length==0) return 1
+  let maxIdItem = maxBy(data, (it) => it.id);
+  let maxId = isNil(maxIdItem) ? 1 : maxIdItem.id;
+  return maxId + 1;
 };
 
-export const useData = (initialData: SampleItem[]) => {
+export const useData = (initialData: SampleItem[] = []) => {
   const [data, setData] = useState(initialData);
-
   const handleDelete = async (item: any) => setData((prevState) => prevState.filter((it) => it.id !== item.id));
   const handleEdit = async (item: any) =>
     setData((prevState) => prevState.map((it) => (it.id === item.id ? item : it)));
   const handleAddTemplate = async () => {
-    return { id: nextMinId(data), description: "", cb: false, amount: 0, label: "New item" } as SampleItem;
+    return { id: nextId(data), description: "", cb: false, amount: 0, label: "New item" } as SampleItem;
   };
   const handleAddConfirm = async (item: any) => {
     setData((prevState) => {
-      return [...prevState, { ...item, id: nextMinId(prevState) }];
+      return [...prevState, { ...item, id: nextId(prevState) }];
     });
   };
   const sampleColumns: GridColumnDefinition<SampleItem>[] = [
@@ -82,7 +82,7 @@ export const useData = (initialData: SampleItem[]) => {
       type: "boolean",
       editor: (data, onValueChange) =>
         isNil(data.cb) ? null : (
-          <input type="checkbox" checked={data.cb || false} onChange={() => onValueChange({ ...data, cb: !data })} />
+          <input type="checkbox" checked={data.cb || false} onChange={() => onValueChange({ ...data, cb: !data.cb })} />
         ),
     },
   ];

@@ -15,7 +15,7 @@ const DEFAULT_EMPTY_MESSAGE = "";
 
 export const Grid: React.FC<GridProps<any>> = ({
   columns: dataProperties,
-  data,
+  data = [],
   className,
   identifierProperty = "id",
   emptyMessage,
