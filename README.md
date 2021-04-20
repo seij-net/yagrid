@@ -109,6 +109,7 @@ Currently provided plugins
 | [item-edit](./src/plugins/item-edit/Readme.md)  | Provides row editing features. A button triggers row editing, then user can validate or cancel the row. Also manages a temporary item to be able to cancel. |
 | [item-delete](./src/plugins/item-edit/Readme.md)  | Provides row button to delete item, confirm and cancel buttons. |
 | [empty-message](./src/plugins/empty-message/Readme.md) | Displays a custom empty message or component if data is empty
+| [table-footer](./src/plugins/table-footer/Readme.md) | Displays a custom component in table footer (`tfoot`) area
 
 Each plugin comes with its own documentation. Be sure to take a look at it
 

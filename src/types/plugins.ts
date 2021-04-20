@@ -57,7 +57,9 @@ export interface GridPlugin<T> {
  */
 export interface FooterExtensionPoint<T> {
   /** Element to display on full span */
-  span: (data:T[])=>ReactNode
+  span?: (data:T[])=>ReactNode,
+  /** Additional rows that the extension point may produce */
+  rows?: (data:T[], columnCount: number) => ReactNode
 }
 
 /**

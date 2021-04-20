@@ -108,6 +108,9 @@ export const Grid: React.FC<GridProps<any>> = ({
           </tr>
         );
       }
+      if (it.footer?.rows) {
+        return it.footer?.rows(data, columnCount)
+      }
     })
     .filter((it) => it);
 
