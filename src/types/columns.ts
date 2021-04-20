@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { TableTypeRenderer as GridTypeRenderer } from "../TableTypesRegistry";
 import { TableCellEditorFactory as GridCellEditorFactory } from "./public";
 
@@ -13,7 +14,7 @@ export interface GridColumnDefinitionInternal<T> {
   /**
    * Label of property, used to be displayed.
    */
-  label: string;
+  label: ReactNode;
   /**
    * Type of property. Shall be one of the types registry.
    */

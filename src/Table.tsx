@@ -23,13 +23,17 @@ export const Grid: React.FC<GridProps<any>> = ({
   types,
 }) => {
   const typesOrDefault = types || TableTypesRegistryDefault;
-  const columnDefinitionsDefault: GridColumnDefinitionInternal<any>[] = dataProperties.map((it) => ({
-    name: it.name,
-    label: isNil(it.label) ? it.name : it.label,
-    type: it.type ?? "string",
-    render: typesOrDefault.find(it.type || "string").renderer,
-    editable: it.editable || NOT_EDITABLE,
-    editor: it.editor,
+  const columnDefinitionsDefault: GridColumnDefinitionInternal<any>[] = dataProperties.map((col) => ({
+    name: col.name,
+    label: isNil(col.label) ? col.name : col.label,
+    type: col.type ?? "string",
+    render: isNil(col.render) 
+      // if no render is specified, use then render from type registry and bind it automatically with column name
+      ? (item)=> typesOrDefault.find(col.type || "string").renderer(item[col.name]) 
+      // if a render function is specified, use it
+      : col.render,
+    editable: col.editable || NOT_EDITABLE,
+    editor: col.editor,
   }));
 
   const [columnDefinitions, setColumnDefinitions] = React.useState<GridColumnDefinitionInternal<any>[]>(

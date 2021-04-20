@@ -4,7 +4,7 @@
  * ----------------------------------------------------------------------------- 
  */
 
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
 import { TableTypesRegistry } from "../TableTypesRegistry";
 import { GridPluginList } from "./plugins";
 import { GridState } from "./state";
@@ -82,9 +82,9 @@ export type TableCellEditorFactory<T> = (data: T, onValueChange: TableCellEditor
 
 export interface GridColumnDefinition<T> {
   name: string,
-  label?: string,
+  label?: ReactNode,
   type?: string,
-  render?: (value: any) => string,
+  render?: (value: T) => ReactNode,
   editable?: (rowData: T) => boolean,
   editor?: TableCellEditorFactory<T>
 }

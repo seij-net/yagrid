@@ -1,6 +1,6 @@
 import isNil from "lodash-es/isNil";
 import keyBy from "lodash-es/keyBy";
-import React, { ReactElement } from "react";
+import React, { ReactElement, ReactNode } from "react";
 
 export const renderToReactElement = (formatter: (curatedData: any) => string) => (data: any) =>
   isNil(data) ? "" : formatter(data);
@@ -21,7 +21,7 @@ function findDefaultRenderer(name: string): TableTypeRenderer<any> {
   return renderer;
 }
 
-export type TableTypeRenderer<T> = (data: T | undefined | null) => ReactElement | string | null;
+export type TableTypeRenderer<T> = (data: T | undefined | null) => ReactNode | null;
 
 interface TableTypeManager<T> {
   /**

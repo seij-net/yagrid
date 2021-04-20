@@ -23,6 +23,6 @@ export const TableCell: React.FC<TableCellProps<any>> = (props) => {
     isNil(plugin.isEditing) ? false : plugin.isEditing(gridState, item, itemPropertyName)
   );
   const Component =
-    editing && editor ? editor(gridState.editedItemValue, onEditItemChange) : render(item[itemPropertyName]);
+    editing && editor ? editor(gridState.editedItemValue, onEditItemChange) : render(item);
   return <td> {Component}</td>;
 };

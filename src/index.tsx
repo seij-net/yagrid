@@ -15,7 +15,7 @@ export * as EmptyMessage from "./plugins/empty-message";
 export {
   Grid,
   GridProps,
-  GridColumnDefinition as TableColumnDefinition,
+  GridColumnDefinition,
   TableActionList,
   TableAction,
   ActionItemHandler,
