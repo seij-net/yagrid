@@ -130,9 +130,12 @@ export const TableEdixit: React.FC<GridProps<any>> = (props) => <Grid {...props}
 
 function pluginCompose<T, R>(
   plugins: GridPluginList<T>,
-  extract: (plugin: GridPlugin<T>) => R[],
+  extract: (plugin: GridPlugin<T>) => (R[]|undefined),
   initial?: R[] | null
 ): R[] {
   const initialSafe = isNil(initial) ? ([] as R[]) : initial;
-  return plugins.reduce((acc, current) => [...acc, ...extract(current)], initialSafe);
+  return plugins.reduce((acc, current) =>  {
+    const c = extract(current)
+    return isNil(c) ? acc : [...acc, ...c]
+  }, initialSafe);
 }

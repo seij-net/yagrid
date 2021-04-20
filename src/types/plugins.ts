@@ -33,7 +33,7 @@ export interface GridPlugin<T> {
   /**
    * List of actions to provide to main toolbar
    */
-  actionGenericList: TableActionList,
+  actionGenericList?: TableActionList,
   /**
    * Shall disapear
    */
@@ -41,7 +41,7 @@ export interface GridPlugin<T> {
   /**
    * List of actions to provide for each item
    */
-  actionItemList: TableActionList,
+  actionItemList?: TableActionList,
   /**
    * Shall disapear
    */

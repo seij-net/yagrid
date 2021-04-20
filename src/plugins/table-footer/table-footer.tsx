@@ -12,8 +12,6 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
     name: "table-footer",
     reducer: (s) => s,
     dataListTransform: (state, data) => data,
-    actionGenericList: [],
-    actionItemList: [],
     footer:{
       rows: config.rows
     }

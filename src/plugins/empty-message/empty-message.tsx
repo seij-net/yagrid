@@ -10,8 +10,6 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
     name: "empty-message",
     reducer: (s) => s,
     dataListTransform: (state, data) => data,
-    actionGenericList: [],
-    actionItemList: [],
     footer:{
       span: (data) =>  data.length === 0 && config.message
     }
