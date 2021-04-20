@@ -47,7 +47,7 @@
   "scripts": {
     "build": "rollup --config",
     "test": "jest",
-    "publish": "npm publish --access public",
+    "__publish": "npm publish --access public",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
