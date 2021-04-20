@@ -12,8 +12,6 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
     dataListTransform: (state, data) => data,
     actionGenericList: [],
     actionItemList: [],
-    actionGenericListeners: () => ({}),
-    actionItemListeners: () => ({}),
     footer:{
       span: (data) =>  data.length === 0 && config.message
     }

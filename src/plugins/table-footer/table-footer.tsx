@@ -14,8 +14,6 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
     dataListTransform: (state, data) => data,
     actionGenericList: [],
     actionItemList: [],
-    actionGenericListeners: () => ({}),
-    actionItemListeners: () => ({}),
     footer:{
       rows: config.rows
     }

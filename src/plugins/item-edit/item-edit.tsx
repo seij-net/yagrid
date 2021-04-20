@@ -107,7 +107,6 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
       (state.editedItemState === "edit" || state.editedItemState === "edit_commit_pending"),
     actionGenericList: [],
     actionItemList: [ACTION_EDIT, ACTION_EDIT_OK, ACTION_EDIT_CANCEL],
-    actionGenericListeners: (editState, dispatch) => ({}),
     actionItemListeners: (editState, dispatch, item) => ({
       onEditItem: async () => {
         dispatch({ type: "edit", item: item });

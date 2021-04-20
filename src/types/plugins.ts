@@ -37,7 +37,7 @@ export interface GridPlugin<T> {
   /**
    * Shall disapear
    */
-  actionGenericListeners(editState: GridState, dispatchEditState: Dispatch<Action>): { [p: string]: () => Promise<void> };
+  actionGenericListeners?: (editState: GridState, dispatchEditState: Dispatch<Action>) => { [p: string]: () => Promise<void> };
   /**
    * List of actions to provide for each item
    */
@@ -45,7 +45,7 @@ export interface GridPlugin<T> {
   /**
    * Shall disapear
    */
-  actionItemListeners(editState: GridState, dispatchEditState: Dispatch<Action>, item: T): { [p: string]: () => Promise<void> };
+  actionItemListeners?: (editState: GridState, dispatchEditState: Dispatch<Action>, item: T) => { [p: string]: () => Promise<void> };
   /**
    * Footer extension point
    */

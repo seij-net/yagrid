@@ -54,7 +54,7 @@ export const Grid: React.FC<GridProps<any>> = ({
 
   let actionListeners = {};
   plugins.forEach((plugin) => {
-    const pluginListeners = plugin.actionGenericListeners(editState, dispatchEditState);
+    const pluginListeners = plugin.actionGenericListeners && plugin.actionGenericListeners(editState, dispatchEditState);
     if (pluginListeners) {
       actionListeners = { ...actionListeners, ...pluginListeners };
     }
@@ -79,7 +79,7 @@ export const Grid: React.FC<GridProps<any>> = ({
     const id = it[identifierProperty];
     let actionListeners = {};
     plugins.forEach((plugin) => {
-      const pluginListeners = plugin.actionItemListeners(editState, dispatchEditState, it);
+      const pluginListeners = plugin.actionItemListeners && plugin.actionItemListeners(editState, dispatchEditState, it);
       actionListeners = { ...actionListeners, ...pluginListeners };
     });
 
