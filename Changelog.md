@@ -6,6 +6,10 @@
 
 💣 = Beaking change
 
+## 0.1.6
+
+* 💣 Item action buttons are now on the end of the row
+
 ## 0.1.5
 
 * ⭐ Makes all plugin extension point optionals
