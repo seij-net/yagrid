@@ -12,6 +12,12 @@ import { createExtensionPoints } from "./utils/pluginCompose";
 
 const NOT_EDITABLE = (rowData: any) => false;
 
+enum LoadingState {
+  init,
+  pending,
+  loaded,
+}
+
 export const Grid: React.FC<GridProps<any>> = ({
   columns: dataProperties,
   data,
@@ -25,11 +31,11 @@ export const Grid: React.FC<GridProps<any>> = ({
     name: col.name,
     label: isNil(col.label) ? col.name : col.label,
     type: col.type ?? "string",
-    render: isNil(col.render) 
-      // if no render is specified, use then render from type registry and bind it automatically with column name
-      ? (item)=> typesOrDefault.find(col.type || "string").renderer(item[col.name]) 
-      // if a render function is specified, use it
-      : col.render,
+    render: isNil(col.render)
+      ? // if no render is specified, use then render from type registry and bind it automatically with column name
+        (item) => typesOrDefault.find(col.type || "string").renderer(item[col.name])
+      : // if a render function is specified, use it
+        col.render,
     editable: col.editable || NOT_EDITABLE,
     editor: col.editor,
   }));
@@ -37,32 +43,39 @@ export const Grid: React.FC<GridProps<any>> = ({
   const [columnDefinitions, setColumnDefinitions] = React.useState<GridColumnDefinitionInternal<any>[]>(
     columnDefinitionsDefault
   );
-  
+  const [resolvedData, setResolvedData] = React.useState([] as any[]);
+  const [loadingState, setLoadingState] = React.useState<LoadingState>(LoadingState.init);
 
-  const [resolvedData, setResolvedData] = React.useState([] as any[])
-  useEffect(()=>{
-    const isLazyDataSource = isFunction(data)
+  useEffect(() => {
+    const isLazyDataSource = isFunction(data);
     if (!isLazyDataSource) {
-      setResolvedData(data as any[])
+      setLoadingState(LoadingState.loaded);
+      setResolvedData(data as any[]);
+    } else {
+      setLoadingState(LoadingState.pending);
+      const p: Promise<any[]> = (data as any)({});
+      p.then((v) => {
+        setResolvedData(v);
+        setLoadingState(LoadingState.loaded);
+      }).catch((reject) => setLoadingState(LoadingState.loaded));
     }
-    
-  },[data])
+  }, [data]);
 
-  const ext = createExtensionPoints(plugins)
+  const ext = createExtensionPoints(plugins);
 
   const reducer = createReducer(ext.reducer);
   const [editState, dispatchEditState] = useReducer(reducer, createTableEditDefaultState(identifierProperty));
 
   const classNames = clsx(className);
-  
 
-  const hasActionsStart = ext.actionItemList.some(action=>action.position==="start");
-  const hasActionsEnd = ext.actionItemList.some(action=>action.position==="end" || action.position === undefined);
-  const columnCount = columnDefinitions.length + (hasActionsStart ? 1:0) + (hasActionsEnd ? 1:0);
+  const hasActionsStart = ext.actionItemList.some((action) => action.position === "start");
+  const hasActionsEnd = ext.actionItemList.some((action) => action.position === "end" || action.position === undefined);
+  const columnCount = columnDefinitions.length + (hasActionsStart ? 1 : 0) + (hasActionsEnd ? 1 : 0);
 
   let actionListeners = {};
   plugins.forEach((plugin) => {
-    const pluginListeners = plugin.actionGenericListeners && plugin.actionGenericListeners(editState, dispatchEditState);
+    const pluginListeners =
+      plugin.actionGenericListeners && plugin.actionGenericListeners(editState, dispatchEditState);
     if (pluginListeners) {
       actionListeners = { ...actionListeners, ...pluginListeners };
     }
@@ -81,16 +94,14 @@ export const Grid: React.FC<GridProps<any>> = ({
 
   const handleEditItemChange = (newItem: any) => dispatchEditState({ type: "item_change", item: newItem });
 
-  
-
-
   const dataListTransform = ext.dataListTransform.reduce((acc, current) => current(editState, acc), resolvedData);
 
   const rows = dataListTransform.map((it) => {
     const id = it[identifierProperty];
     let actionListeners = {};
     plugins.forEach((plugin) => {
-      const pluginListeners = plugin.actionItemListeners && plugin.actionItemListeners(editState, dispatchEditState, it);
+      const pluginListeners =
+        plugin.actionItemListeners && plugin.actionItemListeners(editState, dispatchEditState, it);
       actionListeners = { ...actionListeners, ...pluginListeners };
     });
 
@@ -123,21 +134,32 @@ export const Grid: React.FC<GridProps<any>> = ({
         );
       }
       if (it.footer?.rows) {
-        return it.footer?.rows(resolvedData, columnCount)
+        return it.footer?.rows(resolvedData, columnCount);
       }
     })
     .filter((it) => it);
+
+  const isLoading = loadingState != LoadingState.loaded;
 
   return (
     <>
       {actionGenericComponents}
       <table className={classNames}>
-        <TableHeader hasActionsStart={hasActionsStart} hasActionsEnd={hasActionsEnd} columnDefinitions={columnDefinitions} />
-        <tbody>{rows}</tbody>
+        <TableHeader
+          hasActionsStart={hasActionsStart}
+          hasActionsEnd={hasActionsEnd}
+          columnDefinitions={columnDefinitions}
+        />
+        {isLoading && (
+          <tbody>
+            <tr>
+              <td colSpan={columnCount}>Loading...</td>
+            </tr>
+          </tbody>
+        )}
+        {!isLoading && <tbody>{rows}</tbody>}
         {footers && <tfoot>{footers}</tfoot>}
       </table>
     </>
   );
 };
-
-
