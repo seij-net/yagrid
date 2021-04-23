@@ -11,7 +11,6 @@ import { GridColumnDefinitionInternal, GridProps } from "./types";
 import { createExtensionPoints } from "./utils/pluginCompose";
 
 const NOT_EDITABLE = (rowData: any) => false;
-const DEFAULT_TABLE_CLASS = "data";
 
 export const Grid: React.FC<GridProps<any>> = ({
   columns: dataProperties,
@@ -44,7 +43,7 @@ export const Grid: React.FC<GridProps<any>> = ({
   const reducer = createReducer(ext.reducer);
   const [editState, dispatchEditState] = useReducer(reducer, createTableEditDefaultState(identifierProperty));
 
-  const classNames = clsx(className, DEFAULT_TABLE_CLASS);
+  const classNames = clsx(className);
   
 
   const somePluginsProvideItemAction = ext.actionItemList.length > 0;

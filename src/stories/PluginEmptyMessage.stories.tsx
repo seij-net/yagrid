@@ -18,7 +18,7 @@ const SAMPLE_DATA: SampleItem[] = [1, 2, 3, 4, 5, 6].map((it) => ({
   cb: true,
 }));
 
-export const EmptyString: Story<{}> = (props) => {
+export const MessageAsString: Story<{}> = (props) => {
   const { data, sampleColumns } = useData([]);
   const gridProps: GridProps<SampleItem> = {
     data: data,
@@ -33,7 +33,7 @@ export const EmptyString: Story<{}> = (props) => {
   return <YAGridPlayground {...gridProps} />;
 };
 
-export const EmptyComponent: Story<{}> = (props) => {
+export const MessageAsComponent: Story<{}> = (props) => {
   const { data, sampleColumns } = useData([]);
   const gridProps: GridProps<SampleItem> = {
     data: data,
