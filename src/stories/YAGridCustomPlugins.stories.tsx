@@ -33,7 +33,7 @@ export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
         }]
       },
       TableFooter.create({
-        rows: (data, columnCount)=><tr><td colSpan={columnCount}>------</td></tr>
+        rows: (data, columnCount)=><tr><td colSpan={columnCount} style={{backgroundColor:"#efefaa"}}>This footer shall span across all columns</td></tr>
       })
     ],
   };
