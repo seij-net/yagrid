@@ -83,7 +83,8 @@ export interface TableAction {
   name: string,
   position?: "start"|"end"
   displayed?: (state: GridState, item: any) => boolean,
-  render: (state: GridState, dispatch: TableActionDispatch) => ReactElement
+  render?: (state: GridState, dispatch: TableActionDispatch) => ReactElement
+  renderItem?: (item: any, state:GridState, dispatch: TableActionDispatch) => ReactNode
 }
 export type TableActionDispatch = {
   listeners: { [key: string]: TableActionHandler }

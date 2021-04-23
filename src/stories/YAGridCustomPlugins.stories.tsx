@@ -1,9 +1,8 @@
 import { Meta, Story } from "@storybook/react";
-import { isNil } from "lodash-es";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 
-import { ItemDelete, ItemEdit, ItemAdd, GridProps, TableFooter } from "..";
-import { SampleItem, useData, sampledata } from "./commons/SampleItem";
+import { GridProps, TableFooter } from "..";
+import { sampledata, SampleItem, useData } from "./commons/SampleItem";
 import { customTypes, YAGridPlayground } from "./YAGridPlayground";
 
 export default {
@@ -12,29 +11,51 @@ export default {
 } as Meta;
 
 export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
-  const { data, sampleColumns, handleDelete, handleEdit, handleAddTemplate, handleAddConfirm} = useData(sampledata)
-
+  const { data, sampleColumns, handleDelete, handleEdit, handleAddTemplate, handleAddConfirm } = useData(sampledata);
+  const [opened, setOpened] = useState<number | null>(null);
+  const handleOpenClose = (id: number) => {
+    setOpened(opened === id ? null : id);
+  };
   const gridProps: GridProps<SampleItem> = {
     ...props,
-    columns:sampleColumns,
+    columns: sampleColumns,
     data: data,
     types: customTypes,
     plugins: [
       {
         name: "my-plugin",
-        actionItemList:[{
-          name: "my-action-start",
-          position: "start",
-          render: (state, dispatch) => <button type="button" onClick={(evt)=>console.log("button start", evt)}>MyButton start</button>
-        },{
-          name: "my-action-end",
-          position: "end",
-          render: (state, dispatch) => <button type="button" onClick={(evt)=>console.log("button end", evt)}>MyButton end</button>
-        }]
+        extraItem: (item) =>
+          opened === item.id ? <span key="extra">EXTRA item details = {JSON.stringify(item)}</span> : null,
+        actionItemList: [
+          {
+            name: "my-action-start",
+            position: "start",
+            renderItem: (item, state, dispatch) => (
+              <button type="button" onClick={() => handleOpenClose(item.id)}>
+                {opened === item.id ? "v" : ">"}
+              </button>
+            ),
+          },
+          {
+            name: "my-action-end",
+            position: "end",
+            renderItem: (item, state, dispatch) => (
+              <button type="button" onClick={() => handleOpenClose(item.id)}>
+                {opened === item.id ? "v" : "<"}
+              </button>
+            ),
+          },
+        ],
       },
       TableFooter.create({
-        rows: (data, columnCount)=><tr><td colSpan={columnCount} style={{backgroundColor:"#efefaa"}}>This footer shall span across all columns</td></tr>
-      })
+        rows: (data, columnCount) => (
+          <tr>
+            <td colSpan={columnCount} style={{ backgroundColor: "#efefaa" }}>
+              This footer shall span across all columns
+            </td>
+          </tr>
+        ),
+      }),
     ],
   };
   return <YAGridPlayground {...gridProps} />;

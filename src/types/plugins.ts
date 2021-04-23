@@ -55,7 +55,13 @@ export interface GridPlugin<T> {
   /**
    * Footer extension point
    */
-  footer?: FooterExtensionPoint<T>
+  footer?: FooterExtensionPoint<T>,
+  /**
+   * Extra row items that shall be placed in a container below each row
+   * Takes item currently displayed and returns (or not) an extra item 
+   * that shall be displayed below the row
+   */
+  extraItem?: ExtraItemExtension<T>
 }
 
 /**
@@ -69,9 +75,15 @@ export interface FooterExtensionPoint<T> {
 }
 
 /**
+ * Displays extra items below displayed item
+ */
+export type ExtraItemExtension<T> = (item:T)=>ReactNode
+
+/**
  * List of Grid plugins
  */
 export type GridPluginList<T> = GridPlugin<T>[]
+
 
 /**
  * All extension points cumulated
@@ -80,5 +92,6 @@ export interface ExtensionPoints<T> {
   reducer: GridStateReducer[],
   actionGenericList: TableActionList,
   actionItemList: TableActionList,
-  dataListTransform: DataListTransformer<T>[]
+  dataListTransform: DataListTransformer<T>[],
+  extraItem: ExtraItemExtension<T>[]
 }

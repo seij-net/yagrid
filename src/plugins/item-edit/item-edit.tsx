@@ -77,7 +77,7 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
   const ACTION_EDIT: TableAction = {
     name: "edit",
     displayed: (state, item) => editableSafe(item) && state.editedItemState === undefined,
-    render: (state, dispatch) => {
+    renderItem: (item, state, dispatch) => {
       return <button onClick={dispatch.listeners.onEditItem}>{labelEditButton}</button>;
     },
   };
@@ -85,7 +85,7 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
     name: "edit_ok",
     displayed: (state, item) =>
       editableSafe(item) && state.editedItemId === item.id && state.editedItemState === "edit",
-    render: (state, dispatch) => {
+      renderItem: (item, state, dispatch) => {
       return <button onClick={dispatch.listeners.onEditItemCommit}>{labelEditButtonConfirm}</button>;
     },
   };
@@ -94,7 +94,7 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
     name: "edit_cancel",
     displayed: (state, item) =>
       editableSafe(item) && item.id === state.editedItemId && state.editedItemState === "edit",
-    render: (state, dispatch) => {
+      renderItem: (item, state, dispatch) => {
       return <button onClick={dispatch.listeners.onEditItemCancel}>{labelEditButtonCancel}</button>;
     },
   };

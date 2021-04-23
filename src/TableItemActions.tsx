@@ -1,5 +1,5 @@
 import isNil from "lodash-es/isNil";
-import React, { ReactElement } from "react";
+import React, { ReactElement, ReactNode } from "react";
 
 import { GridState } from "./types";
 import { TableAction, TableActionDispatch, TableActionList } from "./types";
@@ -31,22 +31,37 @@ export const TableItemActions: React.FC<TableItemActionsProps<any>> = ({
     <>
       {actionsToDisplay.map((it) => (
         <span key={it.name}>
-          <TableActionTrigger action={it} editingState={editingState} dispatch={handleAction} />
+          <TableItemActionTrigger item={item} action={it} editingState={editingState} dispatch={handleAction} />
         </span>
       ))}
     </>
   );
 };
 
+export const TableItemActionTrigger: React.FC<TableItemActionTriggerProps<any>> = ({
+  item,
+  action,
+  editingState,
+  dispatch,
+}) => {
+  const i:ReactNode = action.renderItem ? action.renderItem(item,editingState, dispatch) : null
+  return <>{i}</>
+};
 export const TableActionTrigger: React.FC<TableActionTriggerProps> = ({
   action,
   editingState,
   dispatch,
-}): ReactElement => {
-  return action.render(editingState, dispatch);
+}) => {
+  return action.render ? action.render(editingState, dispatch) : null
 };
 
 interface TableActionTriggerProps {
+  action: TableAction;
+  editingState: GridState;
+  dispatch: TableActionDispatch;
+}
+interface TableItemActionTriggerProps<T> {
+  item: T,
   action: TableAction;
   editingState: GridState;
   dispatch: TableActionDispatch;

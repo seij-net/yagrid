@@ -117,7 +117,7 @@ export interface Config<T> {
   /**
    * When using default buttons, label or component for delete cancel button
    */
-   labelDeleteCancelButton?: ReactNode;
+  labelDeleteCancelButton?: ReactNode;
 }
 
 export function create<T>(config: Config<T>): GridPlugin<any> {
@@ -132,7 +132,7 @@ export function create<T>(config: Config<T>): GridPlugin<any> {
       );
     },
     // state.editedItemId === item.id && (state.editedItemState === "edit" || state.editedItemState === "delete_confirm"),
-    render: (state, dispatch) => {
+    renderItem: (item, state, dispatch) => {
       // We do not double-check that item is deletable or not, we assume the
       // grid did its job by calling displayed
       return (

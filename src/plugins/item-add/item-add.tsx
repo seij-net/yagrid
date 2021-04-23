@@ -94,19 +94,19 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
           {labelAddButton}
         </button>
       );
-    },
+    }
   };
   const ACTION_ADD_OK: TableAction = {
     name: "add_ok",
     displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
-    render: (state, dispatch) => {
+    renderItem: (item, state, dispatch) => {
       return <button onClick={dispatch.listeners.onAddItemConfirm}>{labelAddButtonConfirm}</button>;
     },
   };
   const ACTION_ADD_CANCEL: TableAction = {
     name: "add_cancel",
     displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
-    render: (state, dispatch) => {
+    renderItem: (item, state, dispatch) => {
       return <button onClick={dispatch.listeners.onAddItemCancel}>{labelAddButtonCancel}</button>;
     },
   };

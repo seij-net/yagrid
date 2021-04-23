@@ -2,9 +2,10 @@ import React from "react";
 
 import { TableCell } from "./TableCell";
 import { TableItemActions } from "./TableItemActions";
-import { GridPluginList, GridState } from "./types";
+import { ExtraItemExtension, GridPluginList, GridState } from "./types";
 import { TableTypesRegistry } from "./TableTypesRegistry";
 import { TableActionDispatch, TableActionList, GridColumnDefinitionInternal } from "./types";
+import { isNil } from "lodash-es";
 
 export interface TableRowProps<T> {
   /** indique si la ligne est en cours d'édition */
@@ -24,6 +25,11 @@ export interface TableRowProps<T> {
   types: TableTypesRegistry;
   /** list of plugins */
   plugins: GridPluginList<T>;
+  /**
+   * Extra items extension point
+   */
+  extraItems: ExtraItemExtension<T>[],
+  columnCount: number,
   onEditItemChange: (newItem: T) => void;
 }
 
@@ -35,6 +41,8 @@ export const TableRow: React.FC<TableRowProps<any>> = ({
   hasActionsEnd,
   actionsItem,
   onActionItemDispatch,
+  extraItems,
+  columnCount,
   onEditItemChange,
   plugins
 }) => {
@@ -74,11 +82,13 @@ export const TableRow: React.FC<TableRowProps<any>> = ({
       />
     </td>
   ) : null;
-  return (
-    <tr>
-      {startActionsCell}
-      {cells}
-      {endActionsCell}
-    </tr>
-  );
+  const extraItemList = extraItems
+    .map(ext=>ext(item))
+    .filter(extra => !isNil(extra))
+  
+  const extraItemRow = extraItemList.length > 0  ? <tr key="__yagrid_item_extra"><td colSpan={columnCount}>{extraItemList}</td></tr> : null
+  const regularRow = <tr key="__yagrid_item">{startActionsCell}{cells}{endActionsCell}</tr>
+  
+
+  return extraItemRow ? <>{regularRow}{extraItemRow}</> : regularRow;
 };
