@@ -31,25 +31,21 @@ export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
             name: "my-action-start",
             position: "start",
             renderItem: (item, state, dispatch) => (
-              <button type="button" onClick={() => handleOpenClose(item.id)}>
-                {opened === item.id ? "v" : ">"}
-              </button>
+              <span onClick={() => handleOpenClose(item.id)}>{opened === item.id ? "⬇️" : "➡️"}</span>
             ),
           },
           {
             name: "my-action-end",
             position: "end",
             renderItem: (item, state, dispatch) => (
-              <button type="button" onClick={() => handleOpenClose(item.id)}>
-                {opened === item.id ? "v" : "<"}
-              </button>
+              <span onClick={() => handleOpenClose(item.id)}>{opened === item.id ? "⬇️" : "➡️"}</span>
             ),
           },
         ],
       },
       TableFooter.create({
         rows: (data, columnCount) => (
-          <tr>
+          <tr key="myfooter">
             <td colSpan={columnCount} style={{ backgroundColor: "#efefaa" }}>
               This footer shall span across all columns
             </td>

@@ -1,6 +1,7 @@
 import clsx from "clsx";
+import { isFunction } from "lodash";
 import isNil from "lodash-es/isNil";
-import React, { useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 
 import { TableHeader } from "./TableHeader";
 import { TableActionTrigger } from "./TableItemActions";
@@ -14,7 +15,7 @@ const NOT_EDITABLE = (rowData: any) => false;
 
 export const Grid: React.FC<GridProps<any>> = ({
   columns: dataProperties,
-  data = [],
+  data,
   className,
   identifierProperty = "id",
   plugins = [],
@@ -38,6 +39,16 @@ export const Grid: React.FC<GridProps<any>> = ({
     columnDefinitionsDefault
   );
   
+
+  const [resolvedData, setResolvedData] = React.useState([] as any[])
+  useEffect(()=>{
+    const isLazyDataSource = isFunction(data)
+    if (!isLazyDataSource) {
+      setResolvedData(data as any[])
+    }
+    
+  },[data])
+
   const ext = createExtensionPoints(plugins)
 
   const reducer = createReducer(ext.reducer);
@@ -72,7 +83,9 @@ export const Grid: React.FC<GridProps<any>> = ({
   const handleEditItemChange = (newItem: any) => dispatchEditState({ type: "item_change", item: newItem });
 
   
-  const dataListTransform = ext.dataListTransform.reduce((acc, current) => current(editState, acc), data);
+
+
+  const dataListTransform = ext.dataListTransform.reduce((acc, current) => current(editState, acc), resolvedData);
 
   const rows = dataListTransform.map((it) => {
     const id = it[identifierProperty];
@@ -106,12 +119,12 @@ export const Grid: React.FC<GridProps<any>> = ({
       if (it.footer?.span) {
         return (
           <tr key={it.name}>
-            <td colSpan={columnCount}>{it.footer.span(data)}</td>
+            <td colSpan={columnCount}>{it.footer.span(resolvedData)}</td>
           </tr>
         );
       }
       if (it.footer?.rows) {
-        return it.footer?.rows(data, columnCount)
+        return it.footer?.rows(resolvedData, columnCount)
       }
     })
     .filter((it) => it);
@@ -128,4 +141,4 @@ export const Grid: React.FC<GridProps<any>> = ({
   );
 };
 
-export const TableEdixit: React.FC<GridProps<any>> = (props) => <Grid {...props} className="data" />;
+

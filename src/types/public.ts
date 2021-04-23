@@ -6,6 +6,7 @@
 
 import { ReactElement, ReactNode } from "react";
 import { TableTypesRegistry } from "../TableTypesRegistry";
+import { GridDataSource } from "./data";
 import { GridPluginList } from "./plugins";
 import { GridState } from "./state";
 
@@ -43,7 +44,7 @@ export interface GridProps<T> {
    * usage but whatever, the original data shall never be altered so you
    * can keep full control over it.
    */
-  data: T[],
+  data: GridDataSource<T>,
   /**
    * Plugins used
    */
