@@ -1,6 +1,6 @@
 {
   "name": "@seij/yagrid",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Yet another grid. A tool for building dynamic tables and grids with built-in editor and type registry. Targeted to management software.",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
