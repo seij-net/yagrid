@@ -23,7 +23,6 @@ export const EmptyString: Story<{}> = (props) => {
   const gridProps: GridProps<SampleItem> = {
     data: data,
     columns: sampleColumns,
-    editable: true,
     types: customTypes,
     plugins: [
       EmptyMessage.create({
@@ -39,7 +38,6 @@ export const EmptyComponent: Story<{}> = (props) => {
   const gridProps: GridProps<SampleItem> = {
     data: data,
     columns: sampleColumns,
-    editable: true,
     types: customTypes,
     plugins: [
       EmptyMessage.create({
@@ -55,7 +53,6 @@ export const NotEmpty: Story<{}> = (props) => {
   const gridProps: GridProps<SampleItem> = {
     data: data,
     columns: sampleColumns,
-    editable: true,
     types: customTypes,
     plugins: [
       ItemAdd.create({

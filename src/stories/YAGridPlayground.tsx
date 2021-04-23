@@ -2,8 +2,8 @@ import React from "react";
 import { GridProps } from "../types";
 // import "tailwindcss/dist/tailwind.min.css";
 // import "@tailwindcss/forms/dist/forms.min.css";
-import "purecss/build/pure.css"
-import "purecss/build/tables.css"
+import "purecss/build/pure.css";
+import "purecss/build/tables.css";
 import "./YAGridPlayground.css";
 import { Grid } from "../Table";
 import { renderToReactElement, TypesRegistryBuilder } from "../TableTypesRegistry";
@@ -12,7 +12,8 @@ export const YAGridPlayground: React.FC<GridProps<any>> = ({ children, ...args }
     <div>
       <h1 className="text-2xl">Playground</h1>
       <p>
-        Note that YAGrid doesn't provide any CSS or style to stay style-agnostic. Here we use <code>purecss</code> for a default styling. edit-inline, edit-add and edit-delete plugins are provided. <br />
+        Note that YAGrid doesn't provide any CSS or style to stay style-agnostic. Here we use <code>purecss</code> for a
+        default styling. edit-inline, edit-add and edit-delete plugins are provided. <br />
         OK it's ugly, but useful for component design-time.
       </p>
       <p>&nbsp;</p>
@@ -20,7 +21,6 @@ export const YAGridPlayground: React.FC<GridProps<any>> = ({ children, ...args }
     </div>
   );
 };
-
 
 const NumberFormatInt = new Intl.NumberFormat(undefined, { minimumFractionDigits: 0, style: "decimal" });
 const NumberFormatDecimal = new Intl.NumberFormat(undefined, {
@@ -49,13 +49,12 @@ const NumberFormatPercent = new Intl.NumberFormat(undefined, {
 
 const INT_RENDERER = renderToReactElement((data: any) => NumberFormatInt.format(data));
 const DECIMAL_RENDERER = renderToReactElement((data: any) => NumberFormatDecimal.format(data));
-const BOOLEAN_RENDERER = renderToReactElement((data: any) => data ? "✅" : "");
+const BOOLEAN_RENDERER = renderToReactElement((data: any) => (data ? "✅" : ""));
 const MONETARY_AMOUNT_INT_RENDERER = renderToReactElement((data: any) => NumberFormatMonetaryAmountInt.format(data));
 const MONETARY_AMOUNT_DECIMAL_RENDERER = renderToReactElement((data: any) =>
   NumberFormatMonetaryAmountDecimal.format(data)
 );
 const PERCENT_RENDERER = renderToReactElement((data: any) => NumberFormatPercent.format(data));
-
 
 export const customTypes = new TypesRegistryBuilder()
   .add("monetaryAmountInt", MONETARY_AMOUNT_INT_RENDERER)

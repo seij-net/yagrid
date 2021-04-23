@@ -24,7 +24,6 @@ export const Empty: Story<{}> = (props) => {
   const gridProps: GridProps<SampleItem> = {
     data: data,
     columns: sampleColumns,
-    editable: true,
     types: customTypes,
     plugins: [
       ItemEdit.create({
@@ -41,7 +40,6 @@ export const NotEmpty: Story<{}> = (props) => {
   const gridProps: GridProps<SampleItem> = {
     data: data,
     columns: sampleColumns,
-    editable: true,
     types: customTypes,
     plugins: [
       ItemEdit.create({
@@ -58,7 +56,6 @@ export const CustomLabels: Story<{}> = (props) => {
   const gridProps: GridProps<SampleItem> = {
     data: data,
     columns: sampleColumns,
-    editable: true,
     types: customTypes,
     plugins: [
       ItemEdit.create({
@@ -77,7 +74,6 @@ export const CustomLabelsReact: Story<{}> = (props) => {
   const gridProps: GridProps<SampleItem> = {
     data: data,
     columns: sampleColumns,
-    editable: true,
     types: customTypes,
     plugins: [
       ItemEdit.create({

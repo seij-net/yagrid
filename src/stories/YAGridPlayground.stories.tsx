@@ -11,20 +11,18 @@ export default {
   component: YAGridPlayground,
 } as Meta;
 
-
-
 const TableEditable: React.FC<GridProps<any>> = (props) => {
-  const { data, sampleColumns, handleDelete, handleEdit, handleAddTemplate, handleAddConfirm} = useData(props.data)
+  const { data, sampleColumns, handleDelete, handleEdit, handleAddTemplate, handleAddConfirm } = useData(props.data);
 
   const gridProps: GridProps<SampleItem> = {
     ...props,
-    columns:sampleColumns,
+    columns: sampleColumns,
     data: data,
     types: customTypes,
     plugins: [
       ItemEdit.create({
         onEdit: handleEdit,
-        editable: (item) => !item.readonly
+        editable: (item) => !item.readonly,
       }),
       ItemAdd.create({
         onAddTemplate: handleAddTemplate,
@@ -32,16 +30,15 @@ const TableEditable: React.FC<GridProps<any>> = (props) => {
       }),
       ItemDelete.create({
         onDelete: handleDelete,
-        deletable: (item) => isNil(item.deletable) ? true : item.deletable
+        deletable: (item) => (isNil(item.deletable) ? true : item.deletable),
       }),
       EmptyMessage.create({
-        message: <div style={{color:"grey", textAlign:"center"}}>Empty message</div>
-      })
+        message: <div style={{ color: "grey", textAlign: "center" }}>Empty message</div>,
+      }),
     ],
   };
   return <YAGridPlayground {...gridProps} />;
 };
-
 
 const Template: Story<GridProps<any>> = (args) => <TableEditable {...args}></TableEditable>;
 
@@ -50,7 +47,5 @@ Empty.args = {};
 
 export const Filled = Template.bind({});
 Filled.args = {
-  editable: true,
   data: sampledata,
 };
-

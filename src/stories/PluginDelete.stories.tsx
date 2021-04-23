@@ -45,7 +45,6 @@ Empty.args = {
 
 export const Filled = Template.bind({});
 Filled.args = {
-  editable: true,
   data: sampledata,
 };
 
@@ -54,7 +53,6 @@ export const CustomLabelsString: Story<{}> = (props) => {
   const gridProps: GridProps<SampleItem> = {
     data: data,
     columns: sampleColumns,
-    editable: true,
     types: customTypes,
     plugins: [
       ItemDelete.create({
@@ -73,7 +71,6 @@ export const CustomLabelsReact: Story<{}> = (props) => {
   const gridProps: GridProps<SampleItem> = {
     data: data,
     columns: sampleColumns,
-    editable: true,
     types: customTypes,
     plugins: [
       ItemDelete.create({
