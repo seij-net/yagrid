@@ -14,8 +14,8 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ columnDefinitions, dis
   return (
     <thead>
       <tr>
-        {editableCell}
         {headers}
+        {editableCell}
       </tr>
     </thead>
   );
