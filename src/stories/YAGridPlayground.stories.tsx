@@ -12,7 +12,7 @@ export default {
 } as Meta;
 
 const TableEditable: React.FC<GridProps<any>> = (props) => {
-  const { data, sampleColumns, handleDelete, handleEdit, handleAddTemplate, handleAddConfirm } = useData(props.data);
+  const { data, sampleColumns, handleDelete, handleEdit, handleAddTemplate, handleAddConfirm } = useData(props.data as any[]);
 
   const gridProps: GridProps<SampleItem> = {
     ...props,

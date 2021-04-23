@@ -1,6 +1,5 @@
 import clsx from "clsx";
-import { isFunction } from "lodash";
-import isNil from "lodash-es/isNil";
+import { isFunction, isNil } from "lodash-es";
 import React, { useEffect, useReducer } from "react";
 
 import { TableHeader } from "./TableHeader";
