@@ -46,8 +46,9 @@ export const Grid: React.FC<GridProps<any>> = ({
   const classNames = clsx(className);
   
 
-  const somePluginsProvideItemAction = ext.actionItemList.length > 0;
-  const columnCount = columnDefinitions.length + (ext.actionItemList.length > 0 ? 1 : 0);
+  const hasActionsStart = ext.actionItemList.some(action=>action.position==="start");
+  const hasActionsEnd = ext.actionItemList.some(action=>action.position==="end" || action.position === undefined);
+  const columnCount = columnDefinitions.length + (hasActionsStart ? 1:0) + (hasActionsEnd ? 1:0);
 
   let actionListeners = {};
   plugins.forEach((plugin) => {
@@ -85,7 +86,8 @@ export const Grid: React.FC<GridProps<any>> = ({
       <TableRow
         key={id}
         actionsItem={ext.actionItemList}
-        actionsItemDisplay={somePluginsProvideItemAction}
+        hasActionsStart={hasActionsStart}
+        hasActionsEnd={hasActionsEnd}
         gridState={editState}
         item={it}
         onActionItemDispatch={{ listeners: actionListeners }}
@@ -116,7 +118,7 @@ export const Grid: React.FC<GridProps<any>> = ({
     <>
       {actionGenericComponents}
       <table className={classNames}>
-        <TableHeader displayActions={somePluginsProvideItemAction} columnDefinitions={columnDefinitions} />
+        <TableHeader hasActionsStart={hasActionsStart} hasActionsEnd={hasActionsEnd} columnDefinitions={columnDefinitions} />
         <tbody>{rows}</tbody>
         {footers && <tfoot>{footers}</tfoot>}
       </table>

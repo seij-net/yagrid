@@ -81,6 +81,7 @@ export type ActionItemHandler<T> = (action: TableAction, rowData: T, evt: any) =
 export type ActionGenericHandler = (action: TableAction, evt: any) => void
 export interface TableAction {
   name: string,
+  position?: "start"|"end"
   displayed?: (state: GridState, item: any) => boolean,
   render: (state: GridState, dispatch: TableActionDispatch) => ReactElement
 }

@@ -9,8 +9,10 @@ import { TableActionDispatch, TableActionList, GridColumnDefinitionInternal } fr
 export interface TableRowProps<T> {
   /** indique si la ligne est en cours d'édition */
   gridState: GridState;
-  /** indique si la ligne a des boutons d'action, cad. on affiche les boutons pour éditer sur une colonne*/
-  actionsItemDisplay: boolean;
+  /** tells if item has defined actions that must be displayed at start position */
+  hasActionsStart: boolean;
+  /** tells if item has defined actions that must be displayed at start position */
+  hasActionsEnd: boolean;
   /** Actions d'une ligne */
   actionsItem: TableActionList;
   /** données à afficher pour cette ligne */
@@ -29,7 +31,8 @@ export const TableRow: React.FC<TableRowProps<any>> = ({
   itemDefinitions,
   gridState,
   item,
-  actionsItemDisplay,
+  hasActionsStart,
+  hasActionsEnd,
   actionsItem,
   onActionItemDispatch,
   onEditItemChange,
@@ -51,20 +54,31 @@ export const TableRow: React.FC<TableRowProps<any>> = ({
     );
   });
 
-  const editableActionsCell = actionsItemDisplay ? (
-    <td key="__TABLE_EDITABLE__">
+  const startActionsCell = hasActionsStart ? (
+    <td key="__YAGRID_START_ACTIONS">
       <TableItemActions
         item={item}
         editingState={gridState}
-        actionItemList={actionsItem}
+        actionItemList={actionsItem.filter(it=>it.position==="start")}
+        handleAction={onActionItemDispatch}
+      />
+    </td>
+  ) : null;
+  const endActionsCell = hasActionsEnd ? (
+    <td key="__YAGRID_END_ACTIONS">
+      <TableItemActions
+        item={item}
+        editingState={gridState}
+        actionItemList={actionsItem.filter(it=>it.position==="end" || it.position===undefined)}
         handleAction={onActionItemDispatch}
       />
     </td>
   ) : null;
   return (
     <tr>
+      {startActionsCell}
       {cells}
-      {editableActionsCell}
+      {endActionsCell}
     </tr>
   );
 };
