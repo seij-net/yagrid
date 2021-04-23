@@ -63,8 +63,8 @@ export const TableRow: React.FC<TableRowProps<any>> = ({
   ) : null;
   return (
     <tr>
-      {editableActionsCell}
       {cells}
+      {editableActionsCell}
     </tr>
   );
 };

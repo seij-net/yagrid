@@ -83,7 +83,7 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
     onAddConfirm,
     labelAddButton = "➕",
     labelAddButtonConfirm = "➕",
-    labelAddButtonCancel = "⬅️",
+    labelAddButtonCancel = "⬅️"
   } = config;
   const ACTION_ADD: TableAction = {
     name: "add",
