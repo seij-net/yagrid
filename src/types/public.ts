@@ -56,19 +56,6 @@ export interface GridProps<T> {
    * (and in future releases an exception)
    */
   identifierProperty?: string,
-  /**
-   * Message to display if data is empty. 
-   * @deprecated must be in a plugin
-   */
-  emptyMessage?: string,
-  /**
-   * Tells if table is editable or not. As edition is a core feature, we use
-   * this to transmit information to edition plugins. 
-   * 
-   * For example, you may include your table in a form that makes the table
-   * not editable anymore while saving. This is the way to do it. 
-   */
-  editable: boolean,
 
   /**
    * Callback when an generic action is launched (from the toolbar for example)

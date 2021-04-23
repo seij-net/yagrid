@@ -18,7 +18,6 @@ export const Grid: React.FC<GridProps<any>> = ({
   data = [],
   className,
   identifierProperty = "id",
-  emptyMessage,
   plugins = [],
   types,
 }) => {
