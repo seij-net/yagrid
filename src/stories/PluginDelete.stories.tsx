@@ -20,7 +20,7 @@ const SAMPLE_DATA: SampleItem[] = [1, 2, 3, 4, 5, 6].map((it) => ({
 }));
 
 const TableEditable: React.FC<GridProps<any>> = (props) => {
-  const { data, sampleColumns, handleDelete } = useData(props.data as any[]);
+  const { data, sampleColumns, handleDelete } = useData(props.data);
   const gridProps: GridProps<SampleItem> = {
     ...props,
     columns: sampleColumns,

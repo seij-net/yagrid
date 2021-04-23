@@ -1,8 +1,8 @@
-import { isNil, maxBy } from "lodash-es";
+import { isFunction, isNil, maxBy } from "lodash-es";
 import React from "react";
 import { useState } from "react";
 
-import { GridColumnDefinition } from "../../types";
+import { GridColumnDefinition, GridDataSource } from "../../types";
 
 export interface SampleItem {
   id: number;
@@ -37,8 +37,9 @@ export const nextId = (data: SampleItem[]): number => {
   return maxId + 1;
 };
 
-export const useData = (initialData: SampleItem[] = []) => {
-  const [data, setData] = useState(initialData);
+export const useData = (initialData: GridDataSource<SampleItem> = []) => {
+  if (isFunction(initialData)) throw Error("Playground only supports synchronized data")
+  const [data, setData] = useState(initialData as SampleItem[]);
   const handleDelete = async (item: any) => setData((prevState) => prevState.filter((it) => it.id !== item.id));
   const handleEdit = async (item: any) =>
     setData((prevState) => prevState.map((it) => (it.id === item.id ? item : it)));
