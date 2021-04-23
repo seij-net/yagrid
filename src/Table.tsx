@@ -7,11 +7,11 @@ import { TableActionTrigger } from "./TableItemActions";
 import { TableRow } from "./TableRow";
 import { createReducer, createTableEditDefaultState } from "./TableState";
 import { TableTypesRegistryDefault } from "./TableTypesRegistry";
-import { GridColumnDefinitionInternal, GridPlugin, GridPluginList, GridProps, TableActionList } from "./types";
+import { GridColumnDefinitionInternal, GridProps } from "./types";
+import { createExtensionPoints } from "./utils/pluginCompose";
 
 const NOT_EDITABLE = (rowData: any) => false;
 const DEFAULT_TABLE_CLASS = "data";
-const DEFAULT_EMPTY_MESSAGE = "";
 
 export const Grid: React.FC<GridProps<any>> = ({
   columns: dataProperties,
@@ -39,18 +39,17 @@ export const Grid: React.FC<GridProps<any>> = ({
   const [columnDefinitions, setColumnDefinitions] = React.useState<GridColumnDefinitionInternal<any>[]>(
     columnDefinitionsDefault
   );
-  const reducer = createReducer(plugins.map((it) => it.reducer).filter((it) => !isNil(it)));
+  
+  const ext = createExtensionPoints(plugins)
+
+  const reducer = createReducer(ext.reducer);
   const [editState, dispatchEditState] = useReducer(reducer, createTableEditDefaultState(identifierProperty));
 
   const classNames = clsx(className, DEFAULT_TABLE_CLASS);
-  const emptyMessageOrDefault = emptyMessage || DEFAULT_EMPTY_MESSAGE;
+  
 
-  const actionGenericListAll: TableActionList = pluginCompose(plugins, (plugin) => plugin.actionGenericList);
-  const actionItemListAll: TableActionList = pluginCompose(plugins, (plugin) => plugin.actionItemList, []);
-
-  const somePluginsProvideItemAction = actionItemListAll.length > 0;
-  const somePluginsProvideGenericActions = actionGenericListAll.length > 0;
-  const columnCount = columnDefinitions.length + (actionItemListAll.length > 0 ? 1 : 0);
+  const somePluginsProvideItemAction = ext.actionItemList.length > 0;
+  const columnCount = columnDefinitions.length + (ext.actionItemList.length > 0 ? 1 : 0);
 
   let actionListeners = {};
   plugins.forEach((plugin) => {
@@ -60,7 +59,7 @@ export const Grid: React.FC<GridProps<any>> = ({
     }
   });
 
-  const actionGenericComponents = actionGenericListAll.map((it) => {
+  const actionGenericComponents = ext.actionGenericList.map((it) => {
     return (
       <TableActionTrigger
         key={it.name}
@@ -73,7 +72,8 @@ export const Grid: React.FC<GridProps<any>> = ({
 
   const handleEditItemChange = (newItem: any) => dispatchEditState({ type: "item_change", item: newItem });
 
-  const dataListTransform = plugins.reduce((acc, current) => current.dataListTransform(editState, acc), data);
+  
+  const dataListTransform = ext.dataListTransform.reduce((acc, current) => current(editState, acc), data);
 
   const rows = dataListTransform.map((it) => {
     const id = it[identifierProperty];
@@ -86,7 +86,7 @@ export const Grid: React.FC<GridProps<any>> = ({
     return (
       <TableRow
         key={id}
-        actionsItem={actionItemListAll}
+        actionsItem={ext.actionItemList}
         actionsItemDisplay={somePluginsProvideItemAction}
         gridState={editState}
         item={it}
@@ -127,15 +127,3 @@ export const Grid: React.FC<GridProps<any>> = ({
 };
 
 export const TableEdixit: React.FC<GridProps<any>> = (props) => <Grid {...props} className="data" />;
-
-function pluginCompose<T, R>(
-  plugins: GridPluginList<T>,
-  extract: (plugin: GridPlugin<T>) => (R[]|undefined),
-  initial?: R[] | null
-): R[] {
-  const initialSafe = isNil(initial) ? ([] as R[]) : initial;
-  return plugins.reduce((acc, current) =>  {
-    const c = extract(current)
-    return isNil(c) ? acc : [...acc, ...c]
-  }, initialSafe);
-}

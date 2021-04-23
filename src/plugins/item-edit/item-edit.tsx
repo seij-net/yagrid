@@ -124,6 +124,5 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
         }
       },
     }),
-    dataListTransform: (editState, data) => data,
   };
 }

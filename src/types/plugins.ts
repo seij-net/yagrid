@@ -2,6 +2,8 @@ import { Dispatch, ReactNode } from "react";
 import { TableActionList } from "./public";
 import { Action, GridState, GridStateReducer } from "./state";
 
+export type DataListTransformer<T> = (editState: GridState, data: T[]) => T[]
+
 /**
  * Grid plugin definition
  * 
@@ -13,9 +15,13 @@ export interface GridPlugin<T> {
    **/
   name: string
   /**
-   * Reducer to apply to grid state
+   * Extension point: state reducer to apply to grid state
+   * 
+   * Given a state and an action, resolves the next state
+   * 
+   * If action is unknown to this reducer you must return the original state
    */
-  reducer: GridStateReducer
+  reducer?: GridStateReducer
   /**
    * Data transformer to apply before rendering already fetched data. 
    * This is a data post-processor. Note that it is very dangerous to 
@@ -25,7 +31,7 @@ export interface GridPlugin<T> {
    * For example : 
    * (data) => needAlteration ? newData : data
    */
-  dataListTransform: (editState: GridState, data: T[]) => T[],
+  dataListTransform?: DataListTransformer<T>,
   /**
    * Returns true if the specified cell is currently being edited
    */
@@ -67,3 +73,12 @@ export interface FooterExtensionPoint<T> {
  */
 export type GridPluginList<T> = GridPlugin<T>[]
 
+/**
+ * All extension points cumulated
+ */
+export interface ExtensionPoints<T> {
+  reducer: GridStateReducer[],
+  actionGenericList: TableActionList,
+  actionItemList: TableActionList,
+  dataListTransform: DataListTransformer<T>[]
+}

@@ -153,7 +153,6 @@ export function create<T>(config: Config<T>): GridPlugin<any> {
   return {
     name: "edit_delete",
     reducer: reducer,
-    dataListTransform: (editState, data) => data,
     actionGenericList: [],
     actionItemList: [ACTION_EDIT_DELETE],
     actionItemListeners: (editState, dispatch, item) => {
