@@ -1,8 +1,7 @@
 import { isFunction, isNil } from "lodash-es";
-import React, { ReactNode, ReactNodeArray, useEffect, useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import { createReducer, createTableEditDefaultState } from "./TableState";
 import { TableTypesRegistry, TableTypesRegistryDefault } from "./TableTypesRegistry";
-
 import {
   ExtensionPoints,
   GridColumnDefinition,
@@ -13,7 +12,6 @@ import {
   TableAction,
 } from "./types";
 import { createExtensionPoints } from "./utils/pluginCompose";
-import { TableActionList } from "./index";
 
 const NOT_EDITABLE = () => false;
 
@@ -27,7 +25,6 @@ interface GridContext<T> {
   loadingState: LoadingState;
   columnDefinitions: GridColumnDefinitionInternal<T>[];
   types: TableTypesRegistry;
-
   extensions: ExtensionPoints<T>;
   identifierProperty: string;
   state: GridState;

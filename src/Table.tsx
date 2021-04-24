@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import React from "react";
+import React, { Factory } from "react";
 import { GridProvider, useGrid, useGridItem, useGridItemProperty } from "./GridContext";
+
 import { GridProps } from "./types";
 
 enum LoadingState {
@@ -28,7 +29,6 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
   const {
     loadingState,
     columnDefinitions,
-    resolvedData,
     extensions,
     identifierProperty,
     state,
@@ -43,21 +43,8 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
     (action) => action.position === "end" || action.position === undefined
   );
   const columnCount = columnDefinitions.length + (hasActionsStart ? 1 : 0) + (hasActionsEnd ? 1 : 0);
-
-  const footers = plugins
-    .map((it) => {
-      if (it.footer?.span) {
-        return (
-          <tr key={it.name}>
-            <td colSpan={columnCount}>{it.footer.span(resolvedData)}</td>
-          </tr>
-        );
-      }
-      if (it.footer?.rows) {
-        return it.footer?.rows(resolvedData, columnCount);
-      }
-    })
-    .filter((it) => it);
+  const footerRows = extensions.footerRows.map((it) => it(dataListTransform, columnCount));
+  const footerSpans = extensions.footerSpan.map((it) => it(dataListTransform));
 
   return (
     <>
@@ -129,7 +116,12 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
             })}
           </tbody>
         )}
-        {footers && <tfoot>{footers}</tfoot>}
+        {footerRows.length + footerSpans.length > 0 && (
+          <tfoot>
+            {footerRows}
+            {footerSpans.length > 0 && <tr><td colSpan={columnCount}>{footerSpans}</td></tr> }
+          </tfoot>
+        )}
       </table>
     </>
   );

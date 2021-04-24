@@ -45,9 +45,13 @@ export interface GridPlugin<T> {
    */
   actionItemList?: TableActionList,
   /**
-   * Footer extension point
+   * Footer extension point, element to display on full span
    */
-  footer?: FooterExtensionPoint<T>,
+  footerSpan?: FooterSpanExtensionPoint<T>,
+  /**
+   * Footer rows, additional rows that the extension point may produce
+   */
+  footerRows?: FooterRowsExtensionPoint<T>
   /**
    * Extra row items that shall be placed in a container below each row
    * Takes item currently displayed and returns (or not) an extra item
@@ -59,19 +63,16 @@ export interface GridPlugin<T> {
 /**
  * Extension point for footer plugins
  */
-export interface FooterExtensionPoint<T> {
-  /** Element to display on full span */
-  span?: (data: T[]) => ReactNode,
-  /** Additional rows that the extension point may produce */
-  rows?: (data: T[], columnCount: number) => ReactNode
-}
+export type FooterSpanExtensionPoint<T> = (data: T[]) => ReactNode
+
+export type FooterRowsExtensionPoint<T> = (data: T[], columnCount: number) => ReactNode
 
 /**
  * Displays extra items below displayed item
  */
 export type ExtraItemExtension<T> = (item: T) => ReactNode
 
-export type EditingExtensionPoint<T> =  (gridstate: GridState, item: T, itemPropertyName: string) => boolean
+export type EditingExtensionPoint<T> = (gridstate: GridState, item: T, itemPropertyName: string) => boolean
 
 /**
  * List of Grid plugins
@@ -88,5 +89,7 @@ export interface ExtensionPoints<T> {
   actionItemList: TableActionList,
   dataListTransform: DataListTransformer<T>[],
   extraItem: ExtraItemExtension<T>[],
-  isEditing: EditingExtensionPoint<T>[]
+  isEditing: EditingExtensionPoint<T>[],
+  footerSpan: FooterSpanExtensionPoint<T>[],
+  footerRows: FooterRowsExtensionPoint<T>[]
 }

@@ -8,6 +8,7 @@
 
 ## 0.1.7
 
+* 📢 footer extensions points revisited
 * 📢 old actionItemHandlers are removed from plugin definition
 * new simplier organization for action buttons
 * usage of React context for further composition
