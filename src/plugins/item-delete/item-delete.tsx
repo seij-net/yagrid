@@ -171,7 +171,6 @@ export function create<T>(config: Config<T>): GridPlugin<any> {
   return {
     name: "edit_delete",
     reducer: reducer,
-    actionGenericList: [],
     actionItemList: [
       {
         name: "edit_delete",
