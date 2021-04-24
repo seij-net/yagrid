@@ -48,7 +48,7 @@
     "build": "rollup --config",
     "test": "jest",
     "__publish": "npm publish --access public",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "BROWSER=none start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
   "repository": {

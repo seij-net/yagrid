@@ -1,9 +1,8 @@
 import clsx from "clsx";
 import React from "react";
 import { GridProvider, useGrid } from "./GridContext";
-import { TableHeader } from "./TableHeader";
 import { TableRow } from "./TableRow";
-import { GridProps, GridState, TableGenericAction, TableActionDispatch } from "./types";
+import { GridProps, GridState, TableGenericAction } from "./types";
 
 enum LoadingState {
   init,
@@ -85,20 +84,19 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
 
   return (
     <>
-      {extensions.actionGenericList.map(action => (
-        <TableActionTrigger
-          key={action.name}
-          action={action}
-          state={state}
-          dispatch={dispatch}
-        />
+      {extensions.actionGenericList.map((action) => (
+        <TableActionTrigger key={action.name} action={action} state={state} dispatch={dispatch} />
       ))}
       <table className={classNames}>
-        <TableHeader
-          hasActionsStart={hasActionsStart}
-          hasActionsEnd={hasActionsEnd}
-          columnDefinitions={columnDefinitions}
-        />
+        <thead>
+          <tr>
+            {hasActionsStart && <th key="__YAGRID_START_ACTIONS"></th>}
+            {columnDefinitions.map((it) => (
+              <th key={it.name}>{it.label}</th>
+            ))}
+            {hasActionsEnd && <th key="__YAGRID_END_ACTIONS"></th>}
+          </tr>
+        </thead>
         {loadingState !== LoadingState.loaded && (
           <tbody>
             <tr>
@@ -114,9 +112,9 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
 };
 
 export const TableActionTrigger: React.FC<{
-  action: TableGenericAction,
-  state: GridState,
-  dispatch: React.Dispatch<any>
+  action: TableGenericAction;
+  state: GridState;
+  dispatch: React.Dispatch<any>;
 }> = ({ action, state, dispatch }) => {
   return action.render(state, dispatch);
 };
