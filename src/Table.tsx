@@ -3,7 +3,6 @@ import React from "react";
 import { GridProvider, useGrid, useGridItem, useGridItemProperty } from "./GridContext";
 import { GridProps } from "./types";
 
-
 enum LoadingState {
   init,
   pending,
