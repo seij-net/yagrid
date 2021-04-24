@@ -2,7 +2,7 @@ import React from "react";
 
 import { TableCell } from "./TableCell";
 
-import { ExtraItemExtension, GridColumnDefinitionInternal, GridPluginList, GridState, TableActionList } from "./types";
+import { ExtraItemExtension, GridColumnDefinitionInternal, GridPluginList, GridState } from "./types";
 import { TableTypesRegistry } from "./TableTypesRegistry";
 import { isNil } from "lodash-es";
 import { useGrid } from "./GridContext";
@@ -14,8 +14,6 @@ export interface TableRowProps<T> {
   hasActionsStart: boolean;
   /** tells if item has defined actions that must be displayed at start position */
   hasActionsEnd: boolean;
-  /** Actions d'une ligne */
-  actionsItem: TableActionList;
   /** données à afficher pour cette ligne */
   item: T;
   /** définition des colonnes */
@@ -31,33 +29,20 @@ export interface TableRowProps<T> {
   onEditItemChange: (newItem: T) => void;
 }
 
-export const TableRow: React.FC<TableRowProps<any>> = ({
-                                                         columnDefinitions,
-                                                         gridState,
-                                                         item,
-                                                         hasActionsStart,
-                                                         hasActionsEnd,
-                                                         actionsItem,
-                                                         extraItems,
-                                                         columnCount,
-                                                         onEditItemChange,
-                                                         plugins
-                                                       }) => {
-  const startActionsCell = hasActionsStart && (
-    <td key="__YAGRID_START_ACTIONS">
-      <TableItemActions item={item} actionItemList={actionsItem.filter((it) => it.position === "start")} />
-    </td>
-  );
-  const endActionsCell = hasActionsEnd && (
-    <td key="__YAGRID_END_ACTIONS">
-      <TableItemActions
-        item={item}
-        actionItemList={actionsItem.filter((it) => it.position === "end" || it.position === undefined)}
-      />
-    </td>
-  );
+export const TableRow: React.FC<TableRowProps<any>> = (
+  {
+    columnDefinitions,
+    gridState,
+    item,
+    hasActionsStart,
+    hasActionsEnd,
+    extraItems,
+    columnCount,
+    onEditItemChange,
+    plugins
+  }) => {
   const extraItemList = extraItems.map((ext) => ext(item)).filter((extra) => !isNil(extra));
-
+  const { selectDisplayedItemActions } = useGrid();
   const extraItemRow =
     extraItemList.length > 0 ? (
       <tr key="__yagrid_item_extra">
@@ -66,7 +51,15 @@ export const TableRow: React.FC<TableRowProps<any>> = ({
     ) : null;
   const regularRow = (
     <tr key="__yagrid_item">
-      {startActionsCell}
+      {hasActionsStart && (
+        <td key="__YAGRID_START_ACTIONS">
+          {
+            selectDisplayedItemActions(item)
+              .filter((it) => it.position === "start")
+              .map(action => <span key={action.name}>{action.renderItem(item)}</span>)
+          }
+        </td>
+      )}
       {columnDefinitions.map((def) => (
         <TableCell
           key={def.name}
@@ -79,37 +72,15 @@ export const TableRow: React.FC<TableRowProps<any>> = ({
           onEditItemChange={onEditItemChange}
         />
       ))}
-      {endActionsCell}
+      {hasActionsEnd && (
+        <td key="__YAGRID_END_ACTIONS">
+          {selectDisplayedItemActions(item)
+            .filter(it => it.position === "end" || it.position === undefined)
+            .map(action => <span key={action.name}>{action.renderItem(item)}</span>)}
+        </td>
+      )}
     </tr>
   );
 
-  return extraItemRow ? (
-    <>
-      {regularRow}
-      {extraItemRow}
-    </>
-  ) : (
-    regularRow
-  );
-};
-
-export const TableItemActions: React.FC<{
-  item: any;
-  actionItemList: TableActionList;
-}> = ({ actionItemList, item }) => {
-  const { state } = useGrid();
-  const actionsToDisplay = actionItemList.filter((action) => {
-    // Si aucune condition n'existe pour l'action, on l'affiche quoi qu'il arrive
-    if (isNil(action.displayed)) return true;
-    const displayed = action.displayed(state, item);
-    return displayed;
-  });
-
-  return (
-    <>
-      {actionsToDisplay.map((it) => (
-        <span key={it.name}>{it.renderItem ? it.renderItem(item) : null}</span>
-      ))}
-    </>
-  );
+  return <>{regularRow}{extraItemRow && extraItemRow}</>;
 };

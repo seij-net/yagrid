@@ -2,6 +2,7 @@ import { isFunction, isNil } from "lodash-es";
 import React, { useEffect, useReducer } from "react";
 import { createReducer, createTableEditDefaultState } from "./TableState";
 import { TableTypesRegistry, TableTypesRegistryDefault } from "./TableTypesRegistry";
+
 import {
   ExtensionPoints,
   GridColumnDefinition,
@@ -11,6 +12,7 @@ import {
   GridState
 } from "./types";
 import { createExtensionPoints } from "./utils/pluginCompose";
+import { TableActionList } from "./index";
 
 const NOT_EDITABLE = () => false;
 
@@ -33,7 +35,8 @@ interface GridContext<T> {
   /** Data resolved before transform */
   resolvedData: T[],
   /** Data transformed by plugins, this is the data to display */
-  dataListTransform: T[]
+  dataListTransform: T[],
+  selectDisplayedItemActions: (item: T) => TableActionList
 }
 
 const defaultContext: GridContext<any> = {
@@ -48,7 +51,8 @@ const defaultContext: GridContext<any> = {
   },
   handleEditItemChange: () => {
   },
-  dataListTransform: []
+  dataListTransform: [],
+  selectDisplayedItemActions: () => []
 };
 
 const GridContextInternal = React.createContext<GridContext<any>>(defaultContext);
@@ -148,7 +152,8 @@ export const GridProvider: React.FC<GridProviderProps<any>> = (
     state: editState,
     dispatch: dispatchEditState,
     handleEditItemChange,
-    dataListTransform
+    dataListTransform,
+    selectDisplayedItemActions: (item: any) => extensions.actionItemList.filter(a => a.displayed ? a.displayed(editState, item) : true)
   };
 
   return <GridContextInternal.Provider value={ctx}>{children}</GridContextInternal.Provider>;

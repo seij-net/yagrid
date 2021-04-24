@@ -63,9 +63,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
 
   return (
     <>
-      {extensions.actionGenericList.map((action) => (
-        <TableActionTrigger key={action.name} action={action} state={state} dispatch={dispatch} />
-      ))}
+      {extensions.actionGenericList.map(action => action.render(state, dispatch))}
       <table className={classNames}>
         <thead>
         <tr>
@@ -88,7 +86,6 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
           {dataListTransform.map((it) => (
             <TableRow
               key={it[identifierProperty]}
-              actionsItem={extensions.actionItemList}
               hasActionsStart={hasActionsStart}
               hasActionsEnd={hasActionsEnd}
               gridState={state}
@@ -109,10 +106,3 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
   );
 };
 
-export const TableActionTrigger: React.FC<{
-  action: TableGenericAction;
-  state: GridState;
-  dispatch: React.Dispatch<any>;
-}> = ({ action, state, dispatch }) => {
-  return action.render(state, dispatch);
-};
