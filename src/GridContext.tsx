@@ -12,7 +12,7 @@ import {
 } from "./types";
 import { createExtensionPoints } from "./utils/pluginCompose";
 
-const NOT_EDITABLE = (rowData: any) => false;
+const NOT_EDITABLE = () => false;
 
 export enum LoadingState {
   init,
@@ -69,14 +69,15 @@ interface GridProviderProps<T> {
   plugins: GridPluginList<T>
 }
 
-export const GridProvider: React.FC<GridProviderProps<any>> = ({
-                                                                 identifierProperty = "id",
-                                                                 columns: dataProperties,
-                                                                 data,
-                                                                 types,
-                                                                 plugins,
-                                                                 children
-                                                               }) => {
+export const GridProvider: React.FC<GridProviderProps<any>> = (
+  {
+    identifierProperty = "id",
+    columns: dataProperties,
+    data,
+    types,
+    plugins,
+    children
+  }) => {
 
   // Type system
   const typesOrDefault = types || TableTypesRegistryDefault;
@@ -99,7 +100,7 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({
     columnDefinitionsDefault
   );
 
-  // loading mamangement
+  // loading management
   const [loadingState, setLoadingState] = React.useState<LoadingState>(LoadingState.init);
 
   // data resolution management
