@@ -7,7 +7,7 @@ import { customTypes, YAGridPlayground } from "./YAGridPlayground";
 
 export default {
   title: "Plugin/TableFooter",
-  component: YAGridPlayground,
+  component: YAGridPlayground
 } as Meta;
 
 const SAMPLE_DATA: SampleItem[] = [1, 2, 3, 4, 5, 6].map((it) => ({
@@ -15,7 +15,7 @@ const SAMPLE_DATA: SampleItem[] = [1, 2, 3, 4, 5, 6].map((it) => ({
   label: "item " + it,
   description: "",
   amount: it * 10,
-  cb: true,
+  cb: true
 }));
 
 export const Footer: Story<{}> = (props) => {
@@ -39,9 +39,9 @@ export const Footer: Story<{}> = (props) => {
               <td>{data.reduce((acc, item) => acc + (item.cb ? 1 : 0), 0)}</td>
             </tr>
           </>
-        ),
-      }),
-    ],
+        )
+      })
+    ]
   };
   return <YAGridPlayground {...gridProps} />;
 };

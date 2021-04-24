@@ -7,6 +7,7 @@ import "purecss/build/tables.css";
 import "./YAGridPlayground.css";
 import { Grid } from "../Table";
 import { renderToReactElement, TypesRegistryBuilder } from "../TableTypesRegistry";
+
 export const YAGridPlayground: React.FC<GridProps<any>> = ({ children, ...args }) => {
   return (
     <div>
@@ -26,25 +27,25 @@ const NumberFormatInt = new Intl.NumberFormat(undefined, { minimumFractionDigits
 const NumberFormatDecimal = new Intl.NumberFormat(undefined, {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
-  style: "decimal",
+  style: "decimal"
 });
 const NumberFormatMonetaryAmountInt = new Intl.NumberFormat(undefined, {
   minimumFractionDigits: 0,
   style: "currency",
   currencyDisplay: "narrowSymbol",
-  currency: "EUR",
+  currency: "EUR"
 });
 const NumberFormatMonetaryAmountDecimal = new Intl.NumberFormat(undefined, {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
   style: "currency",
   currencyDisplay: "narrowSymbol",
-  currency: "EUR",
+  currency: "EUR"
 });
 const NumberFormatPercent = new Intl.NumberFormat(undefined, {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
-  style: "percent",
+  style: "percent"
 });
 
 const INT_RENDERER = renderToReactElement((data: any) => NumberFormatInt.format(data));

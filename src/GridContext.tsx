@@ -1,9 +1,15 @@
 import { isFunction, isNil } from "lodash-es";
 import React, { useEffect, useReducer } from "react";
-import { create } from "./plugins/item-edit";
 import { createReducer, createTableEditDefaultState } from "./TableState";
 import { TableTypesRegistry, TableTypesRegistryDefault } from "./TableTypesRegistry";
-import { ExtensionPoints, GridColumnDefinition, GridColumnDefinitionInternal, GridDataSource, GridPluginList, GridState } from "./types";
+import {
+  ExtensionPoints,
+  GridColumnDefinition,
+  GridColumnDefinitionInternal,
+  GridDataSource,
+  GridPluginList,
+  GridState
+} from "./types";
 import { createExtensionPoints } from "./utils/pluginCompose";
 
 const NOT_EDITABLE = (rowData: any) => false;
@@ -17,8 +23,8 @@ export enum LoadingState {
 interface GridContext<T> {
   loadingState: LoadingState;
   columnDefinitions: GridColumnDefinitionInternal<T>[],
-  types:TableTypesRegistry,
-  
+  types: TableTypesRegistry,
+
   extensions: ExtensionPoints<T>,
   identifierProperty: string,
   state: GridState,
@@ -33,14 +39,16 @@ interface GridContext<T> {
 const defaultContext: GridContext<any> = {
   loadingState: LoadingState.init,
   columnDefinitions: [],
-  types:TableTypesRegistryDefault,
+  types: TableTypesRegistryDefault,
   resolvedData: [],
   extensions: createExtensionPoints([]),
   identifierProperty: "id",
   state: createTableEditDefaultState("id"),
-  dispatch: ()=>{},
-  handleEditItemChange: () => {},
-  dataListTransform:[]
+  dispatch: () => {
+  },
+  handleEditItemChange: () => {
+  },
+  dataListTransform: []
 };
 
 const GridContextInternal = React.createContext<GridContext<any>>(defaultContext);
@@ -61,15 +69,15 @@ interface GridProviderProps<T> {
   plugins: GridPluginList<T>
 }
 
-export const GridProvider: React.FC<GridProviderProps<any>> = ({ 
-  identifierProperty = "id",
-  columns: dataProperties, 
-  data,
-  types, 
-  plugins,
-  children 
-}) => {
-  
+export const GridProvider: React.FC<GridProviderProps<any>> = ({
+                                                                 identifierProperty = "id",
+                                                                 columns: dataProperties,
+                                                                 data,
+                                                                 types,
+                                                                 plugins,
+                                                                 children
+                                                               }) => {
+
   // Type system
   const typesOrDefault = types || TableTypesRegistryDefault;
 
@@ -80,11 +88,11 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({
     type: col.type ?? "string",
     render: isNil(col.render)
       ? // if no render is specified, use then render from type registry and bind it automatically with column name
-        (item) => typesOrDefault.find(col.type || "string").renderer(item[col.name])
+      (item) => typesOrDefault.find(col.type || "string").renderer(item[col.name])
       : // if a render function is specified, use it
-        col.render,
+      col.render,
     editable: col.editable || NOT_EDITABLE,
-    editor: col.editor,
+    editor: col.editor
   }));
 
   const [columnDefinitions, setColumnDefinitions] = React.useState<GridColumnDefinitionInternal<any>[]>(
@@ -133,10 +141,10 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({
     columnDefinitions,
     loadingState,
     types: typesOrDefault,
-    resolvedData:resolvedData,
+    resolvedData: resolvedData,
     extensions: extensions,
     identifierProperty: identifierProperty,
-    state: editState, 
+    state: editState,
     dispatch: dispatchEditState,
     handleEditItemChange,
     dataListTransform

@@ -1,9 +1,9 @@
 import { cloneDeep } from "lodash-es";
-import React, { Dispatch, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { LoadingState, useGrid } from "../../GridContext";
 
 import { actionReset, actionToState } from "../../TableState";
-import { Action, GridPlugin, GridState, GridStateReducer, TableAction, TableGenericAction } from "../../types";
+import { GridPlugin, GridState, GridStateReducer } from "../../types";
 
 // -----------------------------------------------------------------------------
 // Reducer
@@ -14,12 +14,14 @@ function actionAdd(prevState: GridState, item: any): GridState {
     ...prevState,
     editedItemId: item[prevState.identifierProperty],
     editedItemState: "add",
-    editedItemValue: cloneDeep(item),
+    editedItemValue: cloneDeep(item)
   };
 }
+
 function actionAddCommitFailed(prevState: GridState, error: Error): GridState {
   return { ...prevState, editedItemState: "add", error: error };
 }
+
 export const reducer: GridStateReducer = (prevState, action) => {
   let result;
   switch (action.type) {
@@ -74,14 +76,15 @@ export interface Config<T> {
   labelAddButtonCancel?: ReactNode;
 }
 
-export interface TableEditorAddPlugin<T> extends GridPlugin<T> {}
+export interface TableEditorAddPlugin<T> extends GridPlugin<T> {
+}
 
 export type PluginFactory<T = {}> = (config: Config<T>) => TableEditorAddPlugin<T>;
 
 const ActionAdd: React.FC<Pick<Config<any>, "onAddTemplate" | "labelAddButton">> = ({
-  labelAddButton,
-  onAddTemplate,
-}) => {
+                                                                                      labelAddButton,
+                                                                                      onAddTemplate
+                                                                                    }) => {
   const { state, dispatch, loadingState } = useGrid();
   const onAddItem = async () => {
     try {
@@ -100,9 +103,9 @@ const ActionAdd: React.FC<Pick<Config<any>, "onAddTemplate" | "labelAddButton">>
 };
 
 const ActionAddOk: React.FC<Pick<Config<any>, "labelAddButtonConfirm" | "onAddConfirm">> = ({
-  labelAddButtonConfirm,
-  onAddConfirm,
-}) => {
+                                                                                              labelAddButtonConfirm,
+                                                                                              onAddConfirm
+                                                                                            }) => {
   const { state, dispatch } = useGrid();
   const onAddItemConfirm = async () => {
     try {
@@ -130,7 +133,7 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
     onAddConfirm,
     labelAddButton = "➕",
     labelAddButtonConfirm = "➕",
-    labelAddButtonCancel = "⬅️",
+    labelAddButtonCancel = "⬅️"
   } = config;
 
   return {
@@ -139,8 +142,8 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
     actionGenericList: [
       {
         name: "add",
-        render: () => <ActionAdd labelAddButton={labelAddButton} onAddTemplate={onAddTemplate} />,
-      },
+        render: () => <ActionAdd labelAddButton={labelAddButton} onAddTemplate={onAddTemplate} />
+      }
     ],
     actionItemList: [
       {
@@ -148,13 +151,13 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
         displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
         renderItem: (item) => (
           <ActionAddOk onAddConfirm={onAddConfirm} labelAddButtonConfirm={labelAddButtonConfirm} />
-        ),
+        )
       },
       {
         name: "add_cancel",
         displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
-        renderItem: (item) => <ActionAddCancel labelAddButtonCancel={labelAddButtonCancel} />,
-      },
+        renderItem: (item) => <ActionAddCancel labelAddButtonCancel={labelAddButtonCancel} />
+      }
     ],
     isEditing: (state, item, itemPropertyName) =>
       (item as any)[state.identifierProperty] === state.editedItemId &&
@@ -168,6 +171,6 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
         newList.push(...data);
       }
       return newList;
-    },
+    }
   };
 }

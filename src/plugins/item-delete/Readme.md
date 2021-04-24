@@ -6,7 +6,6 @@
 * the button provides a confirm/cancel option
 * callback with promise to effectively delete the item and a special state during promise resolution
 
-
 ## Configuration
 
 | name | type | description |

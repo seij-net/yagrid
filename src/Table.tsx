@@ -35,7 +35,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
     state: state,
     dispatch: dispatch,
     handleEditItemChange,
-    dataListTransform,
+    dataListTransform
   } = useGrid();
 
   const classNames = clsx(className);
@@ -46,27 +46,6 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
   );
   const columnCount = columnDefinitions.length + (hasActionsStart ? 1 : 0) + (hasActionsEnd ? 1 : 0);
 
-  const rows = dataListTransform.map((it) => {
-    const id = it[identifierProperty];
-
-    return (
-      <TableRow
-        key={id}
-        actionsItem={extensions.actionItemList}
-        hasActionsStart={hasActionsStart}
-        hasActionsEnd={hasActionsEnd}
-        gridState={state}
-        dispatch={dispatch}
-        item={it}
-        extraItems={extensions.extraItem}
-        columnCount={columnCount}
-        onEditItemChange={handleEditItemChange}
-        itemDefinitions={columnDefinitions}
-        types={types}
-        plugins={plugins}
-      />
-    );
-  });
   const footers = plugins
     .map((it) => {
       if (it.footer?.span) {
@@ -89,22 +68,41 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
       ))}
       <table className={classNames}>
         <thead>
-          <tr>
-            {hasActionsStart && <th key="__YAGRID_START_ACTIONS"></th>}
-            {columnDefinitions.map((it) => (
-              <th key={it.name}>{it.label}</th>
-            ))}
-            {hasActionsEnd && <th key="__YAGRID_END_ACTIONS"></th>}
-          </tr>
+        <tr>
+          {hasActionsStart && <th key="__YAGRID_START_ACTIONS"></th>}
+          {columnDefinitions.map((it) => (
+            <th key={it.name}>{it.label}</th>
+          ))}
+          {hasActionsEnd && <th key="__YAGRID_END_ACTIONS"></th>}
+        </tr>
         </thead>
         {loadingState !== LoadingState.loaded && (
           <tbody>
-            <tr>
-              <td colSpan={columnCount}>Loading...</td>
-            </tr>
+          <tr>
+            <td colSpan={columnCount}>Loading...</td>
+          </tr>
           </tbody>
         )}
-        {loadingState === LoadingState.loaded && <tbody>{rows}</tbody>}
+        {loadingState === LoadingState.loaded && (
+          <tbody>
+          {dataListTransform.map((it) => (
+            <TableRow
+              key={it[identifierProperty]}
+              actionsItem={extensions.actionItemList}
+              hasActionsStart={hasActionsStart}
+              hasActionsEnd={hasActionsEnd}
+              gridState={state}
+              item={it}
+              extraItems={extensions.extraItem}
+              columnCount={columnCount}
+              onEditItemChange={handleEditItemChange}
+              columnDefinitions={columnDefinitions}
+              types={types}
+              plugins={plugins}
+            />
+          ))}
+          </tbody>
+        )}
         {footers && <tfoot>{footers}</tfoot>}
       </table>
     </>

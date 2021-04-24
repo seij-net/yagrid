@@ -1,26 +1,26 @@
 import { Meta, Story } from "@storybook/react";
 import { isNil } from "lodash-es";
-import React, { FC } from "react";
+import React from "react";
 
-import { ItemDelete, ItemEdit, ItemAdd, GridProps } from "..";
-import { GridLayoutProps } from "../types";
-import { SampleItem, useData, sampledata } from "./commons/SampleItem";
+import { GridProps, ItemAdd, ItemDelete, ItemEdit } from "..";
+import { sampledata, SampleItem, useData } from "./commons/SampleItem";
 import { customTypes, YAGridPlayground } from "./YAGridPlayground";
 
 export default {
   title: "Playground/YAGridPlayground/LazyLoading",
-  component: YAGridPlayground,
+  component: YAGridPlayground
 } as Meta;
-function delay(ms:number) {
+
+function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
-  const { data, sampleColumns, handleDelete, handleEdit, handleAddTemplate, handleAddConfirm} = useData(sampledata)
+  const { data, sampleColumns, handleDelete, handleEdit, handleAddTemplate, handleAddConfirm } = useData(sampledata);
 
   const gridProps: GridProps<SampleItem> = {
     ...props,
-    columns:sampleColumns,
+    columns: sampleColumns,
     data: data,
     types: customTypes,
     plugins: [
@@ -30,13 +30,13 @@ export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
       }),
       ItemAdd.create({
         onAddTemplate: handleAddTemplate,
-        onAddConfirm: handleAddConfirm,
+        onAddConfirm: handleAddConfirm
       }),
       ItemDelete.create({
         onDelete: handleDelete,
         deletable: (item) => isNil(item.deletable) ? true : item.deletable
-      }),
-    ],
+      })
+    ]
   };
   return <YAGridPlayground {...gridProps} />;
 };

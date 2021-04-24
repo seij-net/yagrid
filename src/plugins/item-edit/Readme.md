@@ -1,12 +1,11 @@
 # item-edit
 
-Provides editing features to cells. 
+Provides editing features to cells.
 
 * a button at start of item switches item in edit mode
 * cancel and ok button as well as "loading" state after ok button is pressed
 * can configure which cells are editabled based on current item
-* item changes are put in a separate temporary item during the changes, unless
-  user clicks on "ok" button. 
+* item changes are put in a separate temporary item during the changes, unless user clicks on "ok" button.
 * when user finishes, a callback can be used to save an item with a Promise
 
 ## Configuration

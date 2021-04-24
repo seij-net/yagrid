@@ -1,5 +1,5 @@
 import { Meta, Story } from "@storybook/react";
-import React, { FC, useState } from "react";
+import React, { useState } from "react";
 
 import { GridProps, TableFooter } from "..";
 import { sampledata, SampleItem, useData } from "./commons/SampleItem";
@@ -7,7 +7,7 @@ import { customTypes, YAGridPlayground } from "./YAGridPlayground";
 
 export default {
   title: "Playground/YAGridPlayground/CustomPlugins",
-  component: YAGridPlayground,
+  component: YAGridPlayground
 } as Meta;
 
 export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
@@ -32,16 +32,16 @@ export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
             position: "start",
             renderItem: (item) => (
               <span onClick={() => handleOpenClose(item.id)}>{opened === item.id ? "⬇️" : "➡️"}</span>
-            ),
+            )
           },
           {
             name: "my-action-end",
             position: "end",
             renderItem: (item) => (
               <span onClick={() => handleOpenClose(item.id)}>{opened === item.id ? "⬇️" : "➡️"}</span>
-            ),
-          },
-        ],
+            )
+          }
+        ]
       },
       TableFooter.create({
         rows: (data, columnCount) => (
@@ -50,9 +50,9 @@ export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
               This footer shall span across all columns
             </td>
           </tr>
-        ),
-      }),
-    ],
+        )
+      })
+    ]
   };
   return <YAGridPlayground {...gridProps} />;
 };

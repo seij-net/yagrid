@@ -1,6 +1,6 @@
 import { Meta, Story } from "@storybook/react";
 import { isNil } from "lodash-es";
-import React, { useState } from "react";
+import React from "react";
 
 import { GridProps, ItemDelete } from "..";
 import { sampledata, SampleItem, useData } from "./commons/SampleItem";
@@ -8,7 +8,7 @@ import { customTypes, YAGridPlayground } from "./YAGridPlayground";
 
 export default {
   title: "Plugin/Delete",
-  component: YAGridPlayground,
+  component: YAGridPlayground
 } as Meta;
 
 const SAMPLE_DATA: SampleItem[] = [1, 2, 3, 4, 5, 6].map((it) => ({
@@ -16,7 +16,7 @@ const SAMPLE_DATA: SampleItem[] = [1, 2, 3, 4, 5, 6].map((it) => ({
   label: "item " + it,
   description: "",
   amount: it * 10,
-  cb: true,
+  cb: true
 }));
 
 const TableEditable: React.FC<GridProps<any>> = (props) => {
@@ -29,9 +29,9 @@ const TableEditable: React.FC<GridProps<any>> = (props) => {
     plugins: [
       ItemDelete.create({
         onDelete: handleDelete,
-        deletable: (item) => (isNil(item.deletable) ? true : item.deletable),
-      }),
-    ],
+        deletable: (item) => (isNil(item.deletable) ? true : item.deletable)
+      })
+    ]
   };
   return <YAGridPlayground {...gridProps} />;
 };
@@ -40,12 +40,12 @@ const Template: Story<GridProps<any>> = (args) => <TableEditable {...args}></Tab
 
 export const Empty = Template.bind({});
 Empty.args = {
-  data: [],
+  data: []
 };
 
 export const Filled = Template.bind({});
 Filled.args = {
-  data: sampledata,
+  data: sampledata
 };
 
 export const CustomLabelsString: Story<{}> = (props) => {
@@ -60,9 +60,9 @@ export const CustomLabelsString: Story<{}> = (props) => {
         labelDeleteButton: "Supprimer",
         labelDeleteConfirm: "Confirmer : ",
         labelDeleteConfirmButton: "OK",
-        labelDeleteCancelButton: "Annuler",
-      }),
-    ],
+        labelDeleteCancelButton: "Annuler"
+      })
+    ]
   };
   return <YAGridPlayground {...gridProps} />;
 };
@@ -78,9 +78,9 @@ export const CustomLabelsReact: Story<{}> = (props) => {
         labelDeleteButton: <span style={{ backgroundColor: "yellow" }}>Supprimer</span>,
         labelDeleteConfirm: <span style={{ backgroundColor: "yellow" }}>Confirmer?</span>,
         labelDeleteConfirmButton: <span style={{ backgroundColor: "yellow" }}>OK</span>,
-        labelDeleteCancelButton: <span style={{ backgroundColor: "yellow" }}>Annuler</span>,
-      }),
-    ],
+        labelDeleteCancelButton: <span style={{ backgroundColor: "yellow" }}>Annuler</span>
+      })
+    ]
   };
   return <YAGridPlayground {...gridProps} />;
 };

@@ -2,27 +2,27 @@ import { Meta, Story } from "@storybook/react";
 import { isNil } from "lodash-es";
 import React, { FC } from "react";
 
-import { ItemDelete, ItemEdit, ItemAdd, GridProps } from "..";
-import { SampleItem, useData, sampledata } from "./commons/SampleItem";
+import { GridProps, ItemAdd, ItemDelete, ItemEdit } from "..";
+import { sampledata, SampleItem, useData } from "./commons/SampleItem";
 import { customTypes, YAGridPlayground } from "./YAGridPlayground";
 
 export default {
   title: "Playground/YAGridPlayground/Components",
-  component: YAGridPlayground,
+  component: YAGridPlayground
 } as Meta;
 
-const CustomComponent:FC<{}> = ({children}) => <span style={{color:"green"}}>{children}</span>
+const CustomComponent: FC<{}> = ({ children }) => <span style={{ color: "green" }}>{children}</span>;
 
 export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
-  const { data, sampleColumns, handleDelete, handleEdit, handleAddTemplate, handleAddConfirm} = useData(sampledata)
+  const { data, sampleColumns, handleDelete, handleEdit, handleAddTemplate, handleAddConfirm } = useData(sampledata);
 
   const gridProps: GridProps<SampleItem> = {
     ...props,
-    columns:[{
-      name:"component",
+    columns: [{
+      name: "component",
       label: <CustomComponent>Component</CustomComponent>,
-      render: (data)=>(<CustomComponent>{data.id}</CustomComponent>)
-    },...sampleColumns],
+      render: (data) => (<CustomComponent>{data.id}</CustomComponent>)
+    }, ...sampleColumns],
     data: data,
     types: customTypes,
     plugins: [
@@ -32,13 +32,13 @@ export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
       }),
       ItemAdd.create({
         onAddTemplate: handleAddTemplate,
-        onAddConfirm: handleAddConfirm,
+        onAddConfirm: handleAddConfirm
       }),
       ItemDelete.create({
         onDelete: handleDelete,
         deletable: (item) => isNil(item.deletable) ? true : item.deletable
-      }),
-    ],
+      })
+    ]
   };
   return <YAGridPlayground {...gridProps} />;
 };

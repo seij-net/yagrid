@@ -1,1 +1,1 @@
-export {Config, create} from "./item-delete"
+export { Config, create } from "./item-delete";

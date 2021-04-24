@@ -1,13 +1,14 @@
 import {
   ActionGenericHandler,
   ActionItemHandler,
-  TableAction,
-  TableActionHandler,
-  TableActionList,
   GridColumnDefinition,
   GridProps,
+  TableAction,
+  TableActionHandler,
+  TableActionList
 } from "./types";
 import { Grid } from "./Table";
+
 export * as ItemEdit from "./plugins/item-edit";
 export * as ItemDelete from "./plugins/item-delete";
 export * as ItemAdd from "./plugins/item-add";
@@ -21,5 +22,5 @@ export {
   TableAction,
   ActionItemHandler,
   ActionGenericHandler,
-  TableActionHandler,
+  TableActionHandler
 };

@@ -7,7 +7,7 @@ export const createTableEditDefaultState = (identifierProperty: string): GridSta
   editedItemState: undefined,
   editedItemValue: undefined,
   identifierProperty: identifierProperty,
-  error: undefined,
+  error: undefined
 });
 
 export function actionReset(prevState: GridState): GridState {

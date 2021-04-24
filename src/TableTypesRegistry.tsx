@@ -1,6 +1,6 @@
 import isNil from "lodash-es/isNil";
 import keyBy from "lodash-es/keyBy";
-import React, { ReactElement, ReactNode } from "react";
+import React, { ReactNode } from "react";
 
 export const renderToReactElement = (formatter: (curatedData: any) => string) => (data: any) =>
   isNil(data) ? "" : formatter(data);
@@ -12,7 +12,7 @@ export const DEFAULT_RENDERERS: { [key: string]: TableTypeRenderer<any> } = {
   int: STRING_RENDERER,
   decimal: STRING_RENDERER,
   boolean: STRING_RENDERER,
-  percent: STRING_RENDERER,
+  percent: STRING_RENDERER
 };
 
 function findDefaultRenderer(name: string): TableTypeRenderer<any> {

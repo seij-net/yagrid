@@ -1,6 +1,5 @@
 import { isFunction, isNil, maxBy } from "lodash-es";
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 
 import { GridColumnDefinition, GridDataSource } from "../../types";
 
@@ -26,19 +25,19 @@ export const sampledata: SampleItem[] = [
     amount: null,
     cb: null,
     readonly: false,
-    deletable: false,
-  },
+    deletable: false
+  }
 ];
 
 export const nextId = (data: SampleItem[]): number => {
-  if (data.length==0) return 1
+  if (data.length == 0) return 1;
   let maxIdItem = maxBy(data, (it) => it.id);
   let maxId = isNil(maxIdItem) ? 1 : maxIdItem.id;
   return maxId + 1;
 };
 
 export const useData = (initialData: GridDataSource<SampleItem> = []) => {
-  if (isFunction(initialData)) throw Error("Playground only supports synchronized data")
+  if (isFunction(initialData)) throw Error("Playground only supports synchronized data");
   const [data, setData] = useState(initialData as SampleItem[]);
   const handleDelete = async (item: any) => setData((prevState) => prevState.filter((it) => it.id !== item.id));
   const handleEdit = async (item: any) =>
@@ -63,7 +62,7 @@ export const useData = (initialData: GridDataSource<SampleItem> = []) => {
           defaultValue={data.description || ""}
           onChange={(evt) => onValueChange({ ...data, description: evt.target.value })}
         />
-      ),
+      )
     },
     {
       name: "amount",
@@ -75,7 +74,7 @@ export const useData = (initialData: GridDataSource<SampleItem> = []) => {
           defaultValue={data.amount || ""}
           onChange={(evt) => onValueChange({ ...data, amount: parseInt(evt.target.value) })}
         />
-      ),
+      )
     },
     {
       name: "cb",
@@ -84,8 +83,8 @@ export const useData = (initialData: GridDataSource<SampleItem> = []) => {
       editor: (data, onValueChange) =>
         isNil(data.cb) ? null : (
           <input type="checkbox" checked={data.cb || false} onChange={() => onValueChange({ ...data, cb: !data.cb })} />
-        ),
-    },
+        )
+    }
   ];
   return { data, sampleColumns, handleDelete, handleEdit, handleAddTemplate, handleAddConfirm };
 };

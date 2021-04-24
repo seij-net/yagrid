@@ -10,7 +10,7 @@ import { ExtensionPoints, GridPlugin, GridPluginList } from "../types";
  * @param plugins list of plugins
  * @param extract what to extract
  * @param initialValues initial values to put at start of the list
- * @returns 
+ * @returns
  */
 export function pluginComposeFlatten<T, R>(
   plugins: GridPluginList<T>,
@@ -19,8 +19,8 @@ export function pluginComposeFlatten<T, R>(
 ): R[] {
   const initialSafe = isNil(initialValues) ? ([] as R[]) : initialValues;
   return plugins.reduce((acc, current) => {
-    const c = extract(current)
-    return isNil(c) ? acc : [...acc, ...c]
+    const c = extract(current);
+    return isNil(c) ? acc : [...acc, ...c];
   }, initialSafe);
 }
 
@@ -30,7 +30,7 @@ export function pluginComposeFlatten<T, R>(
  * @param plugins list of plugins
  * @param extract what to extract
  * @param initialValue initial value to add at start of the list
- * @returns 
+ * @returns
  */
 export function pluginCompose<T, R>(
   plugins: GridPluginList<T>,
@@ -39,15 +39,15 @@ export function pluginCompose<T, R>(
 ): R[] {
   const initialSafe = isNil(initialValue) ? [] as R[] : [initialValue];
   return plugins.reduce((acc, current) => {
-    const c = extract(current)
-    return isNil(c) ? acc : [...acc, c]
-  }, initialSafe)
+    const c = extract(current);
+    return isNil(c) ? acc : [...acc, c];
+  }, initialSafe);
 }
 
 /**
  * Combines all plugins by cumulating what they provide on each extension
- * point. 
- * 
+ * point.
+ *
  * @param plugins list of plugin
  * @returns all extension points with their cumulative values
  */
@@ -60,5 +60,5 @@ export function createExtensionPoints<T>(
     actionItemList: pluginComposeFlatten(plugins, p => p.actionItemList, []),
     dataListTransform: pluginCompose(plugins, p => p.dataListTransform),
     extraItem: pluginCompose(plugins, p => p.extraItem)
-  }
+  };
 }

@@ -1,4 +1,6 @@
-export interface GridLayout {}
+export interface GridLayout {
+}
+
 export interface GridLayoutProps {
   className?: string | undefined
 }

@@ -1,12 +1,12 @@
 /**
- * State types. 
- * 
+ * State types.
+ *
  * Those are re-exported for plugin developers.
  */
 
 
 /**
- * Built-in state names for currently active edited item. 
+ * Built-in state names for currently active edited item.
  */
 export type GridEditedItemStateName =
   | "edit"
@@ -39,12 +39,12 @@ export interface GridState {
 export type GridStateReducer = (prevState: GridState, action: Action) => GridState;
 
 /**
- * For the moment actions are declared here but we need to put them separated 
- * in each plugin. 
- * 
+ * For the moment actions are declared here but we need to put them separated
+ * in each plugin.
+ *
  * Core shall provide only core actions. Each plugin shall enrich possible actions
  * and keep actions for themselves
- * 
+ *
  * https://github.com/seij-net/yagrid/issues/21
  */
 export type Action =

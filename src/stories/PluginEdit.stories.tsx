@@ -1,14 +1,13 @@
 import { Meta, Story } from "@storybook/react";
-import { isNil } from "lodash-es";
-import React, { useState } from "react";
+import React from "react";
 
-import { GridProps, ItemDelete, ItemEdit } from "..";
-import { sampledata, SampleItem, useData } from "./commons/SampleItem";
+import { GridProps, ItemEdit } from "..";
+import { SampleItem, useData } from "./commons/SampleItem";
 import { customTypes, YAGridPlayground } from "./YAGridPlayground";
 
 export default {
   title: "Plugin/Edit",
-  component: YAGridPlayground,
+  component: YAGridPlayground
 } as Meta;
 
 const SAMPLE_DATA: SampleItem[] = [1, 2, 3, 4, 5, 6].map((it) => ({
@@ -16,11 +15,11 @@ const SAMPLE_DATA: SampleItem[] = [1, 2, 3, 4, 5, 6].map((it) => ({
   label: "item " + it,
   description: "",
   amount: it * 10,
-  cb: true,
+  cb: true
 }));
 
 export const Empty: Story<{}> = (props) => {
-  const {data, sampleColumns, handleEdit} = useData([])
+  const { data, sampleColumns, handleEdit } = useData([]);
   const gridProps: GridProps<SampleItem> = {
     data: data,
     columns: sampleColumns,
@@ -31,12 +30,12 @@ export const Empty: Story<{}> = (props) => {
         editable: (item) => true
       })
     ]
-  }
-  return <YAGridPlayground {...gridProps} />
-}
+  };
+  return <YAGridPlayground {...gridProps} />;
+};
 
 export const NotEmpty: Story<{}> = (props) => {
-  const {data, sampleColumns, handleEdit} = useData(SAMPLE_DATA)
+  const { data, sampleColumns, handleEdit } = useData(SAMPLE_DATA);
   const gridProps: GridProps<SampleItem> = {
     data: data,
     columns: sampleColumns,
@@ -47,12 +46,12 @@ export const NotEmpty: Story<{}> = (props) => {
         editable: (item) => true
       })
     ]
-  }
-  return <YAGridPlayground {...gridProps} />
-}
+  };
+  return <YAGridPlayground {...gridProps} />;
+};
 
 export const CustomLabels: Story<{}> = (props) => {
-  const {data, sampleColumns, handleEdit} = useData(SAMPLE_DATA)
+  const { data, sampleColumns, handleEdit } = useData(SAMPLE_DATA);
   const gridProps: GridProps<SampleItem> = {
     data: data,
     columns: sampleColumns,
@@ -63,14 +62,14 @@ export const CustomLabels: Story<{}> = (props) => {
         editable: (item) => true,
         labelEditButton: "Modifier",
         labelEditButtonCancel: "Annuler",
-        labelEditButtonConfirm: "OK",
+        labelEditButtonConfirm: "OK"
       })
     ]
-  }
-  return <YAGridPlayground {...gridProps} />
-}
+  };
+  return <YAGridPlayground {...gridProps} />;
+};
 export const CustomLabelsReact: Story<{}> = (props) => {
-  const {data, sampleColumns, handleEdit} = useData(SAMPLE_DATA)
+  const { data, sampleColumns, handleEdit } = useData(SAMPLE_DATA);
   const gridProps: GridProps<SampleItem> = {
     data: data,
     columns: sampleColumns,
@@ -79,11 +78,11 @@ export const CustomLabelsReact: Story<{}> = (props) => {
       ItemEdit.create({
         onEdit: handleEdit,
         editable: (item) => true,
-        labelEditButton: <span style={{backgroundColor:"yellow"}}>Modifier</span>,
-        labelEditButtonCancel: <span style={{backgroundColor:"yellow"}}>Annuler</span>,
-        labelEditButtonConfirm: <span style={{backgroundColor:"yellow"}}>OK</span>,
+        labelEditButton: <span style={{ backgroundColor: "yellow" }}>Modifier</span>,
+        labelEditButtonCancel: <span style={{ backgroundColor: "yellow" }}>Annuler</span>,
+        labelEditButtonConfirm: <span style={{ backgroundColor: "yellow" }}>OK</span>
       })
     ]
-  }
-  return <YAGridPlayground {...gridProps} />
-}
+  };
+  return <YAGridPlayground {...gridProps} />;
+};

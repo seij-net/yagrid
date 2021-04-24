@@ -1,1 +1,1 @@
-export {Config, create} from "./table-footer"
+export { Config, create } from "./table-footer";
