@@ -1,5 +1,5 @@
 import { Dispatch, ReactNode } from "react";
-import { TableActionList } from "./public";
+import { TableActionList, TableGenericActionList } from "./public";
 import { Action, GridState, GridStateReducer } from "./state";
 
 export type DataListTransformer<T> = (editState: GridState, data: T[]) => T[]
@@ -39,7 +39,7 @@ export interface GridPlugin<T> {
   /**
    * List of actions to provide to main toolbar
    */
-  actionGenericList?: TableActionList,
+  actionGenericList?: TableGenericActionList,
   /**
    * Shall disapear
    */
@@ -90,7 +90,7 @@ export type GridPluginList<T> = GridPlugin<T>[]
  */
 export interface ExtensionPoints<T> {
   reducer: GridStateReducer[],
-  actionGenericList: TableActionList,
+  actionGenericList: TableGenericActionList,
   actionItemList: TableActionList,
   dataListTransform: DataListTransformer<T>[],
   extraItem: ExtraItemExtension<T>[]

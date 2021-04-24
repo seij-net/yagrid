@@ -2,7 +2,7 @@ import { cloneDeep } from "lodash-es";
 import React, { Dispatch, ReactNode } from "react";
 
 import { actionReset, actionToState } from "../../TableState";
-import { Action, GridPlugin, GridState, GridStateReducer, TableAction } from "../../types";
+import { Action, GridPlugin, GridState, GridStateReducer, TableAction, TableGenericAction } from "../../types";
 
 // -----------------------------------------------------------------------------
 // Reducer
@@ -85,9 +85,8 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
     labelAddButtonConfirm = "➕",
     labelAddButtonCancel = "⬅️"
   } = config;
-  const ACTION_ADD: TableAction = {
+  const ACTION_ADD: TableGenericAction = {
     name: "add",
-    displayed: (state, item) => true,
     render: (state, dispatch) => {
       return (
         <button disabled={state.editedItemState !== undefined} onClick={dispatch.listeners.onAddItem}>

@@ -47,19 +47,7 @@ export const TableItemActionTrigger: React.FC<TableItemActionTriggerProps<any>> 
   const i:ReactNode = action.renderItem ? action.renderItem(item,editingState, dispatch) : null
   return <>{i}</>
 };
-export const TableActionTrigger: React.FC<TableActionTriggerProps> = ({
-  action,
-  editingState,
-  dispatch,
-}) => {
-  return action.render ? action.render(editingState, dispatch) : null
-};
 
-interface TableActionTriggerProps {
-  action: TableAction;
-  editingState: GridState;
-  dispatch: TableActionDispatch;
-}
 interface TableItemActionTriggerProps<T> {
   item: T,
   action: TableAction;

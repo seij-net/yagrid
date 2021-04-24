@@ -1,7 +1,10 @@
 import { isFunction, isNil } from "lodash-es";
-import React, { useEffect } from "react";
+import React, { useEffect, useReducer } from "react";
+import { create } from "./plugins/item-edit";
+import { createReducer, createTableEditDefaultState } from "./TableState";
 import { TableTypesRegistry, TableTypesRegistryDefault } from "./TableTypesRegistry";
-import { GridColumnDefinition, GridColumnDefinitionInternal, GridDataSource } from "./types";
+import { ExtensionPoints, GridColumnDefinition, GridColumnDefinitionInternal, GridDataSource, GridPluginList, GridState } from "./types";
+import { createExtensionPoints } from "./utils/pluginCompose";
 
 const NOT_EDITABLE = (rowData: any) => false;
 
@@ -15,14 +18,29 @@ interface GridContext<T> {
   loadingState: LoadingState;
   columnDefinitions: GridColumnDefinitionInternal<T>[],
   types:TableTypesRegistry,
-  resolvedData: T[]
+  
+  extensions: ExtensionPoints<T>,
+  identifierProperty: string,
+  state: GridState,
+  dispatch: React.Dispatch<any>,
+  handleEditItemChange: (nextItem: T) => void,
+  /** Data resolved before transform */
+  resolvedData: T[],
+  /** Data transformed by plugins, this is the data to display */
+  dataListTransform: T[]
 }
 
 const defaultContext: GridContext<any> = {
   loadingState: LoadingState.init,
   columnDefinitions: [],
   types:TableTypesRegistryDefault,
-  resolvedData: []
+  resolvedData: [],
+  extensions: createExtensionPoints([]),
+  identifierProperty: "id",
+  state: createTableEditDefaultState("id"),
+  dispatch: ()=>{},
+  handleEditItemChange: () => {},
+  dataListTransform:[]
 };
 
 const GridContextInternal = React.createContext<GridContext<any>>(defaultContext);
@@ -36,15 +54,19 @@ export function useGrid() {
 }
 
 interface GridProviderProps<T> {
+  identifierProperty?: string,
   data: GridDataSource<T>,
   columns: GridColumnDefinition<T>[];
   types?: TableTypesRegistry;
+  plugins: GridPluginList<T>
 }
 
 export const GridProvider: React.FC<GridProviderProps<any>> = ({ 
+  identifierProperty = "id",
   columns: dataProperties, 
   data,
   types, 
+  plugins,
   children 
 }) => {
   
@@ -72,7 +94,7 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({
   // loading mamangement
   const [loadingState, setLoadingState] = React.useState<LoadingState>(LoadingState.init);
 
-  // data management
+  // data resolution management
   const [resolvedData, setResolvedData] = React.useState([] as any[]);
 
   useEffect(() => {
@@ -91,13 +113,33 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({
   }, [data]);
 
 
+  // Plugin registry
+  const extensions = createExtensionPoints(plugins);
+
+
+  // Edit state
+  const reducer = createReducer(extensions.reducer);
+  const [editState, dispatchEditState] = useReducer(reducer, createTableEditDefaultState(identifierProperty));
+  const handleEditItemChange = (newItem: any) => dispatchEditState({ type: "item_change", item: newItem });
+
+  // Client side data transform
+  const dataListTransform = extensions.dataListTransform.reduce(
+    (acc, current) => current(editState, acc),
+    resolvedData
+  );
 
   // Build final context
   const ctx: GridContext<any> = {
     columnDefinitions,
     loadingState,
     types: typesOrDefault,
-    resolvedData:resolvedData
+    resolvedData:resolvedData,
+    extensions: extensions,
+    identifierProperty: identifierProperty,
+    state: editState, 
+    dispatch: dispatchEditState,
+    handleEditItemChange,
+    dataListTransform
   };
 
   return <GridContextInternal.Provider value={ctx}>{children}</GridContextInternal.Provider>;

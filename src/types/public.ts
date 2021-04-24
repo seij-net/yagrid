@@ -84,8 +84,17 @@ export interface GridColumnDefinition<T> {
 }
 
 export type TableActionList = TableAction[]
+export type TableGenericActionList = TableGenericAction[]
 export type ActionItemHandler<T> = (action: TableAction, rowData: T, evt: any) => void
 export type ActionGenericHandler = (action: TableAction, evt: any) => void
+
+
+export interface TableGenericAction {
+  name: string,
+  render: (state: GridState, dispatch: TableActionDispatch) => ReactElement
+}
+
+
 export interface TableAction {
   name: string,
   position?: "start" | "end"

@@ -1,13 +1,9 @@
 import clsx from "clsx";
-import React, { useEffect, useReducer } from "react";
-
+import React from "react";
 import { GridProvider, useGrid } from "./GridContext";
 import { TableHeader } from "./TableHeader";
-import { TableActionTrigger } from "./TableItemActions";
 import { TableRow } from "./TableRow";
-import { createReducer, createTableEditDefaultState } from "./TableState";
-import { GridProps } from "./types";
-import { createExtensionPoints } from "./utils/pluginCompose";
+import { GridProps, GridState, TableGenericAction, TableActionDispatch } from "./types";
 
 enum LoadingState {
   init,
@@ -17,68 +13,67 @@ enum LoadingState {
 
 export const Grid: React.FC<GridProps<any>> = (props) => {
   return (
-    <GridProvider columns={props.columns} types={props.types} data={props.data}>
+    <GridProvider
+      columns={props.columns}
+      types={props.types}
+      data={props.data}
+      plugins={props.plugins}
+      identifierProperty={props.identifierProperty}
+    >
       <TableLayout {...props} />
     </GridProvider>
   );
 };
 
-const TableLayout: React.FC<GridProps<any>> = ({ data, className, identifierProperty = "id", plugins = [] }) => {
-  const { loadingState, columnDefinitions, types, resolvedData } = useGrid();
-
-  const ext = createExtensionPoints(plugins);
-
-  const reducer = createReducer(ext.reducer);
-  const [editState, dispatchEditState] = useReducer(reducer, createTableEditDefaultState(identifierProperty));
+const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
+  const {
+    loadingState,
+    columnDefinitions,
+    types,
+    resolvedData,
+    extensions,
+    identifierProperty,
+    state: state,
+    dispatch: dispatch,
+    handleEditItemChange,
+    dataListTransform,
+  } = useGrid();
 
   const classNames = clsx(className);
 
-  const hasActionsStart = ext.actionItemList.some((action) => action.position === "start");
-  const hasActionsEnd = ext.actionItemList.some((action) => action.position === "end" || action.position === undefined);
+  const hasActionsStart = extensions.actionItemList.some((action) => action.position === "start");
+  const hasActionsEnd = extensions.actionItemList.some(
+    (action) => action.position === "end" || action.position === undefined
+  );
   const columnCount = columnDefinitions.length + (hasActionsStart ? 1 : 0) + (hasActionsEnd ? 1 : 0);
 
   let actionListeners = {};
   plugins.forEach((plugin) => {
     const pluginListeners =
-      plugin.actionGenericListeners && plugin.actionGenericListeners(editState, dispatchEditState);
+      plugin.actionGenericListeners && plugin.actionGenericListeners(state, dispatch);
     if (pluginListeners) {
       actionListeners = { ...actionListeners, ...pluginListeners };
     }
   });
-
-  const actionGenericComponents = ext.actionGenericList.map((it) => {
-    return (
-      <TableActionTrigger
-        key={it.name}
-        action={it}
-        editingState={editState}
-        dispatch={{ listeners: actionListeners }}
-      />
-    );
-  });
-
-  const handleEditItemChange = (newItem: any) => dispatchEditState({ type: "item_change", item: newItem });
-
-  const dataListTransform = ext.dataListTransform.reduce((acc, current) => current(editState, acc), resolvedData);
 
   const rows = dataListTransform.map((it) => {
     const id = it[identifierProperty];
     let actionListeners = {};
     plugins.forEach((plugin) => {
       const pluginListeners =
-        plugin.actionItemListeners && plugin.actionItemListeners(editState, dispatchEditState, it);
+        plugin.actionItemListeners && plugin.actionItemListeners(state, dispatch, it);
       actionListeners = { ...actionListeners, ...pluginListeners };
     });
 
     return (
       <TableRow
         key={id}
-        actionsItem={ext.actionItemList}
+        actionsItem={extensions.actionItemList}
         hasActionsStart={hasActionsStart}
         hasActionsEnd={hasActionsEnd}
-        gridState={editState}
+        gridState={state}
         item={it}
-        extraItems={ext.extraItem}
+        extraItems={extensions.extraItem}
         columnCount={columnCount}
         onActionItemDispatch={{ listeners: actionListeners }}
         onEditItemChange={handleEditItemChange}
@@ -103,26 +98,40 @@ const TableLayout: React.FC<GridProps<any>> = ({ data, className, identifierProp
     })
     .filter((it) => it);
 
-  const isLoading = loadingState !== LoadingState.loaded;
   return (
     <>
-      {actionGenericComponents}
+      {extensions.actionGenericList.map(action => (
+        <TableActionTrigger
+          key={action.name}
+          action={action}
+          state={state}
+          dispatch={{ listeners: actionListeners }}
+        />
+      ))}
       <table className={classNames}>
         <TableHeader
           hasActionsStart={hasActionsStart}
           hasActionsEnd={hasActionsEnd}
           columnDefinitions={columnDefinitions}
         />
-        {isLoading && (
+        {loadingState !== LoadingState.loaded && (
           <tbody>
             <tr>
               <td colSpan={columnCount}>Loading...</td>
             </tr>
           </tbody>
         )}
-        {!isLoading && <tbody>{rows}</tbody>}
+        {loadingState === LoadingState.loaded && <tbody>{rows}</tbody>}
         {footers && <tfoot>{footers}</tfoot>}
       </table>
     </>
   );
+};
+
+export const TableActionTrigger: React.FC<{
+  action: TableGenericAction,
+  state: GridState,
+  dispatch: TableActionDispatch
+}> = ({ action, state, dispatch }) => {
+  return action.render(state, dispatch);
 };
