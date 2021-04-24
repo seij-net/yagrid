@@ -1,16 +1,14 @@
 import clsx from "clsx";
-import { isFunction, isNil } from "lodash-es";
+import { isFunction } from "lodash-es";
 import React, { useEffect, useReducer } from "react";
 
+import { GridProvider, useGrid } from "./GridContext";
 import { TableHeader } from "./TableHeader";
 import { TableActionTrigger } from "./TableItemActions";
 import { TableRow } from "./TableRow";
 import { createReducer, createTableEditDefaultState } from "./TableState";
-import { TableTypesRegistryDefault } from "./TableTypesRegistry";
-import { GridColumnDefinitionInternal, GridProps } from "./types";
+import { GridProps } from "./types";
 import { createExtensionPoints } from "./utils/pluginCompose";
-
-const NOT_EDITABLE = (rowData: any) => false;
 
 enum LoadingState {
   init,
@@ -18,33 +16,19 @@ enum LoadingState {
   loaded,
 }
 
-export const Grid: React.FC<GridProps<any>> = ({
-  columns: dataProperties,
-  data,
-  className,
-  identifierProperty = "id",
-  plugins = [],
-  types,
-}) => {
-  const typesOrDefault = types || TableTypesRegistryDefault;
-  const columnDefinitionsDefault: GridColumnDefinitionInternal<any>[] = dataProperties.map((col) => ({
-    name: col.name,
-    label: isNil(col.label) ? col.name : col.label,
-    type: col.type ?? "string",
-    render: isNil(col.render)
-      ? // if no render is specified, use then render from type registry and bind it automatically with column name
-        (item) => typesOrDefault.find(col.type || "string").renderer(item[col.name])
-      : // if a render function is specified, use it
-        col.render,
-    editable: col.editable || NOT_EDITABLE,
-    editor: col.editor,
-  }));
-
-  const [columnDefinitions, setColumnDefinitions] = React.useState<GridColumnDefinitionInternal<any>[]>(
-    columnDefinitionsDefault
+export const Grid: React.FC<GridProps<any>> = (props) => {
+  return (
+    <GridProvider columns={props.columns} types={props.types}>
+      <TableLayout {...props} />
+    </GridProvider>
   );
+};
+
+const TableLayout: React.FC<GridProps<any>> = ({ data, className, identifierProperty = "id", plugins = [] }) => {
+  
   const [resolvedData, setResolvedData] = React.useState([] as any[]);
-  const [loadingState, setLoadingState] = React.useState<LoadingState>(LoadingState.init);
+
+  const { loadingState, setLoadingState, columnDefinitions, types } = useGrid();
 
   useEffect(() => {
     const isLazyDataSource = isFunction(data);
@@ -118,12 +102,11 @@ export const Grid: React.FC<GridProps<any>> = ({
         onActionItemDispatch={{ listeners: actionListeners }}
         onEditItemChange={handleEditItemChange}
         itemDefinitions={columnDefinitions}
-        types={typesOrDefault}
+        types={types}
         plugins={plugins}
       />
     );
   });
-
   const footers = plugins
     .map((it) => {
       if (it.footer?.span) {
@@ -140,7 +123,6 @@ export const Grid: React.FC<GridProps<any>> = ({
     .filter((it) => it);
 
   const isLoading = loadingState != LoadingState.loaded;
-
   return (
     <>
       {actionGenericComponents}

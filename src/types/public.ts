@@ -7,6 +7,7 @@
 import { ReactElement, ReactNode } from "react";
 import { TableTypesRegistry } from "../TableTypesRegistry";
 import { GridDataSource } from "./data";
+import { GridLayout, GridLayoutProps } from "./layout";
 import { GridPluginList } from "./plugins";
 import { GridState } from "./state";
 
@@ -25,7 +26,12 @@ export interface GridProps<T> {
   /**
    * Types registry. If not provided we'll use a default one (quite restrictive)
    */
-   types?: TableTypesRegistry,
+  types?: TableTypesRegistry,
+
+  /**
+   * Layout to use, defaults to TableLayoutHtml
+   */
+  layout?: (props:GridLayoutProps) => ReactElement<GridLayoutProps>,
 
   /**
    * Definition of data properties to display. For example the columns when
@@ -82,10 +88,10 @@ export type ActionItemHandler<T> = (action: TableAction, rowData: T, evt: any) =
 export type ActionGenericHandler = (action: TableAction, evt: any) => void
 export interface TableAction {
   name: string,
-  position?: "start"|"end"
+  position?: "start" | "end"
   displayed?: (state: GridState, item: any) => boolean,
   render?: (state: GridState, dispatch: TableActionDispatch) => ReactElement
-  renderItem?: (item: any, state:GridState, dispatch: TableActionDispatch) => ReactNode
+  renderItem?: (item: any, state: GridState, dispatch: TableActionDispatch) => ReactNode
 }
 export type TableActionDispatch = {
   listeners: { [key: string]: TableActionHandler }
