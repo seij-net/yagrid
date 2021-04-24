@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import { isFunction } from "lodash-es";
 import React, { useEffect, useReducer } from "react";
 
 import { GridProvider, useGrid } from "./GridContext";
@@ -25,11 +24,7 @@ export const Grid: React.FC<GridProps<any>> = (props) => {
 };
 
 const TableLayout: React.FC<GridProps<any>> = ({ data, className, identifierProperty = "id", plugins = [] }) => {
-  
-  
-
   const { loadingState, columnDefinitions, types, resolvedData } = useGrid();
-
 
   const ext = createExtensionPoints(plugins);
 

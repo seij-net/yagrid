@@ -35,7 +35,7 @@ export interface GridPlugin<T> {
   /**
    * Returns true if the specified cell is currently being edited
    */
-  isEditing?: (gridstate:GridState, item: T, itemPropertyName: string) => boolean
+  isEditing?: (gridstate: GridState, item: T, itemPropertyName: string) => boolean
   /**
    * List of actions to provide to main toolbar
    */
@@ -69,15 +69,15 @@ export interface GridPlugin<T> {
  */
 export interface FooterExtensionPoint<T> {
   /** Element to display on full span */
-  span?: (data:T[])=>ReactNode,
+  span?: (data: T[]) => ReactNode,
   /** Additional rows that the extension point may produce */
-  rows?: (data:T[], columnCount: number) => ReactNode
+  rows?: (data: T[], columnCount: number) => ReactNode
 }
 
 /**
  * Displays extra items below displayed item
  */
-export type ExtraItemExtension<T> = (item:T)=>ReactNode
+export type ExtraItemExtension<T> = (item: T) => ReactNode
 
 /**
  * List of Grid plugins
