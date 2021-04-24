@@ -59,6 +59,7 @@ export function createExtensionPoints<T>(
     actionGenericList: pluginComposeFlatten(plugins, p => p.actionGenericList),
     actionItemList: pluginComposeFlatten(plugins, p => p.actionItemList, []),
     dataListTransform: pluginCompose(plugins, p => p.dataListTransform),
-    extraItem: pluginCompose(plugins, p => p.extraItem)
+    extraItem: pluginCompose(plugins, p => p.extraItem),
+    isEditing: pluginCompose(plugins, p => p.isEditing)
   };
 }

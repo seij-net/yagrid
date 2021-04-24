@@ -35,7 +35,7 @@ export interface GridPlugin<T> {
   /**
    * Returns true if the specified cell is currently being edited
    */
-  isEditing?: (gridstate: GridState, item: T, itemPropertyName: string) => boolean
+  isEditing?: EditingExtensionPoint<T>,
   /**
    * List of actions to provide to main toolbar
    */
@@ -71,6 +71,8 @@ export interface FooterExtensionPoint<T> {
  */
 export type ExtraItemExtension<T> = (item: T) => ReactNode
 
+export type EditingExtensionPoint<T> =  (gridstate: GridState, item: T, itemPropertyName: string) => boolean
+
 /**
  * List of Grid plugins
  */
@@ -85,5 +87,6 @@ export interface ExtensionPoints<T> {
   actionGenericList: TableGenericActionList,
   actionItemList: TableActionList,
   dataListTransform: DataListTransformer<T>[],
-  extraItem: ExtraItemExtension<T>[]
+  extraItem: ExtraItemExtension<T>[],
+  isEditing: EditingExtensionPoint<T>[]
 }

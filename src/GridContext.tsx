@@ -156,15 +156,31 @@ export interface GridItemContext<T> {
   selectDisplayedItemActions: TableAction[];
   selectExtraItems: React.ReactNode[];
 }
-export const useGridItem = (item: any): GridItemContext<any> => {
-  const context = React.useContext(GridContextInternal);
+export const useGridItem = (item: any, context: GridContext<any>): GridItemContext<any> => {
   if (context === undefined) {
     throw new Error("useGridItem must be used within a GridProvider and an item");
   }
   const { extensions, state } = context;
   return {
     item: item,
-    selectDisplayedItemActions: extensions.actionItemList.filter((a) => (a.displayed ? a.displayed(state, item) : true)),
+    selectDisplayedItemActions: extensions.actionItemList.filter((a) =>
+      a.displayed ? a.displayed(state, item) : true
+    ),
     selectExtraItems: extensions.extraItem.map((ext) => ext(item)).filter((extra) => !isNil(extra)),
+  };
+};
+
+export interface GridItemPropertyContext {
+  editing: boolean;
+}
+
+export const useGridItemProperty = (
+  itemPropertyName: string,
+  item: any,
+  context: GridContext<any>
+): GridItemPropertyContext => {
+  const editing = context.extensions.isEditing.some((plugin) => plugin(context.state, item, itemPropertyName));
+  return {
+    editing,
   };
 };
