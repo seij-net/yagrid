@@ -89,7 +89,6 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
               hasActionsEnd={hasActionsEnd}
               gridState={state}
               item={it}
-              extraItems={extensions.extraItem}
               columnCount={columnCount}
               onEditItemChange={handleEditItemChange}
               columnDefinitions={columnDefinitions}
