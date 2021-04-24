@@ -18,7 +18,7 @@ enum LoadingState {
 
 export const Grid: React.FC<GridProps<any>> = (props) => {
   return (
-    <GridProvider columns={props.columns} types={props.types}>
+    <GridProvider columns={props.columns} types={props.types} data={props.data}>
       <TableLayout {...props} />
     </GridProvider>
   );
@@ -26,24 +26,10 @@ export const Grid: React.FC<GridProps<any>> = (props) => {
 
 const TableLayout: React.FC<GridProps<any>> = ({ data, className, identifierProperty = "id", plugins = [] }) => {
   
-  const [resolvedData, setResolvedData] = React.useState([] as any[]);
+  
 
-  const { loadingState, setLoadingState, columnDefinitions, types } = useGrid();
+  const { loadingState, columnDefinitions, types, resolvedData } = useGrid();
 
-  useEffect(() => {
-    const isLazyDataSource = isFunction(data);
-    if (!isLazyDataSource) {
-      setLoadingState(LoadingState.loaded);
-      setResolvedData(data as any[]);
-    } else {
-      setLoadingState(LoadingState.pending);
-      const p: Promise<any[]> = (data as any)({});
-      p.then((v) => {
-        setResolvedData(v);
-        setLoadingState(LoadingState.loaded);
-      }).catch((reject) => setLoadingState(LoadingState.loaded));
-    }
-  }, [data]);
 
   const ext = createExtensionPoints(plugins);
 
@@ -122,7 +108,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ data, className, identifierProp
     })
     .filter((it) => it);
 
-  const isLoading = loadingState != LoadingState.loaded;
+  const isLoading = loadingState !== LoadingState.loaded;
   return (
     <>
       {actionGenericComponents}

@@ -1,7 +1,7 @@
-import { isNil } from "lodash-es";
-import React from "react";
+import { isFunction, isNil } from "lodash-es";
+import React, { useEffect } from "react";
 import { TableTypesRegistry, TableTypesRegistryDefault } from "./TableTypesRegistry";
-import { GridColumnDefinition, GridColumnDefinitionInternal } from "./types";
+import { GridColumnDefinition, GridColumnDefinitionInternal, GridDataSource } from "./types";
 
 const NOT_EDITABLE = (rowData: any) => false;
 
@@ -13,16 +13,16 @@ export enum LoadingState {
 
 interface GridContext<T> {
   loadingState: LoadingState;
-  setLoadingState: (value: LoadingState) => void;
   columnDefinitions: GridColumnDefinitionInternal<T>[],
-  types:TableTypesRegistry
+  types:TableTypesRegistry,
+  resolvedData: T[]
 }
 
 const defaultContext: GridContext<any> = {
   loadingState: LoadingState.init,
   columnDefinitions: [],
-  setLoadingState: () => {},
-  types:TableTypesRegistryDefault
+  types:TableTypesRegistryDefault,
+  resolvedData: []
 };
 
 const GridContextInternal = React.createContext<GridContext<any>>(defaultContext);
@@ -36,11 +36,17 @@ export function useGrid() {
 }
 
 interface GridProviderProps<T> {
+  data: GridDataSource<T>,
   columns: GridColumnDefinition<T>[];
   types?: TableTypesRegistry;
 }
 
-export const GridProvider: React.FC<GridProviderProps<any>> = ({ columns: dataProperties, types, children }) => {
+export const GridProvider: React.FC<GridProviderProps<any>> = ({ 
+  columns: dataProperties, 
+  data,
+  types, 
+  children 
+}) => {
   
   // Type system
   const typesOrDefault = types || TableTypesRegistryDefault;
@@ -66,12 +72,32 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({ columns: dataPr
   // loading mamangement
   const [loadingState, setLoadingState] = React.useState<LoadingState>(LoadingState.init);
 
+  // data management
+  const [resolvedData, setResolvedData] = React.useState([] as any[]);
+
+  useEffect(() => {
+    const isLazyDataSource = isFunction(data);
+    if (!isLazyDataSource) {
+      setLoadingState(LoadingState.loaded);
+      setResolvedData(data as any[]);
+    } else {
+      setLoadingState(LoadingState.pending);
+      const p: Promise<any[]> = (data as any)({});
+      p.then((v) => {
+        setResolvedData(v);
+        setLoadingState(LoadingState.loaded);
+      }).catch((reject) => setLoadingState(LoadingState.loaded));
+    }
+  }, [data]);
+
+
+
   // Build final context
   const ctx: GridContext<any> = {
     columnDefinitions,
     loadingState,
-    setLoadingState: (value) => setLoadingState(value),
-    types: typesOrDefault
+    types: typesOrDefault,
+    resolvedData:resolvedData
   };
 
   return <GridContextInternal.Provider value={ctx}>{children}</GridContextInternal.Provider>;
