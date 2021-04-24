@@ -78,7 +78,10 @@ export interface TableEditorAddPlugin<T> extends GridPlugin<T> {}
 
 export type PluginFactory<T = {}> = (config: Config<T>) => TableEditorAddPlugin<T>;
 
-const ActionAdd: React.FC<Pick<Config<any>, "onAddTemplate" | "labelAddButton">> = ({ labelAddButton, onAddTemplate }) => {
+const ActionAdd: React.FC<Pick<Config<any>, "onAddTemplate" | "labelAddButton">> = ({
+  labelAddButton,
+  onAddTemplate,
+}) => {
   const { state, dispatch, loadingState } = useGrid();
   const onAddItem = async () => {
     try {
@@ -87,13 +90,38 @@ const ActionAdd: React.FC<Pick<Config<any>, "onAddTemplate" | "labelAddButton">>
     } catch (error) {
       console.error("Problem while creating template item", error);
     }
-  }
-  const disabled = loadingState !== LoadingState.loaded || state.editedItemState !== undefined
+  };
+  const disabled = loadingState !== LoadingState.loaded || state.editedItemState !== undefined;
   return (
     <button disabled={disabled} onClick={onAddItem}>
       {labelAddButton}
     </button>
   );
+};
+
+const ActionAddOk: React.FC<Pick<Config<any>, "labelAddButtonConfirm" | "onAddConfirm">> = ({
+  labelAddButtonConfirm,
+  onAddConfirm,
+}) => {
+  const { state, dispatch } = useGrid();
+  const onAddItemConfirm = async () => {
+    try {
+      dispatch({ type: "add_commit_started" });
+      await onAddConfirm(state.editedItemValue);
+      dispatch({ type: "add_commit_succeded" });
+    } catch (error) {
+      dispatch({ type: "add_commit_failed", error: error });
+    }
+  };
+  return <button onClick={onAddItemConfirm}>{labelAddButtonConfirm}</button>;
+};
+
+const ActionAddCancel: React.FC<Pick<Config<any>, "labelAddButtonCancel">> = ({ labelAddButtonCancel }) => {
+  const { state, dispatch } = useGrid();
+  const onAddItemCancel = async () => {
+    dispatch({ type: "add_cancel" });
+  };
+  return <button onClick={onAddItemCancel}>{labelAddButtonCancel}</button>;
 };
 
 export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
@@ -104,51 +132,33 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
     labelAddButtonConfirm = "➕",
     labelAddButtonCancel = "⬅️",
   } = config;
-  const ACTION_ADD_OK: TableAction = {
-    name: "add_ok",
-    displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
-    renderItem: (item, state, dispatch) => {
-      return <button onClick={dispatch.listeners.onAddItemConfirm}>{labelAddButtonConfirm}</button>;
-    },
-  };
-  const ACTION_ADD_CANCEL: TableAction = {
-    name: "add_cancel",
-    displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
-    renderItem: (item, state, dispatch) => {
-      return <button onClick={dispatch.listeners.onAddItemCancel}>{labelAddButtonCancel}</button>;
-    },
-  };
+
   return {
     name: PLUGIN_NAME,
     reducer: reducer,
-    actionGenericList: [{
-      name: "add",
-      render: ()=><ActionAdd labelAddButton={labelAddButton} onAddTemplate={onAddTemplate} />
-    }],
-    actionItemList: [ACTION_ADD_OK, ACTION_ADD_CANCEL],
+    actionGenericList: [
+      {
+        name: "add",
+        render: () => <ActionAdd labelAddButton={labelAddButton} onAddTemplate={onAddTemplate} />,
+      },
+    ],
+    actionItemList: [
+      {
+        name: "add_ok",
+        displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
+        renderItem: (item, state, dispatch) => (
+          <ActionAddOk onAddConfirm={onAddConfirm} labelAddButtonConfirm={labelAddButtonConfirm} />
+        ),
+      },
+      {
+        name: "add_cancel",
+        displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
+        renderItem: (item, state, dispatch) => <ActionAddCancel labelAddButtonCancel={labelAddButtonCancel} />,
+      },
+    ],
     isEditing: (state, item, itemPropertyName) =>
       (item as any)[state.identifierProperty] === state.editedItemId &&
       (state.editedItemState === "add" || state.editedItemState === "add_commit_pending"),
-    actionItemListeners: (
-      editState: GridState,
-      dispatch: Dispatch<Action>,
-      item: T
-    ): { [p: string]: () => Promise<void> } => {
-      return {
-        onAddItemConfirm: async () => {
-          try {
-            dispatch({ type: "add_commit_started" });
-            await onAddConfirm(editState.editedItemValue);
-            dispatch({ type: "add_commit_succeded" });
-          } catch (error) {
-            dispatch({ type: "add_commit_failed", error: error });
-          }
-        },
-        onAddItemCancel: async () => {
-          dispatch({ type: "add_cancel" });
-        },
-      };
-    },
     dataListTransform: (editState, data) => {
       const newList = [] as T[];
       if (editState.editedItemState === "add" || editState.editedItemState === "add_commit_pending") {
