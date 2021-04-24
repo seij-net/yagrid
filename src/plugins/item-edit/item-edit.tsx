@@ -1,5 +1,6 @@
 import { cloneDeep, isEqual, isNil } from "lodash-es";
 import React, { ReactNode } from "react";
+import { useGrid } from "../../GridContext";
 
 import { actionReset, actionToState } from "../../TableState";
 import { GridPlugin, GridState, GridStateReducer, TableAction } from "../../types";
@@ -65,6 +66,47 @@ export interface Config<T> {
    */
   labelEditButtonCancel?: ReactNode;
 }
+
+const ActionEditButton: React.FC<Pick<Config<any>, "labelEditButton"> & { item: any }> = ({
+  labelEditButton,
+  item,
+}) => {
+  const { state, dispatch } = useGrid();
+  const onEditItem = async () => {
+    dispatch({ type: "edit", item: item });
+  };
+  return <button onClick={onEditItem}>{labelEditButton}</button>;
+};
+
+const ActionEditOKButton: React.FC<Pick<Config<any>, "labelEditButtonConfirm" | "onEdit"> & { item: any }> = ({
+  labelEditButtonConfirm,
+  item,
+  onEdit,
+}) => {
+  const { state, dispatch } = useGrid();
+  const onEditItemCommit = async () => {
+    try {
+      dispatch({ type: "edit_commit_started" });
+      await onEdit(state.editedItemValue);
+      dispatch({ type: "edit_commit_succeded" });
+    } catch (error) {
+      dispatch({ type: "edit_commit_failed", error: error });
+    }
+  };
+  return <button onClick={onEditItemCommit}>{labelEditButtonConfirm}</button>;
+};
+
+const ActionEditCancelButton: React.FC<Pick<Config<any>, "labelEditButtonCancel"> & { item: any }> = ({
+  labelEditButtonCancel,
+  item,
+}) => {
+  const { state, dispatch } = useGrid();
+  const onEditItemCancel = async () => {
+    dispatch({ type: "edit_cancel" });
+  };
+  return <button onClick={onEditItemCancel}>{labelEditButtonCancel}</button>;
+};
+
 export function create<T>(config: Config<T>): GridPlugin<T> {
   const {
     onEdit,
@@ -74,30 +116,6 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
     labelEditButtonCancel = "⬅️",
   } = config;
   const editableSafe = isNil(editable) ? () => true : editable;
-  const ACTION_EDIT: TableAction = {
-    name: "edit",
-    displayed: (state, item) => editableSafe(item) && state.editedItemState === undefined,
-    renderItem: (item, state, dispatch) => {
-      return <button onClick={dispatch.listeners.onEditItem}>{labelEditButton}</button>;
-    },
-  };
-  const ACTION_EDIT_OK: TableAction = {
-    name: "edit_ok",
-    displayed: (state, item) =>
-      editableSafe(item) && state.editedItemId === item.id && state.editedItemState === "edit",
-      renderItem: (item, state, dispatch) => {
-      return <button onClick={dispatch.listeners.onEditItemCommit}>{labelEditButtonConfirm}</button>;
-    },
-  };
-
-  const ACTION_EDIT_CANCEL: TableAction = {
-    name: "edit_cancel",
-    displayed: (state, item) =>
-      editableSafe(item) && item.id === state.editedItemId && state.editedItemState === "edit",
-      renderItem: (item, state, dispatch) => {
-      return <button onClick={dispatch.listeners.onEditItemCancel}>{labelEditButtonCancel}</button>;
-    },
-  };
 
   return {
     name: PLUGIN_NAME,
@@ -105,24 +123,28 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
     isEditing: (state, item, property) =>
       (item as any)[state.identifierProperty] === state.editedItemId &&
       (state.editedItemState === "edit" || state.editedItemState === "edit_commit_pending"),
-    actionGenericList: [],
-    actionItemList: [ACTION_EDIT, ACTION_EDIT_OK, ACTION_EDIT_CANCEL],
-    actionItemListeners: (editState, dispatch, item) => ({
-      onEditItem: async () => {
-        dispatch({ type: "edit", item: item });
+    actionItemList: [
+      {
+        name: "edit",
+        displayed: (state, item) => editableSafe(item) && state.editedItemState === undefined,
+        renderItem: (item, state, dispatch) => <ActionEditButton item={item} labelEditButton={labelEditButton} />,
       },
-      onEditItemCancel: async () => {
-        dispatch({ type: "edit_cancel" });
+      {
+        name: "edit_ok",
+        displayed: (state, item) =>
+          editableSafe(item) && state.editedItemId === item.id && state.editedItemState === "edit",
+        renderItem: (item, state, dispatch) => (
+          <ActionEditOKButton item={item} onEdit={onEdit} labelEditButtonConfirm={labelEditButtonConfirm} />
+        ),
       },
-      onEditItemCommit: async () => {
-        try {
-          dispatch({ type: "edit_commit_started" });
-          await onEdit(editState.editedItemValue);
-          dispatch({ type: "edit_commit_succeded" });
-        } catch (error) {
-          dispatch({ type: "edit_commit_failed", error: error });
-        }
+      {
+        name: "edit_cancel",
+        displayed: (state, item) =>
+          editableSafe(item) && item.id === state.editedItemId && state.editedItemState === "edit",
+        renderItem: (item, state, dispatch) => (
+          <ActionEditCancelButton item={item} labelEditButtonCancel={labelEditButtonCancel} />
+        ),
       },
-    }),
+    ],
   };
 }
