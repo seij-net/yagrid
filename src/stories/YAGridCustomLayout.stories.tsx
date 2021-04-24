@@ -7,7 +7,7 @@ import { sampledata, SampleItem, useData } from "./commons/SampleItem";
 import { customTypes, YAGridPlayground } from "./YAGridPlayground";
 
 export default {
-  title: "Playground/YAGridPlayground/LazyLoading",
+  title: "Playground/YAGridPlayground/CustomLayout",
   component: YAGridPlayground
 } as Meta;
 

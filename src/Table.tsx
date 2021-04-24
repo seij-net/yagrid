@@ -32,8 +32,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
     resolvedData,
     extensions,
     identifierProperty,
-    state: state,
-    dispatch: dispatch,
+    state,
     handleEditItemChange,
     dataListTransform
   } = useGrid();
@@ -63,7 +62,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
 
   return (
     <>
-      {extensions.actionGenericList.map(action => action.render(state, dispatch))}
+      {extensions.actionGenericList.map(action => <action.render key={action.name} />)}
       <table className={classNames}>
         <thead>
         <tr>
