@@ -127,13 +127,13 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
       {
         name: "edit",
         displayed: (state, item) => editableSafe(item) && state.editedItemState === undefined,
-        renderItem: (item, state, dispatch) => <ActionEditButton item={item} labelEditButton={labelEditButton} />,
+        renderItem: (item) => <ActionEditButton item={item} labelEditButton={labelEditButton} />,
       },
       {
         name: "edit_ok",
         displayed: (state, item) =>
           editableSafe(item) && state.editedItemId === item.id && state.editedItemState === "edit",
-        renderItem: (item, state, dispatch) => (
+        renderItem: (item) => (
           <ActionEditOKButton item={item} onEdit={onEdit} labelEditButtonConfirm={labelEditButtonConfirm} />
         ),
       },
@@ -141,7 +141,7 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
         name: "edit_cancel",
         displayed: (state, item) =>
           editableSafe(item) && item.id === state.editedItemId && state.editedItemState === "edit",
-        renderItem: (item, state, dispatch) => (
+        renderItem: (item) => (
           <ActionEditCancelButton item={item} labelEditButtonCancel={labelEditButtonCancel} />
         ),
       },

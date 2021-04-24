@@ -183,7 +183,7 @@ export function create<T>(config: Config<T>): GridPlugin<any> {
           );
         },
         // state.editedItemId === item.id && (state.editedItemState === "edit" || state.editedItemState === "delete_confirm"),
-        renderItem: (item, state, dispatch) => <ActionDeleteButton {...config} item={item} />,
+        renderItem: (item) => <ActionDeleteButton {...config} item={item} />,
       },
     ],
   };

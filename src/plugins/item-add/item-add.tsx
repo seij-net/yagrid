@@ -146,14 +146,14 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
       {
         name: "add_ok",
         displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
-        renderItem: (item, state, dispatch) => (
+        renderItem: (item) => (
           <ActionAddOk onAddConfirm={onAddConfirm} labelAddButtonConfirm={labelAddButtonConfirm} />
         ),
       },
       {
         name: "add_cancel",
         displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
-        renderItem: (item, state, dispatch) => <ActionAddCancel labelAddButtonCancel={labelAddButtonCancel} />,
+        renderItem: (item) => <ActionAddCancel labelAddButtonCancel={labelAddButtonCancel} />,
       },
     ],
     isEditing: (state, item, itemPropertyName) =>

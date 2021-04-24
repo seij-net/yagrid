@@ -30,14 +30,14 @@ export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
           {
             name: "my-action-start",
             position: "start",
-            renderItem: (item, state, dispatch) => (
+            renderItem: (item) => (
               <span onClick={() => handleOpenClose(item.id)}>{opened === item.id ? "⬇️" : "➡️"}</span>
             ),
           },
           {
             name: "my-action-end",
             position: "end",
-            renderItem: (item, state, dispatch) => (
+            renderItem: (item) => (
               <span onClick={() => handleOpenClose(item.id)}>{opened === item.id ? "⬇️" : "➡️"}</span>
             ),
           },

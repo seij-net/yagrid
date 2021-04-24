@@ -45,10 +45,6 @@ export interface GridPlugin<T> {
    */
   actionItemList?: TableActionList,
   /**
-   * Shall disapear
-   */
-  actionItemListeners?: (editState: GridState, dispatchEditState: Dispatch<Action>, item: T) => { [p: string]: () => Promise<void> };
-  /**
    * Footer extension point
    */
   footer?: FooterExtensionPoint<T>,

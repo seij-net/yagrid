@@ -49,12 +49,6 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
 
   const rows = dataListTransform.map((it) => {
     const id = it[identifierProperty];
-    let actionListeners = {};
-    plugins.forEach((plugin) => {
-      const pluginListeners =
-        plugin.actionItemListeners && plugin.actionItemListeners(state, dispatch, it);
-      actionListeners = { ...actionListeners, ...pluginListeners };
-    });
 
     return (
       <TableRow
@@ -63,10 +57,10 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
         hasActionsStart={hasActionsStart}
         hasActionsEnd={hasActionsEnd}
         gridState={state}
+        dispatch={dispatch}
         item={it}
         extraItems={extensions.extraItem}
         columnCount={columnCount}
-        onActionItemDispatch={{ listeners: actionListeners }}
         onEditItemChange={handleEditItemChange}
         itemDefinitions={columnDefinitions}
         types={types}
