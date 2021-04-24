@@ -4,6 +4,7 @@ import { TableAction } from "../..";
 
 import { actionReset, actionToState } from "../../TableState";
 import { GridPlugin, GridState, GridStateReducer } from "../../types";
+import { useGrid } from "../../GridContext";
 
 // -----------------------------------------------------------------------------
 // Reducer
@@ -120,59 +121,71 @@ export interface Config<T> {
   labelDeleteCancelButton?: ReactNode;
 }
 
-export function create<T>(config: Config<T>): GridPlugin<any> {
-  const ACTION_EDIT_DELETE: TableAction = {
-    name: "edit_delete",
-    displayed: (state, item) => {
-      // If item can not be deleted, whatever happens, do not the display feature
-      if (config.deletable && !config.deletable(item)) return false;
-      return (
-        state.editedItemState === undefined ||
-        (state.editedItemState === "delete_confirm" && state.editedItemId === item.id)
-      );
-    },
-    // state.editedItemId === item.id && (state.editedItemState === "edit" || state.editedItemState === "delete_confirm"),
-    renderItem: (item, state, dispatch) => {
-      // We do not double-check that item is deletable or not, we assume the
-      // grid did its job by calling displayed
-      return (
-        <ConfirmDeleteButton
-          onDelete={dispatch.listeners.onDelete}
-          confirm={state.editedItemState === "delete_confirm"}
-          onDeleteCancel={dispatch.listeners.onDeleteCancel}
-          onDeleteConfirm={dispatch.listeners.onDeleteConfirm}
-          disabled={state.editedItemState === "delete_commit_pending"}
-          labelDeleteButton={config.labelDeleteButton}
-          labelDeleteConfirm={config.labelDeleteConfirm}
-          labelDeleteCancelButton={config.labelDeleteCancelButton}
-          labelDeleteConfirmButton={config.labelDeleteConfirmButton}
-        />
-      );
-    },
+type ActionDeleteButtonProps<T> = Pick<
+  Config<T>,
+  "onDelete" | "labelDeleteButton" | "labelDeleteCancelButton" | "labelDeleteConfirm" | "labelDeleteConfirmButton"
+> & { item: T };
+
+const ActionDeleteButton: React.FC<ActionDeleteButtonProps<any>> = ({
+  item,
+  onDelete,
+  labelDeleteButton,
+  labelDeleteCancelButton,
+  labelDeleteConfirm,
+  labelDeleteConfirmButton,
+}) => {
+  const { state, dispatch } = useGrid();
+  const handleOnDelete = async () => {
+    dispatch({ type: "delete", item: item });
   };
+  const onDeleteConfirm = async () => {
+    try {
+      dispatch({ type: "delete_commit_started" });
+      await onDelete(state.editedItemValue);
+      dispatch({ type: "delete_commit_succeded" });
+    } catch (error) {
+      dispatch({ type: "delete_commit_failed", error: error });
+    }
+  };
+  const onDeleteCancel = async () => {
+    dispatch({ type: "delete_cancel" });
+  };
+  // We do not double-check that item is deletable or not, we assume the
+  // grid did its job by calling displayed
+  return (
+    <ConfirmDeleteButton
+      onDelete={handleOnDelete}
+      confirm={state.editedItemState === "delete_confirm"}
+      onDeleteCancel={onDeleteCancel}
+      onDeleteConfirm={onDeleteConfirm}
+      disabled={state.editedItemState === "delete_commit_pending"}
+      labelDeleteButton={labelDeleteButton}
+      labelDeleteConfirm={labelDeleteConfirm}
+      labelDeleteCancelButton={labelDeleteCancelButton}
+      labelDeleteConfirmButton={labelDeleteConfirmButton}
+    />
+  );
+};
+
+export function create<T>(config: Config<T>): GridPlugin<any> {
   return {
     name: "edit_delete",
     reducer: reducer,
     actionGenericList: [],
-    actionItemList: [ACTION_EDIT_DELETE],
-    actionItemListeners: (editState, dispatch, item) => {
-      return {
-        onDelete: async () => {
-          dispatch({ type: "delete", item: item });
+    actionItemList: [
+      {
+        name: "edit_delete",
+        displayed: (state, item) => {
+          // If item can not be deleted, whatever happens, do not the display feature
+          if (config.deletable && !config.deletable(item)) return false;
+          return (
+            state.editedItemState === undefined ||
+            (state.editedItemState === "delete_confirm" && state.editedItemId === item.id)
+          );
         },
-        onDeleteConfirm: async () => {
-          try {
-            dispatch({ type: "delete_commit_started" });
-            await config.onDelete(editState.editedItemValue);
-            dispatch({ type: "delete_commit_succeded" });
-          } catch (error) {
-            dispatch({ type: "delete_commit_failed", error: error });
-          }
-        },
-        onDeleteCancel: async () => {
-          dispatch({ type: "delete_cancel" });
-        },
-      };
-    },
+        // state.editedItemId === item.id && (state.editedItemState === "edit" || state.editedItemState === "delete_confirm"),
+        renderItem: (item, state, dispatch) => <ActionDeleteButton {...config} item={item} />,
+      },
+    ],
   };
 }
