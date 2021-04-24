@@ -47,15 +47,6 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
   );
   const columnCount = columnDefinitions.length + (hasActionsStart ? 1 : 0) + (hasActionsEnd ? 1 : 0);
 
-  let actionListeners = {};
-  plugins.forEach((plugin) => {
-    const pluginListeners =
-      plugin.actionGenericListeners && plugin.actionGenericListeners(state, dispatch);
-    if (pluginListeners) {
-      actionListeners = { ...actionListeners, ...pluginListeners };
-    }
-  });
-
   const rows = dataListTransform.map((it) => {
     const id = it[identifierProperty];
     let actionListeners = {};
@@ -105,7 +96,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
           key={action.name}
           action={action}
           state={state}
-          dispatch={{ listeners: actionListeners }}
+          dispatch={dispatch}
         />
       ))}
       <table className={classNames}>
@@ -131,7 +122,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
 export const TableActionTrigger: React.FC<{
   action: TableGenericAction,
   state: GridState,
-  dispatch: TableActionDispatch
+  dispatch: React.Dispatch<any>
 }> = ({ action, state, dispatch }) => {
   return action.render(state, dispatch);
 };

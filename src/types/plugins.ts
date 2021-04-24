@@ -41,10 +41,6 @@ export interface GridPlugin<T> {
    */
   actionGenericList?: TableGenericActionList,
   /**
-   * Shall disapear
-   */
-  actionGenericListeners?: (editState: GridState, dispatchEditState: Dispatch<Action>) => { [p: string]: () => Promise<void> };
-  /**
    * List of actions to provide for each item
    */
   actionItemList?: TableActionList,

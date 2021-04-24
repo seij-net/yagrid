@@ -4,7 +4,7 @@
  * ----------------------------------------------------------------------------- 
  */
 
-import { ReactElement, ReactNode } from "react";
+import React, { ReactElement, ReactNode } from "react";
 import { TableTypesRegistry } from "../TableTypesRegistry";
 import { GridDataSource } from "./data";
 import { GridLayout, GridLayoutProps } from "./layout";
@@ -91,7 +91,7 @@ export type ActionGenericHandler = (action: TableAction, evt: any) => void
 
 export interface TableGenericAction {
   name: string,
-  render: (state: GridState, dispatch: TableActionDispatch) => ReactElement
+  render: (state: GridState, dispatch: React.Dispatch<any>) => ReactElement
 }
 
 

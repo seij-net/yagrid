@@ -1,5 +1,6 @@
 import { cloneDeep } from "lodash-es";
 import React, { Dispatch, ReactNode } from "react";
+import { LoadingState, useGrid } from "../../GridContext";
 
 import { actionReset, actionToState } from "../../TableState";
 import { Action, GridPlugin, GridState, GridStateReducer, TableAction, TableGenericAction } from "../../types";
@@ -77,24 +78,32 @@ export interface TableEditorAddPlugin<T> extends GridPlugin<T> {}
 
 export type PluginFactory<T = {}> = (config: Config<T>) => TableEditorAddPlugin<T>;
 
+const ActionAdd: React.FC<Pick<Config<any>, "onAddTemplate" | "labelAddButton">> = ({ labelAddButton, onAddTemplate }) => {
+  const { state, dispatch, loadingState } = useGrid();
+  const onAddItem = async () => {
+    try {
+      const itemTemplate = await onAddTemplate();
+      dispatch({ type: "add", item: itemTemplate });
+    } catch (error) {
+      console.error("Problem while creating template item", error);
+    }
+  }
+  const disabled = loadingState !== LoadingState.loaded || state.editedItemState !== undefined
+  return (
+    <button disabled={disabled} onClick={onAddItem}>
+      {labelAddButton}
+    </button>
+  );
+};
+
 export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
   const {
     onAddTemplate,
     onAddConfirm,
     labelAddButton = "➕",
     labelAddButtonConfirm = "➕",
-    labelAddButtonCancel = "⬅️"
+    labelAddButtonCancel = "⬅️",
   } = config;
-  const ACTION_ADD: TableGenericAction = {
-    name: "add",
-    render: (state, dispatch) => {
-      return (
-        <button disabled={state.editedItemState !== undefined} onClick={dispatch.listeners.onAddItem}>
-          {labelAddButton}
-        </button>
-      );
-    }
-  };
   const ACTION_ADD_OK: TableAction = {
     name: "add_ok",
     displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
@@ -112,26 +121,14 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
   return {
     name: PLUGIN_NAME,
     reducer: reducer,
-    actionGenericList: [ACTION_ADD],
+    actionGenericList: [{
+      name: "add",
+      render: ()=><ActionAdd labelAddButton={labelAddButton} onAddTemplate={onAddTemplate} />
+    }],
     actionItemList: [ACTION_ADD_OK, ACTION_ADD_CANCEL],
     isEditing: (state, item, itemPropertyName) =>
       (item as any)[state.identifierProperty] === state.editedItemId &&
       (state.editedItemState === "add" || state.editedItemState === "add_commit_pending"),
-    actionGenericListeners: (
-      editState: GridState,
-      dispatch: Dispatch<Action>
-    ): { [p: string]: () => Promise<void> } => {
-      return {
-        onAddItem: async () => {
-          try {
-            const itemTemplate = await onAddTemplate();
-            dispatch({ type: "add", item: itemTemplate });
-          } catch (error) {
-            console.error("Problem while creating template item", error);
-          }
-        },
-      };
-    },
     actionItemListeners: (
       editState: GridState,
       dispatch: Dispatch<Action>,
