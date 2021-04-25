@@ -14,7 +14,7 @@ function actionAdd(prevState: GridState, item: any): GridState {
     ...prevState,
     editedItemId: item[prevState.identifierProperty],
     editedItemState: "add",
-    editedItemValue: cloneDeep(item)
+    editedItemValue: cloneDeep(item),
   };
 }
 
@@ -50,7 +50,7 @@ export const reducer: GridStateReducer = (prevState, action) => {
 // Plugin
 // -----------------------------------------------------------------------------
 
-const PLUGIN_NAME = "edit_add";
+export const PLUGIN_NAME = "edit_add";
 
 export interface Config<T> {
   /**
@@ -76,15 +76,14 @@ export interface Config<T> {
   labelAddButtonCancel?: ReactNode;
 }
 
-export interface TableEditorAddPlugin<T> extends GridPlugin<T> {
-}
+export interface TableEditorAddPlugin<T> extends GridPlugin<T> {}
 
 export type PluginFactory<T = {}> = (config: Config<T>) => TableEditorAddPlugin<T>;
 
 const ActionAdd: React.FC<Pick<Config<any>, "onAddTemplate" | "labelAddButton">> = ({
-                                                                                      labelAddButton,
-                                                                                      onAddTemplate
-                                                                                    }) => {
+  labelAddButton,
+  onAddTemplate,
+}) => {
   const { state, dispatch, loadingState } = useGrid();
   const onAddItem = async () => {
     try {
@@ -103,9 +102,9 @@ const ActionAdd: React.FC<Pick<Config<any>, "onAddTemplate" | "labelAddButton">>
 };
 
 const ActionAddOk: React.FC<Pick<Config<any>, "labelAddButtonConfirm" | "onAddConfirm">> = ({
-                                                                                              labelAddButtonConfirm,
-                                                                                              onAddConfirm
-                                                                                            }) => {
+  labelAddButtonConfirm,
+  onAddConfirm,
+}) => {
   const { state, dispatch } = useGrid();
   const onAddItemConfirm = async () => {
     try {
@@ -133,7 +132,7 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
     onAddConfirm,
     labelAddButton = "➕",
     labelAddButtonConfirm = "➕",
-    labelAddButtonCancel = "⬅️"
+    labelAddButtonCancel = "⬅️",
   } = config;
 
   return {
@@ -142,22 +141,20 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
     actionGenericList: [
       {
         name: "add",
-        render: () => <ActionAdd labelAddButton={labelAddButton} onAddTemplate={onAddTemplate} />
-      }
+        render: () => <ActionAdd labelAddButton={labelAddButton} onAddTemplate={onAddTemplate} />,
+      },
     ],
     actionItemList: [
       {
         name: "add_ok",
         displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
-        renderItem: (item) => (
-          <ActionAddOk onAddConfirm={onAddConfirm} labelAddButtonConfirm={labelAddButtonConfirm} />
-        )
+        renderItem: (item) => <ActionAddOk onAddConfirm={onAddConfirm} labelAddButtonConfirm={labelAddButtonConfirm} />,
       },
       {
         name: "add_cancel",
         displayed: (state, item) => state.editedItemId === item.id && state.editedItemState === "add",
-        renderItem: (item) => <ActionAddCancel labelAddButtonCancel={labelAddButtonCancel} />
-      }
+        renderItem: (item) => <ActionAddCancel labelAddButtonCancel={labelAddButtonCancel} />,
+      },
     ],
     isEditing: (state, item, itemPropertyName) =>
       (item as any)[state.identifierProperty] === state.editedItemId &&
@@ -171,6 +168,6 @@ export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
         newList.push(...data);
       }
       return newList;
-    }
+    },
   };
 }

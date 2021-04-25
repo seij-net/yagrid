@@ -14,6 +14,7 @@ export * as ItemDelete from "./plugins/item-delete";
 export * as ItemAdd from "./plugins/item-add";
 export * as EmptyMessage from "./plugins/empty-message";
 export * as TableFooter from "./plugins/table-footer";
+export * from "./GridContext";
 export {
   Grid,
   GridProps,
