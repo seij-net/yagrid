@@ -3,6 +3,8 @@
  */
 export type ClassNames = string | undefined | null | string[]
 export interface TableClassNames<T> {
+  tableWrapper?: ClassNames,
+  actionGenericToolbar?: ClassNames,
   table?: ClassNames;
   thead?: ClassNames;
   theadRow?: ClassNames;

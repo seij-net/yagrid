@@ -8,7 +8,9 @@ export function tableClassNamesBuilder<T>(props: {
 }) {
   const { legacyTableClassName, cfg } = props
   return {
-    table: clsx(legacyTableClassName, cfg),
+    tableWrapper: clsx(cfg.tableWrapper),
+    actionGenericToolbar: clsx(cfg.actionGenericToolbar),
+    table: clsx(legacyTableClassName, cfg.table),
     thead: clsx(cfg.thead),
     theadRow: clsx(cfg.theadRow),
     theadCell: (columnName: string): string | undefined => {

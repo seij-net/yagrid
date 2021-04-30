@@ -47,13 +47,17 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
 
   const tableClassNames = tableClassNamesBuilder({
     legacyTableClassName: className,
-    cfg: extensions.tableClassNames
+    cfg: extensions.tableClassNames,
   });
   return (
-    <>
-      {extensions.actionGenericList.map((action) => (
-        <action.render key={action.name} />
-      ))}
+    <div className={tableClassNames.tableWrapper}>
+      {extensions.actionGenericList.length > 0 && (
+        <div className={tableClassNames.actionGenericToolbar}>
+          {extensions.actionGenericList.map((action) => (
+            <action.render key={action.name} />
+          ))}
+        </div>
+      )}
       <table className={tableClassNames.table}>
         <thead className={tableClassNames.thead}>
           <tr className={tableClassNames.theadRow}>
@@ -67,9 +71,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
                 </th>
               );
             })}
-            {hasActionsEnd && (
-              <th key="__YAGRID_END_ACTIONS" className={tableClassNames.theadCellActionsEnd}></th>
-            )}
+            {hasActionsEnd && <th key="__YAGRID_END_ACTIONS" className={tableClassNames.theadCellActionsEnd}></th>}
           </tr>
         </thead>
         {loadingState !== LoadingState.loaded && (
@@ -119,7 +121,9 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
                   }
                   {extraItemList.length > 0 && (
                     <tr key="__yagrid_item_extra" className={tableClassNames.tbodyRowExtra(item)}>
-                      <td colSpan={columnCount} className={tableClassNames.tbodyCellExtra(item)}>{extraItemList}</td>
+                      <td colSpan={columnCount} className={tableClassNames.tbodyCellExtra(item)}>
+                        {extraItemList}
+                      </td>
                     </tr>
                   )}
                 </React.Fragment>
@@ -138,6 +142,6 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
           </tfoot>
         )}
       </table>
-    </>
+    </div>
   );
 };
