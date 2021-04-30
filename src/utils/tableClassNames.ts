@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import { isFunction } from "lodash-es";
+import { GridColumnDefinition } from "..";
 import { TableClassNames } from "../types/table"
 
 export function tableClassNamesBuilder<T>(props: {
@@ -13,11 +14,11 @@ export function tableClassNamesBuilder<T>(props: {
     table: clsx(legacyTableClassName, cfg.table),
     thead: clsx(cfg.thead),
     theadRow: clsx(cfg.theadRow),
-    theadCell: (columnName: string): string | undefined => {
+    theadCell: (column: GridColumnDefinition<T>): string | undefined => {
       const theadCell = cfg.theadCell;
       if (!theadCell) return undefined;
       if (isFunction(theadCell)) {
-        return clsx(theadCell(columnName));
+        return clsx(theadCell(column));
       }
       return clsx(theadCell);
     },
@@ -40,11 +41,11 @@ export function tableClassNamesBuilder<T>(props: {
       }
       return clsx(c)
     },
-    tbodyCell: (item: T, columnName: string) => {
+    tbodyCell: (item: T, column: GridColumnDefinition<T>) => {
       const tbodyCell = cfg.tbodyCell
       if (!tbodyCell) return undefined
       if (isFunction(tbodyCell)) {
-        return clsx(tbodyCell(item, columnName))
+        return clsx(tbodyCell(item, column))
       }
       return clsx(tbodyCell)
     },

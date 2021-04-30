@@ -66,7 +66,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
             )}
             {columnDefinitions.map((it) => {
               return (
-                <th key={it.name} className={tableClassNames.theadCell(it.name)}>
+                <th key={it.name} className={tableClassNames.theadCell(it)}>
                   {it.label}
                 </th>
               );
@@ -101,7 +101,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
                       {columnDefinitions.map((def) => {
                         const { editing } = useGridItemProperty(def.name, item, gridContext);
                         return (
-                          <td key={def.name} className={tableClassNames.tbodyCell(item, def.name)}>
+                          <td key={def.name} className={tableClassNames.tbodyCell(item, def)}>
                             {editing && def.editor
                               ? def.editor(state.editedItemValue, handleEditItemChange)
                               : def.render(item)}

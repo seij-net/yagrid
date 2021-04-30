@@ -6,6 +6,15 @@
 
 📢 = Beaking change
 
+## 0.1.10
+
+* 📢 plugin table-classnames : don't send just column name, but whole column definition
+
+## 0.1.9
+
+* ⭐ plugin table-classnames : new class names
+* 🐞 plugin table-classnames : CSS names
+
 ## 0.1.8
 
 * ⭐ table class names plugin
