@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { TableActionList, TableGenericActionList } from "./public";
 import { GridState, GridStateReducer } from "./state";
+import { TableClassNames } from "./table";
 
 export type DataListTransformer<T> = (editState: GridState, data: T[]) => T[]
 
@@ -63,7 +64,11 @@ export interface GridPlugin<T> {
    * Takes item currently displayed and returns (or not) an extra item
    * that shall be displayed below the row
    */
-  extraItem?: ExtraItemExtension<T>
+  extraItem?: ExtraItemExtension<T>,
+  /**
+   * Specific to table layout, classnames to apply
+   */
+  tableClassNames?: TableClassNames<T>
 }
 
 /**
@@ -97,5 +102,6 @@ export interface ExtensionPoints<T> {
   extraItem: ExtraItemExtension<T>[],
   isEditing: EditingExtensionPoint<T>[],
   footerSpan: FooterSpanExtensionPoint<T>[],
-  footerRows: FooterRowsExtensionPoint<T>[]
+  footerRows: FooterRowsExtensionPoint<T>[],
+  tableClassNames: TableClassNames<T>
 }

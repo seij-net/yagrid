@@ -110,6 +110,7 @@ Currently provided plugins
 | [item-delete](./src/plugins/item-edit/Readme.md)  | Provides row button to delete item, confirm and cancel buttons. |
 | [empty-message](./src/plugins/empty-message/Readme.md) | Displays a custom empty message or component if data is empty
 | [table-footer](./src/plugins/table-footer/Readme.md) | Displays a custom component in table footer (`tfoot`) area
+| [table-classnames](./src/plugins/table-classnames/Readme.md) | Using table layout, adjusts the classnames based in displayed item, column, etc.
 
 Each plugin comes with its own documentation. Be sure to take a look at it
 

@@ -1,17 +1,26 @@
-# Table table footer
-
-NOTE: temporary plugin, not aimed to stay, used only to ship fast a solution for table footers.
+# Table class names
 
 ## Features
 
-* Display footer rows (one or more).
+- Display or compose class names for table layout.
+- Each config property can return null, undefined, string
+- properties with items CAN take the item as parameter and adjust according to item
+- properties with items and column name CAN adjust based on current item and column name
 
 ## Configuration
 
-| name | type | description |
-| ---- | ---- | ----------- |
-| rows | (data:T[], columnCount:number) => ReactNode | A custom renderer that takes all the data as parameters as well as columnCount. Displays in &lt;tfoot&gt; area.
-
-
-
-
+- table?: ClassNames;
+- thead?: ClassNames;
+- theadRow?: ClassNames;
+- theadCell?: ClassNames | ((columnName: string) => ClassNames);
+- theadCellActionsStart?: ClassNames,
+- theadCellActionsEnd?: ClassNames,
+- tbody?: ClassNames;
+- tbodyRow?: ClassNames | ((item: T) => ClassNames);
+- tbodyCell?: ClassNames | ((item: T, columnName: string) => ClassNames);
+- tbodyRowExtra?: ClassNames | ((item: T) => ClassNames);
+- tbodyCellExtra?: ClassNames | ((item: T) => ClassNames);
+- tbodyCellActionsStart?: ClassNames | ((item: T) => ClassNames),
+- tbodyCellActionsEnd?: ClassNames | ((item: T) => ClassNames),
+- tfoot?: ClassNames;
+- tfootRow?: ClassNames;

@@ -15,6 +15,7 @@ export * as ItemDelete from "./plugins/item-delete";
 export * as ItemAdd from "./plugins/item-add";
 export * as EmptyMessage from "./plugins/empty-message";
 export * as TableFooter from "./plugins/table-footer";
+export * as TableClassNames from "./plugins/table-classnames";
 export * from "./types/plugins";
 export * from "./GridContext";
 export {

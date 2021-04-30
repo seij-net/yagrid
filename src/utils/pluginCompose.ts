@@ -1,4 +1,4 @@
-import { isNil } from "lodash-es";
+import { defaults, head, isNil } from "lodash-es";
 
 import { ExtensionPoints, GridPlugin, GridPluginList } from "../types";
 
@@ -61,7 +61,8 @@ export function createExtensionPoints<T>(
     dataListTransform: pluginCompose(plugins, p => p.dataListTransform),
     extraItem: pluginCompose(plugins, p => p.extraItem),
     isEditing: pluginCompose(plugins, p => p.isEditing),
-    footerRows: pluginCompose(plugins, p=>p.footerRows),
-    footerSpan: pluginCompose(plugins, p=>p.footerSpan)
+    footerRows: pluginCompose(plugins, p => p.footerRows),
+    footerSpan: pluginCompose(plugins, p => p.footerSpan),
+    tableClassNames: defaults({},head(pluginCompose(plugins, p => p.tableClassNames))),
   };
 }

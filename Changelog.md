@@ -6,6 +6,12 @@
 
 📢 = Beaking change
 
+## 0.1.8
+
+* ⭐ table class names plugin
+* better extension points and composition
+* aimed at usage for different layouts (material-ui is the target)
+
 ## 0.1.7
 
 * 📢 footer extensions points revisited

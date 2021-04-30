@@ -1,7 +1,8 @@
 import clsx from "clsx";
+import { isFunction } from "lodash-es";
 import React, { Factory } from "react";
 import { GridProvider, useGrid, useGridItem, useGridItemProperty } from "./GridContext";
-
+import { tableClassNamesBuilder } from "./utils/tableClassNames";
 import { GridProps } from "./types";
 
 enum LoadingState {
@@ -36,8 +37,6 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
     dataListTransform,
   } = gridContext;
 
-  const classNames = clsx(className);
-
   const hasActionsStart = extensions.actionItemList.some((action) => action.position === "start");
   const hasActionsEnd = extensions.actionItemList.some(
     (action) => action.position === "end" || action.position === undefined
@@ -46,19 +45,31 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
   const footerRows = extensions.footerRows.map((it) => it(dataListTransform, columnCount));
   const footerSpans = extensions.footerSpan.map((it) => it(dataListTransform));
 
+  const tableClassNames = tableClassNamesBuilder({
+    legacyTableClassName: className,
+    cfg: extensions.tableClassNames
+  });
   return (
     <>
       {extensions.actionGenericList.map((action) => (
         <action.render key={action.name} />
       ))}
-      <table className={classNames}>
-        <thead>
-          <tr>
-            {hasActionsStart && <th key="__YAGRID_START_ACTIONS"></th>}
-            {columnDefinitions.map((it) => (
-              <th key={it.name}>{it.label}</th>
-            ))}
-            {hasActionsEnd && <th key="__YAGRID_END_ACTIONS"></th>}
+      <table className={tableClassNames.table}>
+        <thead className={tableClassNames.thead}>
+          <tr className={tableClassNames.theadRow}>
+            {hasActionsStart && (
+              <th key="__YAGRID_START_ACTIONS" className={tableClassNames.theadCellActionsStart}></th>
+            )}
+            {columnDefinitions.map((it) => {
+              return (
+                <th key={it.name} className={tableClassNames.theadCell(it.name)}>
+                  {it.label}
+                </th>
+              );
+            })}
+            {hasActionsEnd && (
+              <th key="__YAGRID_END_ACTIONS" className={tableClassNames.theadCellActionsEnd}></th>
+            )}
           </tr>
         </thead>
         {loadingState !== LoadingState.loaded && (
@@ -69,15 +80,15 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
           </tbody>
         )}
         {loadingState === LoadingState.loaded && (
-          <tbody>
+          <tbody className={tableClassNames.tbody}>
             {dataListTransform.map((item) => {
               const { selectDisplayedItemActions, selectExtraItems: extraItemList } = useGridItem(item, gridContext);
               return (
                 <React.Fragment key={item[identifierProperty]}>
                   {
-                    <tr key="__yagrid_item">
+                    <tr key="__yagrid_item" className={tableClassNames.tbodyRow(item)}>
                       {hasActionsStart && (
-                        <td key="__YAGRID_START_ACTIONS">
+                        <td key="__YAGRID_START_ACTIONS" className={tableClassNames.tbodyCellActionsStart(item)}>
                           {selectDisplayedItemActions
                             .filter((it) => it.position === "start")
                             .map((action) => (
@@ -88,7 +99,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
                       {columnDefinitions.map((def) => {
                         const { editing } = useGridItemProperty(def.name, item, gridContext);
                         return (
-                          <td key={def.name}>
+                          <td key={def.name} className={tableClassNames.tbodyCell(item, def.name)}>
                             {editing && def.editor
                               ? def.editor(state.editedItemValue, handleEditItemChange)
                               : def.render(item)}
@@ -96,7 +107,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
                         );
                       })}
                       {hasActionsEnd && (
-                        <td key="__YAGRID_END_ACTIONS">
+                        <td key="__YAGRID_END_ACTIONS" className={tableClassNames.tbodyCellActionsEnd(item)}>
                           {selectDisplayedItemActions
                             .filter((it) => it.position === "end" || it.position === undefined)
                             .map((action) => (
@@ -107,8 +118,8 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
                     </tr>
                   }
                   {extraItemList.length > 0 && (
-                    <tr key="__yagrid_item_extra">
-                      <td colSpan={columnCount}>{extraItemList}</td>
+                    <tr key="__yagrid_item_extra" className={tableClassNames.tbodyRowExtra(item)}>
+                      <td colSpan={columnCount} className={tableClassNames.tbodyCellExtra(item)}>{extraItemList}</td>
                     </tr>
                   )}
                 </React.Fragment>
@@ -117,9 +128,13 @@ const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
           </tbody>
         )}
         {footerRows.length + footerSpans.length > 0 && (
-          <tfoot>
+          <tfoot className={tableClassNames.tfoot}>
             {footerRows}
-            {footerSpans.length > 0 && <tr><td colSpan={columnCount}>{footerSpans}</td></tr> }
+            {footerSpans.length > 0 && (
+              <tr className={tableClassNames.tfootRow}>
+                <td colSpan={columnCount}>{footerSpans}</td>
+              </tr>
+            )}
           </tfoot>
         )}
       </table>
