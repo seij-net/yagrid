@@ -24,6 +24,7 @@ export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
     plugins: [
       {
         name: "my-plugin",
+        config:{},
         extraItem: (item) =>
           opened === item.id ? <span key="extra">EXTRA item details = {JSON.stringify(item)}</span> : null,
         actionItemList: [

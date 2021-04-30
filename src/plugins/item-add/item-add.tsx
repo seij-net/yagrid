@@ -46,6 +46,51 @@ export const reducer: GridStateReducer = (prevState, action) => {
   }
   return result;
 };
+
+// -----------------------------------------------------------------------------
+// Action helpers
+// -----------------------------------------------------------------------------
+
+export function useItemAdd() {
+  const { state, dispatch, loadingState, getPlugin } = useGrid();
+  const plugin = getPlugin(PLUGIN_NAME).config as Config<any>
+  const handleClick = async () => {
+    try {
+      const itemTemplate = await plugin.onAddTemplate();
+      dispatch({ type: "add", item: itemTemplate });
+    } catch (error) {
+      console.error("Problem while creating template item", error);
+    }
+  };
+  const disabled = loadingState !== LoadingState.loaded || state.editedItemState !== undefined;
+  const buttonProps = { disabled, onClick: handleClick }
+  return { buttonProps, config: plugin}
+}
+
+export function useItemAddConfirm() {
+  const { state, dispatch, getPlugin } = useGrid();
+  const plugin = getPlugin(PLUGIN_NAME).config as Config<any>
+  const handleClick = async () => {
+    try {
+      dispatch({ type: "add_commit_started" });
+      await plugin.onAddConfirm(state.editedItemValue);
+      dispatch({ type: "add_commit_succeded" });
+    } catch (error) {
+      dispatch({ type: "add_commit_failed", error: error });
+    }
+  };
+  return {buttonProps: { onClick: handleClick}, config: plugin }
+}
+
+export function useItemAddCancel() {
+  const { state, dispatch, getPlugin } = useGrid();
+  const plugin = getPlugin(PLUGIN_NAME).config as Config<any>
+  const onAddItemCancel = async () => {
+    dispatch({ type: "add_cancel" });
+  };
+  return { buttonProps: { onClick: onAddItemCancel }, config: plugin}
+}
+
 // -----------------------------------------------------------------------------
 // Plugin
 // -----------------------------------------------------------------------------
@@ -80,68 +125,47 @@ export interface TableEditorAddPlugin<T> extends GridPlugin<T> {}
 
 export type PluginFactory<T = {}> = (config: Config<T>) => TableEditorAddPlugin<T>;
 
-const ActionAdd: React.FC<Pick<Config<any>, "onAddTemplate" | "labelAddButton">> = ({
-  labelAddButton,
-  onAddTemplate,
-}) => {
-  const { state, dispatch, loadingState } = useGrid();
-  const onAddItem = async () => {
-    try {
-      const itemTemplate = await onAddTemplate();
-      dispatch({ type: "add", item: itemTemplate });
-    } catch (error) {
-      console.error("Problem while creating template item", error);
-    }
-  };
-  const disabled = loadingState !== LoadingState.loaded || state.editedItemState !== undefined;
+const ActionAdd: React.FC<{}> = () => {
+  const {buttonProps, config} = useItemAdd()
   return (
-    <button disabled={disabled} onClick={onAddItem}>
-      {labelAddButton}
-    </button>
+    <button {...buttonProps}>{config.labelAddButton}</button>
   );
 };
 
-const ActionAddOk: React.FC<Pick<Config<any>, "labelAddButtonConfirm" | "onAddConfirm">> = ({
-  labelAddButtonConfirm,
-  onAddConfirm,
-}) => {
-  const { state, dispatch } = useGrid();
-  const onAddItemConfirm = async () => {
-    try {
-      dispatch({ type: "add_commit_started" });
-      await onAddConfirm(state.editedItemValue);
-      dispatch({ type: "add_commit_succeded" });
-    } catch (error) {
-      dispatch({ type: "add_commit_failed", error: error });
-    }
-  };
-  return <button onClick={onAddItemConfirm}>{labelAddButtonConfirm}</button>;
+const ActionAddOk: React.FC<Pick<Config<any>, "labelAddButtonConfirm" | "onAddConfirm">> = () => {
+  const { buttonProps, config} = useItemAddConfirm()
+  return <button {...buttonProps}>{config.labelAddButtonConfirm}</button>;
 };
 
 const ActionAddCancel: React.FC<Pick<Config<any>, "labelAddButtonCancel">> = ({ labelAddButtonCancel }) => {
-  const { state, dispatch } = useGrid();
-  const onAddItemCancel = async () => {
-    dispatch({ type: "add_cancel" });
-  };
-  return <button onClick={onAddItemCancel}>{labelAddButtonCancel}</button>;
+  const { buttonProps, config} = useItemAddCancel()
+  return <button {...buttonProps}>{config.labelAddButtonCancel}</button>;
 };
 
+const DEFAULT_CONFIG: Partial<Config<any>> = {
+    labelAddButton : "➕",
+    labelAddButtonConfirm : "➕",
+    labelAddButtonCancel : "⬅️",
+}
+
 export function create<T>(config: Config<T>): TableEditorAddPlugin<T> {
+
+  const fullConfig =  {...DEFAULT_CONFIG, ...config}
+
   const {
-    onAddTemplate,
     onAddConfirm,
-    labelAddButton = "➕",
     labelAddButtonConfirm = "➕",
     labelAddButtonCancel = "⬅️",
-  } = config;
+  } = fullConfig
 
   return {
     name: PLUGIN_NAME,
+    config: fullConfig,
     reducer: reducer,
     actionGenericList: [
       {
         name: "add",
-        render: () => <ActionAdd labelAddButton={labelAddButton} onAddTemplate={onAddTemplate} />,
+        render: () => <ActionAdd />,
       },
     ],
     actionItemList: [

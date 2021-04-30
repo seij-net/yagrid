@@ -3,9 +3,10 @@ import {
   ActionItemHandler,
   GridColumnDefinition,
   GridProps,
+  DataListTransformer,
   TableAction,
   TableActionHandler,
-  TableActionList
+  TableActionList,
 } from "./types";
 import { Grid } from "./Table";
 
@@ -14,9 +15,11 @@ export * as ItemDelete from "./plugins/item-delete";
 export * as ItemAdd from "./plugins/item-add";
 export * as EmptyMessage from "./plugins/empty-message";
 export * as TableFooter from "./plugins/table-footer";
+export * from "./types/plugins";
 export * from "./GridContext";
 export {
   Grid,
+  DataListTransformer,
   GridProps,
   GridColumnDefinition,
   TableActionList,

@@ -12,7 +12,7 @@ function actionEdit(prevState: GridState, item: any): GridState {
     ...prevState,
     editedItemId: item[prevState.identifierProperty],
     editedItemState: "edit",
-    editedItemValue: cloneDeep(item)
+    editedItemValue: cloneDeep(item),
   };
 }
 
@@ -69,9 +69,9 @@ export interface Config<T> {
 }
 
 const ActionEditButton: React.FC<Pick<Config<any>, "labelEditButton"> & { item: any }> = ({
-                                                                                            labelEditButton,
-                                                                                            item
-                                                                                          }) => {
+  labelEditButton,
+  item,
+}) => {
   const { state, dispatch } = useGrid();
   const onEditItem = async () => {
     dispatch({ type: "edit", item: item });
@@ -80,10 +80,10 @@ const ActionEditButton: React.FC<Pick<Config<any>, "labelEditButton"> & { item: 
 };
 
 const ActionEditOKButton: React.FC<Pick<Config<any>, "labelEditButtonConfirm" | "onEdit"> & { item: any }> = ({
-                                                                                                                labelEditButtonConfirm,
-                                                                                                                item,
-                                                                                                                onEdit
-                                                                                                              }) => {
+  labelEditButtonConfirm,
+  item,
+  onEdit,
+}) => {
   const { state, dispatch } = useGrid();
   const onEditItemCommit = async () => {
     try {
@@ -98,9 +98,9 @@ const ActionEditOKButton: React.FC<Pick<Config<any>, "labelEditButtonConfirm" | 
 };
 
 const ActionEditCancelButton: React.FC<Pick<Config<any>, "labelEditButtonCancel"> & { item: any }> = ({
-                                                                                                        labelEditButtonCancel,
-                                                                                                        item
-                                                                                                      }) => {
+  labelEditButtonCancel,
+  item,
+}) => {
   const { state, dispatch } = useGrid();
   const onEditItemCancel = async () => {
     dispatch({ type: "edit_cancel" });
@@ -108,18 +108,26 @@ const ActionEditCancelButton: React.FC<Pick<Config<any>, "labelEditButtonCancel"
   return <button onClick={onEditItemCancel}>{labelEditButtonCancel}</button>;
 };
 
+const CONFIG_DEFAULTS: Partial<Config<any>> = {
+  labelEditButton: "📝",
+  labelEditButtonConfirm: "✅",
+  labelEditButtonCancel: "⬅️",
+};
+
 export function create<T>(config: Config<T>): GridPlugin<T> {
+  const configWithDefaults = { ...CONFIG_DEFAULTS, ...config };
   const {
     onEdit,
     editable,
     labelEditButton = "📝",
     labelEditButtonConfirm = "✅",
-    labelEditButtonCancel = "⬅️"
-  } = config;
+    labelEditButtonCancel = "⬅️",
+  } = configWithDefaults;
   const editableSafe = isNil(editable) ? () => true : editable;
 
   return {
     name: PLUGIN_NAME,
+    config: configWithDefaults,
     reducer: tableEditReducer,
     isEditing: (state, item, property) =>
       (item as any)[state.identifierProperty] === state.editedItemId &&
@@ -128,7 +136,7 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
       {
         name: "edit",
         displayed: (state, item) => editableSafe(item) && state.editedItemState === undefined,
-        renderItem: (item) => <ActionEditButton item={item} labelEditButton={labelEditButton} />
+        renderItem: (item) => <ActionEditButton item={item} labelEditButton={labelEditButton} />,
       },
       {
         name: "edit_ok",
@@ -136,16 +144,14 @@ export function create<T>(config: Config<T>): GridPlugin<T> {
           editableSafe(item) && state.editedItemId === item.id && state.editedItemState === "edit",
         renderItem: (item) => (
           <ActionEditOKButton item={item} onEdit={onEdit} labelEditButtonConfirm={labelEditButtonConfirm} />
-        )
+        ),
       },
       {
         name: "edit_cancel",
         displayed: (state, item) =>
           editableSafe(item) && item.id === state.editedItemId && state.editedItemState === "edit",
-        renderItem: (item) => (
-          <ActionEditCancelButton item={item} labelEditButtonCancel={labelEditButtonCancel} />
-        )
-      }
-    ]
+        renderItem: (item) => <ActionEditCancelButton item={item} labelEditButtonCancel={labelEditButtonCancel} />,
+      },
+    ],
   };
 }

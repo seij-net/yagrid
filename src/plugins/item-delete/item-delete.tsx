@@ -22,7 +22,7 @@ function actionDelete(prevState: GridState, item: any): GridState {
     ...prevState,
     editedItemId: item[prevState.identifierProperty],
     editedItemState: "delete_confirm",
-    editedItemValue: cloneDeep(item)
+    editedItemValue: cloneDeep(item),
   };
 }
 
@@ -65,15 +65,15 @@ const ConfirmDeleteButton: React.FC<{
   confirm: boolean;
   disabled: boolean;
 }> = ({
-        onDelete,
-        onDeleteCancel,
-        onDeleteConfirm,
-        confirm,
-        labelDeleteButton = "❌",
-        labelDeleteConfirm = "Confirm ?",
-        labelDeleteConfirmButton = "❌",
-        labelDeleteCancelButton = "⬅️"
-      }) => {
+  onDelete,
+  onDeleteCancel,
+  onDeleteConfirm,
+  confirm,
+  labelDeleteButton = "❌",
+  labelDeleteConfirm = "Confirm ?",
+  labelDeleteConfirmButton = "❌",
+  labelDeleteCancelButton = "⬅️",
+}) => {
   return (
     <>
       {!confirm && <button onClick={onDelete}>{labelDeleteButton}</button>}
@@ -120,19 +120,19 @@ export interface Config<T> {
   labelDeleteCancelButton?: ReactNode;
 }
 
-type ActionDeleteButtonProps<T> =
-  Pick<Config<T>,
-    "onDelete" | "labelDeleteButton" | "labelDeleteCancelButton" | "labelDeleteConfirm" | "labelDeleteConfirmButton">
-  & { item: T };
+type ActionDeleteButtonProps<T> = Pick<
+  Config<T>,
+  "onDelete" | "labelDeleteButton" | "labelDeleteCancelButton" | "labelDeleteConfirm" | "labelDeleteConfirmButton"
+> & { item: T };
 
 const ActionDeleteButton: React.FC<ActionDeleteButtonProps<any>> = ({
-                                                                      item,
-                                                                      onDelete,
-                                                                      labelDeleteButton,
-                                                                      labelDeleteCancelButton,
-                                                                      labelDeleteConfirm,
-                                                                      labelDeleteConfirmButton
-                                                                    }) => {
+  item,
+  onDelete,
+  labelDeleteButton,
+  labelDeleteCancelButton,
+  labelDeleteConfirm,
+  labelDeleteConfirmButton,
+}) => {
   const { state, dispatch } = useGrid();
   const handleOnDelete = async () => {
     dispatch({ type: "delete", item: item });
@@ -169,6 +169,7 @@ const ActionDeleteButton: React.FC<ActionDeleteButtonProps<any>> = ({
 export function create<T>(config: Config<T>): GridPlugin<any> {
   return {
     name: "edit_delete",
+    config: config,
     reducer: reducer,
     actionItemList: [
       {
@@ -182,8 +183,8 @@ export function create<T>(config: Config<T>): GridPlugin<any> {
           );
         },
         // state.editedItemId === item.id && (state.editedItemState === "edit" || state.editedItemState === "delete_confirm"),
-        renderItem: (item) => <ActionDeleteButton {...config} item={item} />
-      }
-    ]
+        renderItem: (item) => <ActionDeleteButton {...config} item={item} />,
+      },
+    ],
   };
 }

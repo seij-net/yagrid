@@ -7,6 +7,7 @@ import {
   GridColumnDefinition,
   GridColumnDefinitionInternal,
   GridDataSource,
+  GridPlugin,
   GridPluginList,
   GridState,
   TableAction,
@@ -26,6 +27,7 @@ interface GridContext<T> {
   columnDefinitions: GridColumnDefinitionInternal<T>[];
   types: TableTypesRegistry;
   extensions: ExtensionPoints<T>;
+  getPlugin: (name:string) => GridPlugin<T>;
   identifierProperty: string;
   state: GridState;
   dispatch: React.Dispatch<any>;
@@ -36,20 +38,9 @@ interface GridContext<T> {
   dataListTransform: T[];
 }
 
-const defaultContext: GridContext<any> = {
-  loadingState: LoadingState.init,
-  columnDefinitions: [],
-  types: TableTypesRegistryDefault,
-  resolvedData: [],
-  extensions: createExtensionPoints([]),
-  identifierProperty: "id",
-  state: createTableEditDefaultState("id"),
-  dispatch: () => {},
-  handleEditItemChange: () => {},
-  dataListTransform: [],
-};
 
-const GridContextInternal = React.createContext<GridContext<any>>(defaultContext);
+
+const GridContextInternal = React.createContext<GridContext<any>|undefined>(undefined);
 
 export function useGrid() {
   const context = React.useContext(GridContextInternal);
@@ -119,6 +110,11 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({
 
   // Plugin registry
   const extensions = createExtensionPoints(plugins);
+  const getPlugin = (name:string):GridPlugin<any> => {
+    const plugin = plugins.find(it => it.name === name)
+    if (!plugin)  throw Error("Plugin not found")
+    return plugin
+  }
 
   // Edit state
   const reducer = createReducer(extensions.reducer);
@@ -143,6 +139,7 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({
     dispatch: dispatchEditState,
     handleEditItemChange,
     dataListTransform,
+    getPlugin
   };
 
   return <GridContextInternal.Provider value={ctx}>{children}</GridContextInternal.Provider>;

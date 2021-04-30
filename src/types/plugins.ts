@@ -15,6 +15,12 @@ export interface GridPlugin<T> {
    **/
   name: string
   /**
+   * Configuration of the plugin. This configuration contains the original
+   * configuration specified by user as well as defaults added by the plugin
+   * iteself
+   */
+  config: any
+  /**
    * Extension point: state reducer to apply to grid state
    *
    * Given a state and an action, resolves the next state
