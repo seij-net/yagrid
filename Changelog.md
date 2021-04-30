@@ -6,6 +6,14 @@
 
 📢 = Beaking change
 
+## 0.1.12
+
+* plugin table-classnames : add typings for clsx styles
+
+## 0.1.11
+
+* plugin table-classnames : can use clsx style
+
 ## 0.1.10
 
 * 📢 plugin table-classnames : don't send just column name, but whole column definition
