@@ -3,7 +3,7 @@ import { GridColumnDefinition } from "..";
 /**
  * For table layout only
  */
-export type ClassNames = string | undefined | null | string[]
+export type ClassNames = string | undefined | null | string[] | {[key:string]:boolean}
 export interface TableClassNames<T> {
   tableWrapper?: ClassNames,
   actionGenericToolbar?: ClassNames,

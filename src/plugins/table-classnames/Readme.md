@@ -6,6 +6,9 @@
 - Each config property can return null, undefined, string
 - properties with items CAN take the item as parameter and adjust according to item
 - properties with items and column name CAN adjust based on current item and column name
+- you can use conditional syntax `{ classname: boolean, ...}` like in (`clsx`)[https://github.com/lukeed/clsx] 
+  or (`JedWatson/classnames`)[https://github.com/JedWatson/classnames]. Under the ground, we use `clsx`
+  
 
 ## Configuration
 
