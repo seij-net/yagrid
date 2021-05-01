@@ -1,6 +1,4 @@
-import clsx from "clsx";
-import { isFunction } from "lodash-es";
-import React, { Factory } from "react";
+import React from "react";
 import { GridProvider, useGrid, useGridItem, useGridItemProperty } from "./GridContext";
 import { tableClassNamesBuilder } from "./utils/tableClassNames";
 import { GridProps } from "./types";
@@ -25,7 +23,7 @@ export const Grid: React.FC<GridProps<any>> = (props) => {
   );
 };
 
-const TableLayout: React.FC<GridProps<any>> = ({ className, plugins = [] }) => {
+const TableLayout: React.FC<GridProps<any>> = ({ className }) => {
   const gridContext = useGrid();
   const {
     loadingState,
