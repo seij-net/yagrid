@@ -3,7 +3,8 @@ import { isNil } from "lodash-es";
 import React from "react";
 
 import { GridProps, ItemAdd, ItemDelete, ItemEdit } from "..";
-import { sampledata, SampleItem, useData } from "./commons/SampleItem";
+import { Grid } from "../Table";
+import { sampledata, TodoListItem, useData } from "./commons/TodoListItem";
 import { customTypes, YAGridPlayground } from "./YAGridPlayground";
 
 export default {
@@ -15,10 +16,10 @@ function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
+export const TodoList: Story<GridProps<TodoListItem>> = (props) => {
   const { data, sampleColumns, handleDelete, handleEdit, handleAddTemplate, handleAddConfirm } = useData(sampledata);
 
-  const gridProps: GridProps<SampleItem> = {
+  const gridProps: GridProps<TodoListItem> = {
     ...props,
     columns: sampleColumns,
     data: data,
@@ -38,5 +39,12 @@ export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
       })
     ]
   };
-  return <YAGridPlayground {...gridProps} />;
+  return (
+    <div>
+      <h1 className="text-2xl">Todo List</h1>
+      <p> Displays a simple todo list with a custom layout </p>
+      <p>&nbsp;</p>
+      <Grid className="table-auto yagrid-table-playground" {...gridProps} />
+    </div>
+  );
 };
