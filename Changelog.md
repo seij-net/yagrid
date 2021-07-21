@@ -6,6 +6,11 @@
 
 📢 = Beaking change
 
+## 0.1.13
+
+* better error handling, separate global grid errors and per-row errors
+* improved edition error handling
+
 ## 0.1.12
 
 * plugin table-classnames : add typings for clsx styles

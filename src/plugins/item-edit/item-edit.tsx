@@ -72,11 +72,6 @@ export interface Config<T> {
    */
   onEdit: (nextItem: T) => Promise<void>;
   /**
-   * Called when edit has been cancelled
-   * @param item item beeing cancelled
-   */
-  onEditCancel?: (item: T) => Promise<void>;
-  /**
    * Tells if an item is editable
    */
   editable?: (item: T) => boolean;

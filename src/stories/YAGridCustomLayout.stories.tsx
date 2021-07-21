@@ -47,8 +47,8 @@ export const TodoList: Story<GridProps<TodoListItem>> = () => {
   const handleDelete = async (item: any) => setData((prevState) => prevState.filter((it) => it.id !== item.id));
   const handleEdit = async (item: any) => {
     let errors = []
-    if (item.label === "") errors.push("Title is required.")
-    if (item.description === "") errors.push("Description required.")
+    if (!item.label) errors.push("Title is required.")
+    if (!item.description) errors.push("Description required.")
     if (errors.length > 0) {
       const message = errors.join(" ")
       throw new Error(message)
@@ -107,14 +107,24 @@ export const TodoList: Story<GridProps<TodoListItem>> = () => {
 
     plugins: [
       ItemEdit.create({
+        labelEditButton: "Edit",
+        labelEditButtonCancel: "Cancel",
+        labelEditButtonConfirm: "Confirm",
         onEdit: handleEdit,
         editable: (item) => !item.readonly
       }),
       ItemAdd.create({
+        labelAddButton: "Add",
+        labelAddButtonCancel: "Cancel",
+        labelAddButtonConfirm: "Confirm",
         onAddTemplate: handleAddTemplate,
         onAddConfirm: handleAddConfirm,
       }),
       ItemDelete.create({
+        labelDeleteButton: "Delete",
+        labelDeleteConfirm: "Confirm delete",
+        labelDeleteConfirmButton: "Yes",
+        labelDeleteCancelButton: "No",
         onDelete: handleDelete,
         deletable: (item) => isNil(item.deletable) ? true : item.deletable
       }), {
@@ -204,11 +214,10 @@ const Item: React.FC<{ item: TodoListItem }> = ({ item }) => {
   const { extensions, columnDefinitions, state, handleEditItemChange } = gridContext
   const hasActionsStart = selectHasActionsStart(extensions);
   const hasActionsEnd = selectHasActionsEnd(extensions)
-  const columnCount = selectColumnCount(columnDefinitions, extensions)
-  const { selectExtraItems } = useGridItem(item, gridContext);
+  const itemError = state.errorItems[item[state.identifierProperty]]
   return (
 
-    <div style={{ border: "1px solid black", padding: "0.5em", display: "flex" }}>
+    <div style={{ border: "1px solid black", padding: "0.5em" }}>
       <div key="__yagrid_item" >
         {hasActionsStart && <Actions item={item} position="start" />}
         {columnDefinitions.map((def) => {
@@ -221,16 +230,9 @@ const Item: React.FC<{ item: TodoListItem }> = ({ item }) => {
             </div>
           );
         })}
+        { itemError ? <div key="__yagrid_item_error" style={{color:"red"}}>{itemError.message}</div> : "" }
         {hasActionsEnd && <Actions item={item} position="end" />}
       </div>
-
-      {selectExtraItems.length > 0 && (
-        <div key="__yagrid_item_extra">
-          <div>
-            {selectExtraItems}
-          </div>
-        </div>
-      )}
     </div>
 
   );
