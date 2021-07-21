@@ -2,7 +2,7 @@ import { cloneDeep } from "lodash-es";
 import React, { ReactNode } from "react";
 import { LoadingState, useGrid } from "../../GridContext";
 
-import { actionReset, actionToState } from "../../TableState";
+import { actionErrorItem, actionReset, actionToState } from "../../TableState";
 import { GridPlugin, GridState, GridStateReducer } from "../../types";
 
 // -----------------------------------------------------------------------------
@@ -10,16 +10,37 @@ import { GridPlugin, GridState, GridStateReducer } from "../../types";
 // -----------------------------------------------------------------------------
 
 function actionAdd(prevState: GridState, item: any): GridState {
+  const id = item[prevState.identifierProperty]
+  const prevStateErrorReset = actionErrorItem(prevState, id, undefined)
   return {
-    ...prevState,
-    editedItemId: item[prevState.identifierProperty],
+    ...prevStateErrorReset,
+    editedItemId: id,
     editedItemState: "add",
     editedItemValue: cloneDeep(item),
   };
 }
 
 function actionAddCommitFailed(prevState: GridState, error: Error): GridState {
-  return { ...prevState, editedItemState: "add", error: error };
+  const prevStateErrorReset = actionErrorItem(prevState, prevState.editedItemId, error)
+  return { 
+    ...prevStateErrorReset, 
+    editedItemState: "add"
+  };
+}
+
+function actionAddCancel(prevState: GridState): GridState {
+  const prevStateErrorReset = actionErrorItem(prevState, prevState.editedItemId, undefined)
+  return actionReset(prevStateErrorReset)
+}
+
+function actionAddCommitSucceded(prevState:GridState):GridState {
+  const prevStateErrorReset = actionErrorItem(prevState, prevState.editedItemId, undefined)
+  return actionReset(prevStateErrorReset)
+}
+
+function actionAddCommitStarted(prevState:GridState):GridState {
+  const prevStateErrorReset = actionErrorItem(prevState, prevState.editedItemId, undefined)
+  return actionToState(prevStateErrorReset, "edit_commit_pending")
 }
 
 export const reducer: GridStateReducer = (prevState, action) => {
@@ -29,16 +50,16 @@ export const reducer: GridStateReducer = (prevState, action) => {
       result = actionAdd(prevState, action.item);
       break;
     case "add_cancel":
-      result = actionReset(prevState);
+      result = actionAddCancel(prevState);
       break;
     case "add_commit_started":
-      result = actionToState(prevState, "edit_commit_pending");
+      result = actionAddCommitStarted(prevState);
       break;
     case "add_commit_failed":
       result = actionAddCommitFailed(prevState, action.error);
       break;
     case "add_commit_succeded":
-      result = actionReset(prevState);
+      result = actionAddCommitSucceded(prevState);
       break;
 
     default:
@@ -51,7 +72,11 @@ export const reducer: GridStateReducer = (prevState, action) => {
 // Action helpers
 // -----------------------------------------------------------------------------
 
-export function useItemAdd() {
+/**
+ * 
+ * @returns tools for creation an Add button
+ */
+export function createItemAdd() {
   const { state, dispatch, loadingState, getPlugin } = useGrid();
   const plugin = getPlugin(PLUGIN_NAME).config as Config<any>
   const handleClick = async () => {
@@ -67,7 +92,7 @@ export function useItemAdd() {
   return { buttonProps, config: plugin}
 }
 
-export function useItemAddConfirm() {
+export function createItemAddConfirm() {
   const { state, dispatch, getPlugin } = useGrid();
   const plugin = getPlugin(PLUGIN_NAME).config as Config<any>
   const handleClick = async () => {
@@ -82,7 +107,7 @@ export function useItemAddConfirm() {
   return {buttonProps: { onClick: handleClick}, config: plugin }
 }
 
-export function useItemAddCancel() {
+export function createItemAddCancel() {
   const { state, dispatch, getPlugin } = useGrid();
   const plugin = getPlugin(PLUGIN_NAME).config as Config<any>
   const onAddItemCancel = async () => {
@@ -126,19 +151,19 @@ export interface TableEditorAddPlugin<T> extends GridPlugin<T> {}
 export type PluginFactory<T = {}> = (config: Config<T>) => TableEditorAddPlugin<T>;
 
 const ActionAdd: React.FC<{}> = () => {
-  const {buttonProps, config} = useItemAdd()
+  const {buttonProps, config} = createItemAdd()
   return (
     <button {...buttonProps}>{config.labelAddButton}</button>
   );
 };
 
 const ActionAddOk: React.FC<Pick<Config<any>, "labelAddButtonConfirm" | "onAddConfirm">> = () => {
-  const { buttonProps, config} = useItemAddConfirm()
+  const { buttonProps, config} = createItemAddConfirm()
   return <button {...buttonProps}>{config.labelAddButtonConfirm}</button>;
 };
 
 const ActionAddCancel: React.FC<Pick<Config<any>, "labelAddButtonCancel">> = ({ labelAddButtonCancel }) => {
-  const { buttonProps, config} = useItemAddCancel()
+  const { buttonProps, config} = createItemAddCancel()
   return <button {...buttonProps}>{config.labelAddButtonCancel}</button>;
 };
 

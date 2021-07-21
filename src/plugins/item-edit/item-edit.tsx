@@ -2,22 +2,43 @@ import { cloneDeep, isNil } from "lodash-es";
 import React, { ReactNode } from "react";
 import { useGrid } from "../../GridContext";
 
-import { actionReset, actionToState } from "../../TableState";
+import { actionError, actionErrorItem, actionReset, actionToState } from "../../TableState";
 import { GridPlugin, GridState, GridStateReducer } from "../../types";
 
 const PLUGIN_NAME = "edit_inline";
 
 function actionEdit(prevState: GridState, item: any): GridState {
+  const id = item[prevState.identifierProperty]
+  const prevStateErrorReset = actionErrorItem(prevState, id, undefined)
   return {
-    ...prevState,
-    editedItemId: item[prevState.identifierProperty],
+    ...prevStateErrorReset,
+    editedItemId: id,
     editedItemState: "edit",
     editedItemValue: cloneDeep(item),
   };
 }
 
 function actionEditCommitFailed(prevState: GridState, error: Error): GridState {
-  return { ...prevState, editedItemState: "edit", error: error };
+  const prevStateErrorReset = actionErrorItem(prevState, prevState.editedItemId, error)
+  return { 
+    ...prevStateErrorReset,
+    editedItemState: "edit"
+  };
+}
+
+function actionEditCancel(prevState: GridState): GridState {
+  const prevStateErrorReset = actionErrorItem(prevState, prevState.editedItemId, undefined)
+  return actionReset(prevStateErrorReset)
+}
+
+function actionEditCommitSucceded(prevState:GridState):GridState {
+  const prevStateErrorReset = actionErrorItem(prevState, prevState.editedItemId, undefined)
+  return actionReset(prevStateErrorReset)
+}
+
+function actionEditCommitStarted(prevState:GridState):GridState {
+  const prevStateErrorReset = actionErrorItem(prevState, prevState.editedItemId, undefined)
+  return actionToState(prevStateErrorReset, "edit_commit_pending")
 }
 
 export const tableEditReducer: GridStateReducer = (prevState, action): GridState => {
@@ -27,13 +48,13 @@ export const tableEditReducer: GridStateReducer = (prevState, action): GridState
       result = actionEdit(prevState, action.item);
       break;
     case "edit_cancel":
-      result = actionReset(prevState);
+      result = actionEditCancel(prevState);
       break;
     case "edit_commit_started":
-      result = actionToState(prevState, "edit_commit_pending");
+      result = actionEditCommitStarted(prevState);
       break;
     case "edit_commit_succeded":
-      result = actionReset(prevState);
+      result = actionEditCommitSucceded(prevState);
       break;
     case "edit_commit_failed":
       result = actionEditCommitFailed(prevState, action.error);
@@ -50,6 +71,11 @@ export interface Config<T> {
    * Called when an item is successfully edited and need to be saved
    */
   onEdit: (nextItem: T) => Promise<void>;
+  /**
+   * Called when edit has been cancelled
+   * @param item item beeing cancelled
+   */
+  onEditCancel?: (item: T) => Promise<void>;
   /**
    * Tells if an item is editable
    */

@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { cloneDeep } from "lodash-es";
 
-import { actionReset, actionToState } from "../../TableState";
+import { actionErrorItem, actionReset, actionToState } from "../../TableState";
 import { GridPlugin, GridState, GridStateReducer } from "../../types";
 import { useGrid } from "../../GridContext";
 
@@ -9,21 +9,36 @@ import { useGrid } from "../../GridContext";
 // Reducer
 // -----------------------------------------------------------------------------
 
-function actionDeleteCommitFailed(prevState: GridState, error: Error): GridState {
-  return { ...actionReset(prevState), error: error };
-}
-
-function actionDeleteCancel(prevState: GridState): GridState {
-  return actionReset(prevState);
-}
 
 function actionDelete(prevState: GridState, item: any): GridState {
+  const id = item[prevState.identifierProperty]
+  const errorResetState = actionErrorItem(prevState, id, undefined)
   return {
-    ...prevState,
-    editedItemId: item[prevState.identifierProperty],
+    ...errorResetState,
+    editedItemId: id,
     editedItemState: "delete_confirm",
     editedItemValue: cloneDeep(item),
   };
+}
+
+function actionDeleteCancel(prevState: GridState): GridState {
+  const errorResetState = actionErrorItem(prevState, prevState.editedItemId, undefined)
+  return actionReset(errorResetState);
+}
+
+function actionDeleteCommitStarted(prevState: GridState): GridState {
+  const errorResetState = actionErrorItem(prevState, prevState.editedItemId, undefined)
+  return actionToState(errorResetState, "delete_commit_pending")
+}
+
+function actionDeleteCommitSucceded(prevState: GridState): GridState {
+  const errorResetState = actionErrorItem(prevState, prevState.editedItemId, undefined)
+  return actionReset(errorResetState)
+}
+
+function actionDeleteCommitFailed(prevState: GridState, error: Error): GridState {
+  const errorResetState = actionErrorItem(prevState, prevState.editedItemId, error)
+  return actionReset(errorResetState);
 }
 
 export const reducer: GridStateReducer = (prevState, action) => {
@@ -36,10 +51,10 @@ export const reducer: GridStateReducer = (prevState, action) => {
       result = actionDeleteCancel(prevState);
       break;
     case "delete_commit_started":
-      result = actionToState(prevState, "delete_commit_pending");
+      result = actionDeleteCommitStarted(prevState);
       break;
     case "delete_commit_succeded":
-      result = actionReset(prevState);
+      result = actionDeleteCommitSucceded(prevState);
       break;
     case "delete_commit_failed":
       result = actionDeleteCommitFailed(prevState, action.error);

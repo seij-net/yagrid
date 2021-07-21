@@ -27,20 +27,39 @@ interface GridContext<T> {
   columnDefinitions: GridColumnDefinitionInternal<T>[];
   types: TableTypesRegistry;
   extensions: ExtensionPoints<T>;
-  getPlugin: (name:string) => GridPlugin<T>;
+  getPlugin: (name: string) => GridPlugin<T>;
   identifierProperty: string;
   state: GridState;
   dispatch: React.Dispatch<any>;
+  /**
+   * Called when an item changed
+   */
   handleEditItemChange: (nextItem: T) => void;
-  /** Data resolved before transform */
+  /** 
+   * Data resolved before plugins transform it
+   **/
   resolvedData: T[];
-  /** Data transformed by plugins, this is the data to display */
+  /** 
+   * Data transformed by plugins, this is the data to display 
+   **/
   dataListTransform: T[];
+  /** 
+   * Sets a global error on the table. This will be stored in the state as error
+   * @param error error to set or null/undefined to remove it
+   **/
+  setError: (error: Error | null | undefined) => void,
+  /** 
+   * Sets an error for a specified item. This will be stored in the state in errorItems
+   * @param identifier item identifier
+   * @param error error to set or null/undefined to remove it from the item
+   **/
+  setErrorItem: (identifier: any, error: Error | null | undefined) => void
+
 }
 
 
 
-const GridContextInternal = React.createContext<GridContext<any>|undefined>(undefined);
+const GridContextInternal = React.createContext<GridContext<any> | undefined>(undefined);
 
 export function useGrid() {
   const context = React.useContext(GridContextInternal);
@@ -76,9 +95,9 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({
     type: col.type ?? "string",
     render: isNil(col.render)
       ? // if no render is specified, use then render from type registry and bind it automatically with column name
-        (item) => typesOrDefault.find(col.type || "string").renderer(item[col.name])
+      (item) => typesOrDefault.find(col.type || "string").renderer(item[col.name])
       : // if a render function is specified, use it
-        col.render,
+      col.render,
     editable: col.editable || NOT_EDITABLE,
     editor: col.editor,
   }));
@@ -110,9 +129,9 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({
 
   // Plugin registry
   const extensions = createExtensionPoints(plugins);
-  const getPlugin = (name:string):GridPlugin<any> => {
+  const getPlugin = (name: string): GridPlugin<any> => {
     const plugin = plugins.find(it => it.name === name)
-    if (!plugin)  throw Error("Plugin not found")
+    if (!plugin) throw Error("Plugin not found")
     return plugin
   }
 
@@ -127,6 +146,21 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({
     resolvedData
   );
 
+  // sets global error (or remove it)
+  const setError = (error: Error | null | undefined) =>
+    dispatchEditState({ 
+      type: "error", 
+      error: isNil(error) ? undefined : error 
+    })
+
+  // sets an error on an item (or remove it)
+  const setErrorItem = (identifier: any, error: Error | null | undefined) =>
+    dispatchEditState({
+      type: "error_item",
+      identifier: identifier,
+      error: isNil(error) ? undefined : error
+    })
+
   // Build final context
   const ctx: GridContext<any> = {
     columnDefinitions,
@@ -139,7 +173,9 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({
     dispatch: dispatchEditState,
     handleEditItemChange,
     dataListTransform,
-    getPlugin
+    getPlugin,
+    setError,
+    setErrorItem
   };
 
   return <GridContextInternal.Provider value={ctx}>{children}</GridContextInternal.Provider>;

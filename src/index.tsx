@@ -7,6 +7,10 @@ import {
   TableAction,
   TableActionHandler,
   TableActionList,
+  GridDataSource,
+  DataFetcher,
+  DataQuery,
+  Direction
 } from "./types";
 import { Grid } from "./Table";
 
@@ -27,5 +31,9 @@ export {
   TableAction,
   ActionItemHandler,
   ActionGenericHandler,
-  TableActionHandler
+  TableActionHandler,
+  GridDataSource,
+  DataFetcher,
+  DataQuery,
+  Direction
 };

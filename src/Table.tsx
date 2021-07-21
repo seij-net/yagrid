@@ -1,7 +1,8 @@
 import React from "react";
-import { GridProvider, useGrid, useGridItem, useGridItemProperty } from "./GridContext";
+
 import { tableClassNamesBuilder } from "./utils/tableClassNames";
 import { GridProps } from "./types";
+import { useGrid, GridProvider, useGridItem, useGridItemProperty } from "./GridContext"
 
 enum LoadingState {
   init,

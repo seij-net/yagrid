@@ -1,5 +1,5 @@
 export { Config, create, PLUGIN_NAME, 
-  useItemAdd,
-  useItemAddCancel,
-  useItemAddConfirm
+  createItemAdd,
+  createItemAddCancel,
+  createItemAddConfirm
 } from "./item-add";

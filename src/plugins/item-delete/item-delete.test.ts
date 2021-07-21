@@ -11,6 +11,7 @@ describe("delete", () => {
       editedItemValue: { id: "1234" },
       identifierProperty: "id",
       error: undefined,
+      errorItems: {},
       ...s
     };
   };
@@ -23,6 +24,7 @@ describe("delete", () => {
       { type: "delete", item: { id: "1234" } }
     );
     expect(s.editedItemState).toBe("delete_confirm");
+    expect(s.errorItems["1234"]).toBeUndefined();
   });
   it("delete_confirm -> delete_cancel -> reset", () => {
     const s = reducer(
@@ -32,6 +34,7 @@ describe("delete", () => {
     expect(s.editedItemState).toBeUndefined();
     expect(s.editedItemValue).toBeUndefined();
     expect(s.editedItemId).toBeUndefined();
+    expect(s.errorItems["1234"]).toBeUndefined();
   });
   it("delete_confirm -> delete_commit_started -> delete_commit_pending ", () => {
     const s = reducer(
@@ -39,6 +42,7 @@ describe("delete", () => {
       { type: "delete_commit_started" }
     );
     expect(s.editedItemState).toBe("delete_commit_pending");
+    expect(s.errorItems["1234"]).toBeUndefined();
   });
   it("delete_commit_pending -> delete_commit_succeded -> initial", () => {
     const s = reducer(
@@ -48,6 +52,7 @@ describe("delete", () => {
     expect(s.editedItemState).toBeUndefined();
     expect(s.editedItemValue).toBeUndefined();
     expect(s.editedItemId).toBeUndefined();
+    expect(s.errorItems["1234"]).toBeUndefined();
   });
   it("delete_commit_pending -> edit_commit_failed -> undefined ", () => {
     const expectedError = Error("failed");
@@ -58,7 +63,14 @@ describe("delete", () => {
     expect(s.editedItemState).toBeUndefined();
     expect(s.editedItemValue).toBeUndefined();
     expect(s.editedItemId).toBeUndefined();
-    expect(s.error).toBe(expectedError);
+    expect(s.errorItems["1234"]).toBe(expectedError);
   });
-
+  it("unknown action -> same state", () => {
+    const initialState = createSampleState({ editedItemState: "delete_commit_pending" })
+    const s = reducer(
+      initialState,
+      { type: "unknown" } as any
+    );
+    expect(s).toBe(initialState)
+  })
 });

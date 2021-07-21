@@ -29,8 +29,10 @@ export interface GridState {
   editedItemValue: any | undefined;
   /** Property used as identifier for items in data source */
   identifierProperty: string;
-  /** Error if any */
+  /** Error if any. This error is global to all the table */
   error: Error | undefined;
+  /** Items on error. This contains a list of item identifiers associated with errors */
+  errorItems: Record<any,Error>
 }
 
 /**
@@ -54,6 +56,8 @@ export type Action =
   | { type: "edit_commit_started" }
   | { type: "edit_commit_succeded" }
   | { type: "edit_commit_failed"; error: Error }
+  | { type: "error"; error: Error | undefined }
+  | { type: "error_item"; identifier: any; error: Error | undefined }
   | { type: "delete"; item: any }
   | { type: "delete_cancel" }
   | { type: "delete_commit_started" }
