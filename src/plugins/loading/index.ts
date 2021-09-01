@@ -1,1 +1,2 @@
-export { Config, create } from "./loading";
+export { create } from "./loading";
+export * from "./loading-config";

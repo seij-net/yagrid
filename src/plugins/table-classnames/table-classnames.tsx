@@ -1,17 +1,13 @@
-import React, { ReactNode } from "react";
-
 import { GridPlugin } from "../../types";
-import { TableClassNames } from "../../types/table";
+import { Config, PLUGIN_NAME } from "./table-classnames-config";
 
 
 
-export interface Config<T> extends TableClassNames<T> {
-  
-}
 
-export function create<T>(config: TableClassNames<T>): GridPlugin<T> {
+
+export function create<T>(config: Config<T>): GridPlugin<T> {
   return {
-    name: "table-classnames",
+    name: PLUGIN_NAME,
     config: config,
     tableClassNames: config,
   };

@@ -1,2 +1,2 @@
-export * from "./item-edit";
-export { Config, create } from "./item-edit";
+export { create } from "./item-edit";
+export * from "./item-edit-config";

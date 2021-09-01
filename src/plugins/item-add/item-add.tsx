@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { GridPlugin } from "../../types";
 import { ActionAdd, ActionAddCancel, ActionAddOk } from "./item-add-buttons";
 import { reducer } from "./item-add-reducer";

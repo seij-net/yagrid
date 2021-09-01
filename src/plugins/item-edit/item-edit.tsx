@@ -1,11 +1,11 @@
 import { cloneDeep, isNil } from "lodash-es";
-import React, { ReactNode } from "react";
+import React from "react";
 import { useGrid } from "../../GridContext";
-
-import { actionError, actionErrorItem, actionReset, actionToState } from "../../TableState";
+import { actionErrorItem, actionReset, actionToState } from "../../TableState";
 import { GridPlugin, GridState, GridStateReducer } from "../../types";
+import { Config, PLUGIN_NAME } from "./item-edit-config";
 
-const PLUGIN_NAME = "edit_inline";
+
 
 function actionEdit(prevState: GridState, item: any): GridState {
   const id = item[prevState.identifierProperty]
@@ -66,28 +66,6 @@ export const tableEditReducer: GridStateReducer = (prevState, action): GridState
   return result;
 };
 
-export interface Config<T> {
-  /**
-   * Called when an item is successfully edited and need to be saved
-   */
-  onEdit: (nextItem: T) => Promise<void>;
-  /**
-   * Tells if an item is editable
-   */
-  editable?: (item: T) => boolean;
-  /**
-   * Label for edit button, when using default buttons
-   */
-  labelEditButton?: ReactNode;
-  /**
-   * Label for edit confirm button, when using default buttons
-   */
-  labelEditButtonConfirm?: ReactNode;
-  /**
-   * Label for edit cancel button, when using default buttons
-   */
-  labelEditButtonCancel?: ReactNode;
-}
 
 const ActionEditButton: React.FC<Pick<Config<any>, "labelEditButton"> & { item: any }> = ({
   labelEditButton,

@@ -1,1 +1,2 @@
-export { Config, create } from "./empty-message";
+export * from "./empty-message";
+export * from "./empty-message-config";

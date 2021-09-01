@@ -1,13 +1,11 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { GridPlugin } from "../../types";
+import { PLUGIN_NAME, Config } from "./empty-message-config";
 
-export interface Config<T> {
-  message: ReactNode;
-}
 
 export function create<T>(config: Config<T>): GridPlugin<T> {
   return {
-    name: "empty-message",
+    name: PLUGIN_NAME,
     config: config,
     reducer: (s) => s,
     footerSpan: (data) => data.length === 0 && config.message,

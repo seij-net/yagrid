@@ -1,15 +1,11 @@
-import React, { ReactNode } from "react";
 import { GridPlugin } from "../../types";
+import { Config, PLUGIN_NAME } from "./table-footer-config";
 
-export interface Config<T> {
-//  columns: GridColumnDefinition<T>[],
-  //data: T[]
-  rows: (data: T[], columnCount: number) => ReactNode
-}
+
 
 export function create<T>(config: Config<T>): GridPlugin<T> {
   return {
-    name: "table-footer",
+    name: PLUGIN_NAME,
     config: config,
     reducer: (s) => s,
     footerRows:config.rows
