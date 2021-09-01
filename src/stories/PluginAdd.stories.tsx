@@ -1,7 +1,7 @@
 import { Meta, Story } from "@storybook/react";
 import React from "react";
 
-import { GridProps, ItemAdd } from "..";
+import { GridProps, ItemAdd, useGrid } from "..";
 import { SampleItem, useData } from "./commons/SampleItem";
 import { customTypes, YAGridPlayground } from "./YAGridPlayground";
 
@@ -82,6 +82,53 @@ export const CustomLabelsReact: Story<{}> = (props) => {
         labelAddButtonCancel: <span style={{ backgroundColor: "yellow" }}>Annuler</span>,
         labelAddButtonConfirm: <span style={{ backgroundColor: "yellow" }}>OK</span>
       })
+    ]
+  };
+  return <YAGridPlayground {...gridProps} />;
+};
+export const CustomUIActions: Story<{}> = (props) => {
+  const { data, sampleColumns, handleAddConfirm, handleAddTemplate } = useData(SAMPLE_DATA);
+  const gridProps: GridProps<SampleItem> = {
+    data: data,
+    columns: sampleColumns,
+    types: customTypes,
+    plugins: [
+      ItemAdd.create({
+        onAddConfirm: handleAddConfirm,
+        onAddTemplate: handleAddTemplate,
+        labelAddButton: <span style={{ backgroundColor: "yellow" }}>Ajouter</span>,
+        labelAddButtonCancel: <span style={{ backgroundColor: "yellow" }}>Annuler</span>,
+        labelAddButtonConfirm: <span style={{ backgroundColor: "yellow" }}>OK</span>
+      })
+    ],
+    actionRenderers: [
+      {
+        name: ItemAdd.UI_ACTION_ADD, 
+        render: () => {
+          const { getPlugin } = useGrid()
+          const pluginConfig = getPlugin(ItemAdd.PLUGIN_NAME).config as ItemAdd.Config<any>
+          const buttonProps = ItemAdd.createItemAdd()
+          return <button {...buttonProps.buttonProps}>customButton {pluginConfig.labelAddButton}</button>
+        }
+      },
+      {
+        name: ItemAdd.UI_ACTION_ADD_CANCEL, 
+        render: () => {
+          const { getPlugin } = useGrid()
+          const buttonProps = ItemAdd.createItemAddCancel()
+          const pluginConfig = getPlugin(ItemAdd.PLUGIN_NAME).config as ItemAdd.Config<any>
+          return <button {...buttonProps.buttonProps}>customButton {pluginConfig.labelAddButtonCancel}</button>
+        }
+      },
+      {
+        name: ItemAdd.UI_ACTION_ADD_CONFIRM, 
+        render: () => {
+          const { getPlugin } = useGrid()
+          const buttonProps = ItemAdd.createItemAddConfirm()
+          const pluginConfig = getPlugin(ItemAdd.PLUGIN_NAME).config as ItemAdd.Config<any>
+          return <button {...buttonProps.buttonProps}>customButton {pluginConfig.labelAddButtonConfirm}</button>
+        }
+      }
     ]
   };
   return <YAGridPlayground {...gridProps} />;
