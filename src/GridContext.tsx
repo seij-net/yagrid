@@ -1,69 +1,20 @@
 import { isFunction, isNil } from "lodash-es";
-import React, { FC, ReactNode, useEffect, useReducer } from "react";
+import React, { ReactNode, useEffect, useReducer } from "react";
 import { createReducer, createTableEditDefaultState } from "./TableState";
 import { TableTypesRegistry, TableTypesRegistryDefault } from "./TableTypesRegistry";
 import {
-  ExtensionPoints,
   GridColumnDefinition,
   GridColumnDefinitionInternal,
+  GridContext,
   GridDataSource,
   GridPlugin,
-  GridPluginList,
-  GridState,
-  TableAction, UIAction, UIActionRenderer, UIActionRendererMap
+  GridPluginList, LoadingState,
+  TableAction, UIActionRenderer, UIActionRendererMap
 } from "./types";
-import { createExtensionPoints } from "./utils/pluginCompose";
-import { selectActionRenderer } from "./utils/actionRenderers";
 import { associateBy } from "./utils/lang";
+import { createExtensionPoints } from "./utils/pluginCompose";
 
 const NOT_EDITABLE = () => false;
-
-export enum LoadingState {
-  init,
-  pending,
-  loaded,
-}
-
-interface GridContext<T> {
-  loadingState: LoadingState;
-  columnDefinitions: GridColumnDefinitionInternal<T>[];
-  types: TableTypesRegistry;
-  extensions: ExtensionPoints<T>;
-  getPlugin: (name: string) => GridPlugin<T>;
-  identifierProperty: string;
-  state: GridState;
-  dispatch: React.Dispatch<any>;
-  /**
-   * Called when an item changed
-   */
-  handleEditItemChange: (nextItem: T) => void;
-  /** 
-   * Data resolved before plugins transform it
-   **/
-  resolvedData: T[];
-  /** 
-   * Data transformed by plugins, this is the data to display 
-   **/
-  dataListTransform: T[];
-  /** 
-   * Sets a global error on the table. This will be stored in the state as error
-   * @param error error to set or null/undefined to remove it
-   **/
-  setError: (error: Error | null | undefined) => void,
-  /** 
-   * Sets an error for a specified item. This will be stored in the state in errorItems
-   * @param identifier item identifier
-   * @param error error to set or null/undefined to remove it from the item
-   **/
-  setErrorItem: (identifier: any, error: Error | null | undefined) => void
-  /**
-   * Returns a React node that renders action button or widget that need to be displayed for an action
-   * @param actionCode
-   */
-  UIAction: UIAction
-
-}
-
 
 
 

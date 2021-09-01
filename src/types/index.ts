@@ -4,3 +4,4 @@ export * from "./columns";
 export * from "./public";
 export * from "./data";
 export * from "./layout";
+export * from "./GridContext";

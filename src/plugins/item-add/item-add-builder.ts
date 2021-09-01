@@ -3,7 +3,8 @@
 // Action helpers
 // -----------------------------------------------------------------------------
 
-import { LoadingState, useGrid } from "../../GridContext";
+import { useGrid } from "../../GridContext";
+import { LoadingState } from "../../types";
 import { Config, PLUGIN_NAME } from "./item-add-config";
 
 /**
