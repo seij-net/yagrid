@@ -1,5 +1,4 @@
-export { Config, create, PLUGIN_NAME, 
-  createItemAdd,
-  createItemAddCancel,
-  createItemAddConfirm
-} from "./item-add";
+export { create, } from "./item-add";
+
+export * from "./item-add-config"
+export * from "./item-add-builder"

@@ -4,7 +4,7 @@
  * ----------------------------------------------------------------------------- 
  */
 
-import React, { ReactElement, ReactNode } from "react";
+import { FC, ReactElement, ReactNode } from "react";
 import { TableTypesRegistry } from "../TableTypesRegistry";
 import { GridDataSource } from "./data";
 import { GridLayoutProps } from "./layout";
@@ -69,6 +69,11 @@ export interface GridProps<T> {
    */
   onActionGeneric?: ActionGenericHandler,
 
+  /**
+   * Registers how actions are rendered
+   */
+  actionRenderers?: UIActionRenderer[]
+
 }
 
 export type TableCellEditorValueChangeHandler<T> = (previousValue: T) => T
@@ -88,21 +93,63 @@ export type TableGenericActionList = TableGenericAction[]
 export type ActionItemHandler<T> = (action: TableAction, rowData: T, evt: any) => void
 export type ActionGenericHandler = (action: TableAction, evt: any) => void
 
-
+/**
+ * Defines a generic action
+ */
 export interface TableGenericAction {
+  /**
+   * Name of action to render
+   **/
   name: string,
+  /**
+   *  Default renderer provided by the plugin
+   **/
   render: () => ReactElement
 }
 
-
+/**
+ * Defines an item action
+ */
 export interface TableAction {
+  /**
+   * Name of action
+   */
   name: string,
+  /**
+   * Position relative to item
+   */
   position?: "start" | "end"
+  /**
+   * Function that states if the action is available or not (whether if it's displayed or disabled
+   * depends on the layout choosen)
+   */
   displayed?: (state: GridState, item: any) => boolean,
+  /**
+   * Default renderer for this action provided by the plugin
+   */
   renderItem: (item: any) => ReactNode
 }
+
+/**
+ * UI Action renderer definition
+ */
+export interface UIActionRenderer {
+  /** name of action */
+  name: string
+  /** renderer for generic actions */
+  render?: () => ReactNode | null
+  /** renderer for item action */
+  renderItem?: (item: any) => ReactNode | null
+}
+
+/**
+ * Une liste de action renderer en map
+ */
+export type UIActionRendererMap = { [key: string]: UIActionRenderer }
 
 export type TableActionDispatch = {
   listeners: { [key: string]: TableActionHandler }
 }
 export type TableActionHandler = (on: any) => void
+
+export type UIAction = FC<{action:string, item?:any}>

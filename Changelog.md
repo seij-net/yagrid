@@ -6,6 +6,12 @@
 
 📢 = Beaking change
 
+## 0.1.14
+
+* ⭐ most plugin UI actions are fully configurable and can be customized
+* upgrade storybook
+* Deprecation warning: soon the grid will not provide default action buttons
+
 ## 0.1.13
 
 * better error handling, separate global grid errors and per-row errors

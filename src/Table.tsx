@@ -3,6 +3,7 @@ import React from "react";
 import { tableClassNamesBuilder } from "./utils/tableClassNames";
 import { GridProps } from "./types";
 import { useGrid, GridProvider, useGridItem, useGridItemProperty } from "./GridContext"
+import { render } from "react-dom";
 
 enum LoadingState {
   init,
@@ -18,6 +19,7 @@ export const Grid: React.FC<GridProps<any>> = (props) => {
       data={props.data}
       plugins={props.plugins}
       identifierProperty={props.identifierProperty}
+      uiActionRendererList={props.actionRenderers}
     >
       <TableLayout {...props} />
     </GridProvider>
@@ -34,6 +36,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ className }) => {
     state,
     handleEditItemChange,
     dataListTransform,
+    UIAction
   } = gridContext;
 
   const hasActionsStart = extensions.actionItemList.some((action) => action.position === "start");
@@ -52,9 +55,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ className }) => {
     <div className={tableClassNames.tableWrapper}>
       {extensions.actionGenericList.length > 0 && (
         <div className={tableClassNames.actionGenericToolbar}>
-          {extensions.actionGenericList.map((action) => (
-            <action.render key={action.name} />
-          ))}
+          {extensions.actionGenericList.map((action) => <UIAction key={action.name} action={action.name} /> )}
         </div>
       )}
       <table className={tableClassNames.table}>
@@ -92,9 +93,10 @@ const TableLayout: React.FC<GridProps<any>> = ({ className }) => {
                         <td key="__YAGRID_START_ACTIONS" className={tableClassNames.tbodyCellActionsStart(item)}>
                           {selectDisplayedItemActions
                             .filter((it) => it.position === "start")
-                            .map((action) => (
-                              <span key={action.name}>{action.renderItem(item)}</span>
-                            ))}
+                            .map((action) =>  (
+                                <UIAction key={action.name} action={action.name} item={item} />
+                              )
+                            )}
                         </td>
                       )}
                       {columnDefinitions.map((def) => {
@@ -112,7 +114,7 @@ const TableLayout: React.FC<GridProps<any>> = ({ className }) => {
                           {selectDisplayedItemActions
                             .filter((it) => it.position === "end" || it.position === undefined)
                             .map((action) => (
-                              <span key={action.name}>{action.renderItem(item)}</span>
+                              <UIAction key={action.name} action={action.name} item={item} />
                             ))}
                         </td>
                       )}

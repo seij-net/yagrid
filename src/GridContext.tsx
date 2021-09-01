@@ -1,5 +1,5 @@
 import { isFunction, isNil } from "lodash-es";
-import React, { useEffect, useReducer } from "react";
+import React, { FC, ReactNode, useEffect, useReducer } from "react";
 import { createReducer, createTableEditDefaultState } from "./TableState";
 import { TableTypesRegistry, TableTypesRegistryDefault } from "./TableTypesRegistry";
 import {
@@ -10,9 +10,11 @@ import {
   GridPlugin,
   GridPluginList,
   GridState,
-  TableAction,
+  TableAction, UIAction, UIActionRenderer, UIActionRendererMap
 } from "./types";
 import { createExtensionPoints } from "./utils/pluginCompose";
+import { selectActionRenderer } from "./utils/actionRenderers";
+import { associateBy } from "./utils/lang";
 
 const NOT_EDITABLE = () => false;
 
@@ -54,8 +56,14 @@ interface GridContext<T> {
    * @param error error to set or null/undefined to remove it from the item
    **/
   setErrorItem: (identifier: any, error: Error | null | undefined) => void
+  /**
+   * Returns a React node that renders action button or widget that need to be displayed for an action
+   * @param actionCode
+   */
+  UIAction: UIAction
 
 }
+
 
 
 
@@ -75,16 +83,19 @@ interface GridProviderProps<T> {
   columns: GridColumnDefinition<T>[];
   types?: TableTypesRegistry;
   plugins: GridPluginList<T>;
+  uiActionRendererList?: UIActionRenderer[]
 }
 
-export const GridProvider: React.FC<GridProviderProps<any>> = ({
-  identifierProperty = "id",
-  columns: dataProperties,
-  data,
-  types,
-  plugins,
-  children,
-}) => {
+export const GridProvider: React.FC<GridProviderProps<any>> = (
+  {
+    identifierProperty = "id",
+    columns: dataProperties,
+    data,
+    types,
+    plugins,
+    children,
+    uiActionRendererList,
+  }) => {
   // Type system
   const typesOrDefault = types || TableTypesRegistryDefault;
 
@@ -148,9 +159,9 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({
 
   // sets global error (or remove it)
   const setError = (error: Error | null | undefined) =>
-    dispatchEditState({ 
-      type: "error", 
-      error: isNil(error) ? undefined : error 
+    dispatchEditState({
+      type: "error",
+      error: isNil(error) ? undefined : error
     })
 
   // sets an error on an item (or remove it)
@@ -160,6 +171,17 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({
       identifier: identifier,
       error: isNil(error) ? undefined : error
     })
+
+  // build action renderer map
+  const uiActionGenericRenderers: UIActionRendererMap = associateBy(extensions.actionGenericList.map(it=>({name:it.name, render: it.render})), it => it.name)
+  const uiActionItemRenderers: UIActionRendererMap = associateBy(extensions.actionItemList.map(it=>({name:it.name, renderItem: it.renderItem})), it => it.name)
+  const uiActionConfigRenderers: UIActionRendererMap = associateBy(uiActionRendererList, it => it.name)
+  const uiActionRendererMap:UIActionRendererMap = {
+    ...uiActionGenericRenderers,
+    ...uiActionItemRenderers,
+    ...uiActionConfigRenderers,
+  }
+
 
   // Build final context
   const ctx: GridContext<any> = {
@@ -175,11 +197,24 @@ export const GridProvider: React.FC<GridProviderProps<any>> = ({
     dataListTransform,
     getPlugin,
     setError,
-    setErrorItem
+    setErrorItem,
+    UIAction: UIActionComponent(uiActionRendererMap)
   };
 
   return <GridContextInternal.Provider value={ctx}>{children}</GridContextInternal.Provider>;
 };
+
+interface UIActionProps {
+  action: string 
+  item?: any
+}
+const UIActionComponent = (uiActionRendererMap: UIActionRendererMap) => ({action, item}:UIActionProps) => {
+  const actionRenderer =  uiActionRendererMap[action]
+  let renderer:ReactNode | null = null;
+  if (!isNil(actionRenderer.render)) renderer = actionRenderer.render()
+  if (!isNil(actionRenderer.renderItem)) renderer = actionRenderer.renderItem(item)
+  return <span style={{border:"1px solid red"}}>{renderer}</span>
+}
 
 export interface GridItemContext<T> {
   item: any;
