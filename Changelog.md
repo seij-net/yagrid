@@ -6,6 +6,10 @@
 
 📢 = Beaking change
 
+## 0.1.16
+
+* 🐞 missing other exports
+
 ## 0.1.15
 
 * 🐞 missing LoadingState export
