@@ -20,12 +20,12 @@ const NOT_EDITABLE = () => false;
 
 const GridContextInternal = React.createContext<GridContext<any> | undefined>(undefined);
 
-export function useGrid() {
+export function useGrid<T = any>() {
   const context = React.useContext(GridContextInternal);
   if (context === undefined) {
     throw new Error("useGrid must be used within a GridProvider");
   }
-  return context;
+  return context as GridContext<T>;
 }
 
 interface GridProviderProps<T> {

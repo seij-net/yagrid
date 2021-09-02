@@ -1,8 +1,9 @@
 import React from "react";
-import { createItemAdd, createItemAddCancel, createItemAddConfirm } from "./item-add-builder";
+import { createUIActionPropsAdd, createUIActionPropsAddCancel, createUIActionPropsAddConfirm, getPluginConfig } from "./item-add-builder";
 
 export const ActionAdd = () => {
-  const {buttonProps, config} = createItemAdd()
+  const buttonProps = createUIActionPropsAdd()
+  const config = getPluginConfig()
   return (
     <button {...buttonProps}>{config.labelAddButton}</button>
   );
@@ -10,12 +11,14 @@ export const ActionAdd = () => {
 
 
 export const ActionAddOk = () => {
-  const { buttonProps, config} = createItemAddConfirm()
+  const buttonProps= createUIActionPropsAddConfirm()
+  const config = getPluginConfig()
   return <button {...buttonProps}>{config.labelAddButtonConfirm}</button>;
 };
 
 export const ActionAddCancel = () => {
-  const { buttonProps, config} = createItemAddCancel()
+  const buttonProps = createUIActionPropsAddCancel()
+  const config = getPluginConfig()
   return <button {...buttonProps}>{config.labelAddButtonCancel}</button>;
 };
 

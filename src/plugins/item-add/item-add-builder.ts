@@ -4,14 +4,20 @@
 // -----------------------------------------------------------------------------
 
 import { useGrid } from "../../GridContext";
-import { LoadingState } from "../../types";
+import { GridPlugin, LoadingState } from "../../types";
 import { Config, PLUGIN_NAME } from "./item-add-config";
+
+export function getPluginConfig<T = any>(): Config<T> {
+  const { getPlugin } = useGrid()
+  const plugin = getPlugin(PLUGIN_NAME);
+  return plugin.config
+}
 
 /**
  *
  * @returns tools for creation an Add button
  */
-export function createItemAdd() {
+export function createUIActionPropsAdd() {
   const { state, dispatch, loadingState, getPlugin } = useGrid();
   const plugin = getPlugin(PLUGIN_NAME).config as Config<any>;
   const handleClick = async () => {
@@ -24,10 +30,10 @@ export function createItemAdd() {
   };
   const disabled = loadingState !== LoadingState.loaded || state.editedItemState !== undefined;
   const buttonProps = { disabled, onClick: handleClick };
-  return { buttonProps, config: plugin };
+  return buttonProps;
 }
 
-export function createItemAddConfirm() {
+export function createUIActionPropsAddConfirm() {
   const { state, dispatch, getPlugin } = useGrid();
   const plugin = getPlugin(PLUGIN_NAME).config as Config<any>;
   const handleClick = async () => {
@@ -39,14 +45,14 @@ export function createItemAddConfirm() {
       dispatch({ type: "add_commit_failed", error: error });
     }
   };
-  return { buttonProps: { onClick: handleClick }, config: plugin };
+  return { onClick: handleClick };
 }
 
-export function createItemAddCancel() {
+export function createUIActionPropsAddCancel() {
   const { state, dispatch, getPlugin } = useGrid();
   const plugin = getPlugin(PLUGIN_NAME).config as Config<any>;
   const onAddItemCancel = async () => {
     dispatch({ type: "add_cancel" });
   };
-  return { buttonProps: { onClick: onAddItemCancel }, config: plugin };
+  return { onClick: onAddItemCancel };
 }

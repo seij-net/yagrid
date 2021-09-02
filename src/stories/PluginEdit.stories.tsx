@@ -86,3 +86,46 @@ export const CustomLabelsReact: Story<{}> = (props) => {
   };
   return <YAGridPlayground {...gridProps} />;
 };
+export const CustomUIActions: Story<{}> = (props) => {
+  const { data, sampleColumns, handleEdit } = useData(SAMPLE_DATA);
+  const gridProps: GridProps<SampleItem> = {
+    data: data,
+    columns: sampleColumns,
+    types: customTypes,
+    plugins: [
+      ItemEdit.create({
+        onEdit: handleEdit,
+        editable: (item) => true,
+        labelEditButton: <span style={{ backgroundColor: "yellow" }}>Modifier</span>,
+        labelEditButtonCancel: <span style={{ backgroundColor: "yellow" }}>Annuler</span>,
+        labelEditButtonConfirm: <span style={{ backgroundColor: "yellow" }}>OK</span>
+      })
+    ],
+    actionRenderers: [
+      {
+        name: ItemEdit.UI_ACTION_EDIT,
+        renderItem: (item) => {
+          const config = ItemEdit.getPluginConfig()
+          const uiActionProps = ItemEdit.createUIActionPropsEdit(item)
+          return <button {...uiActionProps}>{config.labelEditButton}</button>
+        }
+      },
+      {
+        name: ItemEdit.UI_ACTION_EDIT_CONFIRM,
+        renderItem: (item) => {
+          const config = ItemEdit.getPluginConfig()
+          const uiActionProps = ItemEdit.createUIActionPropsEditConfirm(item)
+          return <button {...uiActionProps}>{config.labelEditButtonConfirm}</button>
+        }
+      },{
+        name: ItemEdit.UI_ACTION_EDIT_CANCEL,
+        renderItem: (item) => {
+          const config = ItemEdit.getPluginConfig()
+          const uiActionProps = ItemEdit.createUIActionPropsEditCancel(item)
+          return <button {...uiActionProps}>{config.labelEditButtonCancel}</button>
+        }
+      }
+    ]
+  };
+  return <YAGridPlayground {...gridProps} />;
+};

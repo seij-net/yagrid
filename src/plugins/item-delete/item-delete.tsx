@@ -1,9 +1,10 @@
 import React, { ReactNode } from "react";
 import { cloneDeep } from "lodash-es";
-import { Config } from "./item-delete-config";
+import { Config, PLUGIN_NAME, UI_ACTION_DELETE } from "./item-delete-config";
 import { actionErrorItem, actionReset, actionToState } from "../../TableState";
 import { GridPlugin, GridState, GridStateReducer } from "../../types";
 import { useGrid } from "../../GridContext";
+import { createUIActionPropsDelete, getPluginConfig } from "./item-delete-builder";
 
 // -----------------------------------------------------------------------------
 // Reducer
@@ -89,15 +90,15 @@ const ConfirmDeleteButton: React.FC<{
   labelDeleteConfirmButton = "❌",
   labelDeleteCancelButton = "⬅️",
 }) => {
-  return (
-    <>
-      {!confirm && <button onClick={onDelete}>{labelDeleteButton}</button>}
-      {confirm && labelDeleteConfirm}
-      {confirm && <button onClick={onDeleteConfirm}>{labelDeleteConfirmButton}</button>}
-      {confirm && <button onClick={onDeleteCancel}>{labelDeleteCancelButton}</button>}
-    </>
-  );
-};
+    return (
+      <>
+        {!confirm && <button onClick={onDelete}>{labelDeleteButton}</button>}
+        {confirm && labelDeleteConfirm}
+        {confirm && <button onClick={onDeleteConfirm}>{labelDeleteConfirmButton}</button>}
+        {confirm && <button onClick={onDeleteCancel}>{labelDeleteCancelButton}</button>}
+      </>
+    );
+  };
 
 // -----------------------------------------------------------------------------
 // Plugin
@@ -109,55 +110,36 @@ type ActionDeleteButtonProps<T> = Pick<
   "onDelete" | "labelDeleteButton" | "labelDeleteCancelButton" | "labelDeleteConfirm" | "labelDeleteConfirmButton"
 > & { item: T };
 
+
+
 const ActionDeleteButton: React.FC<ActionDeleteButtonProps<any>> = ({
   item,
-  onDelete,
-  labelDeleteButton,
-  labelDeleteCancelButton,
-  labelDeleteConfirm,
-  labelDeleteConfirmButton,
 }) => {
   const { state, dispatch } = useGrid();
-  const handleOnDelete = async () => {
-    dispatch({ type: "delete", item: item });
-  };
-  const onDeleteConfirm = async () => {
-    try {
-      dispatch({ type: "delete_commit_started" });
-      await onDelete(state.editedItemValue);
-      dispatch({ type: "delete_commit_succeded" });
-    } catch (error) {
-      dispatch({ type: "delete_commit_failed", error: error });
-    }
-  };
-  const onDeleteCancel = async () => {
-    dispatch({ type: "delete_cancel" });
-  };
+  const config = getPluginConfig()
+  const buttonProps = createUIActionPropsDelete(item)
   // We do not double-check that item is deletable or not, we assume the
   // grid did its job by calling displayed
   return (
     <ConfirmDeleteButton
-      onDelete={handleOnDelete}
+      {...buttonProps}
+      labelDeleteButton={config.labelDeleteButton}
       confirm={state.editedItemState === "delete_confirm"}
-      onDeleteCancel={onDeleteCancel}
-      onDeleteConfirm={onDeleteConfirm}
-      disabled={state.editedItemState === "delete_commit_pending"}
-      labelDeleteButton={labelDeleteButton}
-      labelDeleteConfirm={labelDeleteConfirm}
-      labelDeleteCancelButton={labelDeleteCancelButton}
-      labelDeleteConfirmButton={labelDeleteConfirmButton}
+      labelDeleteConfirm={config.labelDeleteConfirm}
+      labelDeleteCancelButton={config.labelDeleteCancelButton}
+      labelDeleteConfirmButton={config.labelDeleteConfirmButton}
     />
   );
 };
 
 export function create<T>(config: Config<T>): GridPlugin<any> {
   return {
-    name: "edit_delete",
+    name: PLUGIN_NAME,
     config: config,
     reducer: reducer,
     actionItemList: [
       {
-        name: "edit_delete",
+        name: UI_ACTION_DELETE,
         displayed: (state, item) => {
           // If item can not be deleted, whatever happens, do not the display feature
           if (config.deletable && !config.deletable(item)) return false;

@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 export const PLUGIN_NAME = "edit_delete";
 
-
+export const UI_ACTION_DELETE = "edit_delete";
 
 /**
  * Configuration for delete plugin

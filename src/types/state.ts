@@ -20,13 +20,13 @@ export type GridEditedItemStateName =
 /**
  * Main state
  */
-export interface GridState {
+export interface GridState<T=any> {
   /** Identifier of item under edition or undefined if not editing */
   editedItemId: string | undefined;
   /** State of edition */
   editedItemState: undefined | GridEditedItemStateName;
   /** Current value. Holds a temporary item value which is a copy of original item value, pending confirmation */
-  editedItemValue: any | undefined;
+  editedItemValue: T | undefined;
   /** Property used as identifier for items in data source */
   identifierProperty: string;
   /** Error if any. This error is global to all the table */

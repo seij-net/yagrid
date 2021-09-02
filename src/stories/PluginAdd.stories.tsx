@@ -86,6 +86,7 @@ export const CustomLabelsReact: Story<{}> = (props) => {
   };
   return <YAGridPlayground {...gridProps} />;
 };
+
 export const CustomUIActions: Story<{}> = (props) => {
   const { data, sampleColumns, handleAddConfirm, handleAddTemplate } = useData(SAMPLE_DATA);
   const gridProps: GridProps<SampleItem> = {
@@ -103,33 +104,36 @@ export const CustomUIActions: Story<{}> = (props) => {
     ],
     actionRenderers: [
       {
-        name: ItemAdd.UI_ACTION_ADD, 
-        render: () => {
-          const { getPlugin } = useGrid()
-          const pluginConfig = getPlugin(ItemAdd.PLUGIN_NAME).config as ItemAdd.Config<any>
-          const buttonProps = ItemAdd.createItemAdd()
-          return <button {...buttonProps.buttonProps}>customButton {pluginConfig.labelAddButton}</button>
-        }
+        name: ItemAdd.UI_ACTION_ADD,
+        render: renderAddButton
       },
       {
-        name: ItemAdd.UI_ACTION_ADD_CANCEL, 
-        render: () => {
-          const { getPlugin } = useGrid()
-          const buttonProps = ItemAdd.createItemAddCancel()
-          const pluginConfig = getPlugin(ItemAdd.PLUGIN_NAME).config as ItemAdd.Config<any>
-          return <button {...buttonProps.buttonProps}>customButton {pluginConfig.labelAddButtonCancel}</button>
-        }
+        name: ItemAdd.UI_ACTION_ADD_CANCEL,
+        render: renderAddCancelButton()
       },
       {
-        name: ItemAdd.UI_ACTION_ADD_CONFIRM, 
-        render: () => {
-          const { getPlugin } = useGrid()
-          const buttonProps = ItemAdd.createItemAddConfirm()
-          const pluginConfig = getPlugin(ItemAdd.PLUGIN_NAME).config as ItemAdd.Config<any>
-          return <button {...buttonProps.buttonProps}>customButton {pluginConfig.labelAddButtonConfirm}</button>
-        }
+        name: ItemAdd.UI_ACTION_ADD_CONFIRM,
+        renderItem: renderAddConfirmButton
       }
     ]
   };
   return <YAGridPlayground {...gridProps} />;
+};
+
+function renderAddCancelButton(): (() => React.ReactNode) | undefined {
+  return () => {
+    const uiActionProps = ItemAdd.createUIActionPropsAddCancel();
+    const pluginConfig = ItemAdd.getPluginConfig();
+    return <button {...uiActionProps}>customButton {pluginConfig.labelAddButtonCancel}</button>;
+  };
+}
+const renderAddConfirmButton = () => {
+  const uiActionProps = ItemAdd.createUIActionPropsAddConfirm();
+  const pluginConfig = ItemAdd.getPluginConfig();
+  return <button {...uiActionProps}>customButton {pluginConfig.labelAddButtonConfirm}</button>;
+};
+const renderAddButton = () => {
+  const pluginConfig = ItemAdd.getPluginConfig();
+  const uiActionProps = ItemAdd.createUIActionPropsAdd();
+  return <button {...uiActionProps}>customButton {pluginConfig.labelAddButton}</button>;
 };

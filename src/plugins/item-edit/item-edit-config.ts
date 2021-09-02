@@ -25,3 +25,7 @@ export interface Config<T> {
    */
   labelEditButtonCancel?: ReactNode;
 }
+
+export const UI_ACTION_EDIT = "edit";
+export const UI_ACTION_EDIT_CONFIRM = "edit_ok";
+export const UI_ACTION_EDIT_CANCEL = "edit_cancel";
