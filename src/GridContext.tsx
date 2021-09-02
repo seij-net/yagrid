@@ -1,5 +1,6 @@
 import { isFunction, isNil } from "lodash-es";
 import React, { ReactNode, useEffect, useReducer } from "react";
+import { render } from "react-dom";
 import { createReducer, createTableEditDefaultState } from "./TableState";
 import { TableTypesRegistry, TableTypesRegistryDefault } from "./TableTypesRegistry";
 import {
@@ -162,6 +163,7 @@ interface UIActionProps {
 const UIActionComponent = (uiActionRendererMap: UIActionRendererMap) => ({action, item}:UIActionProps) => {
   const actionRenderer =  uiActionRendererMap[action]
   let renderer:ReactNode | null = null;
+  if (actionRenderer===undefined) renderer = null
   if (!isNil(actionRenderer.render)) renderer = actionRenderer.render()
   if (!isNil(actionRenderer.renderItem)) renderer = actionRenderer.renderItem(item)
   return <>{renderer}</>
