@@ -1,9 +1,9 @@
 import { Meta, Story } from "@storybook/react";
 import React from "react";
-
-import { GridProps, ItemAdd, useGrid } from "..";
+import { GridProps, ItemAdd } from "..";
 import { SampleItem, useData } from "./commons/SampleItem";
 import { customTypes, YAGridPlayground } from "./YAGridPlayground";
+
 
 export default {
   title: "Plugin/Add",
@@ -123,17 +123,14 @@ export const CustomUIActions: Story<{}> = (props) => {
 function renderAddCancelButton(): (() => React.ReactNode) | undefined {
   return () => {
     const uiActionProps = ItemAdd.createUIActionPropsAddCancel();
-    const pluginConfig = ItemAdd.getPluginConfig();
-    return <button {...uiActionProps}>customButton {pluginConfig.labelAddButtonCancel}</button>;
+    return <button {...uiActionProps}>customButton add cancel</button>;
   };
 }
 const renderAddConfirmButton = () => {
   const uiActionProps = ItemAdd.createUIActionPropsAddConfirm();
-  const pluginConfig = ItemAdd.getPluginConfig();
-  return <button {...uiActionProps}>customButton {pluginConfig.labelAddButtonConfirm}</button>;
+  return <button {...uiActionProps}>customButton add confirm</button>;
 };
 const renderAddButton = () => {
-  const pluginConfig = ItemAdd.getPluginConfig();
   const uiActionProps = ItemAdd.createUIActionPropsAdd();
-  return <button {...uiActionProps}>customButton {pluginConfig.labelAddButton}</button>;
+  return <button {...uiActionProps}>customButton add</button>;
 };
