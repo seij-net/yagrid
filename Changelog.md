@@ -6,6 +6,16 @@
 
 📢 = Beaking change
 
+## 0.1.19
+
+* plugin item-add: onAddConfirm can return any payload
+* plugin item-delete: onAddConfirm can return any payload
+* plugin item-edit: onEdit can return any payload
+
+## 0.1.18
+
+* 🐞 removed debug stuff
+
 ## 0.1.17
 
 * 🐞 fix build issues

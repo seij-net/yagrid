@@ -10,8 +10,9 @@ export const UI_ACTION_DELETE = "edit_delete";
  export interface Config<T> {
   /**
    * Provide a callback for deleting specified item from the list
+   * Result of the promised is unused.
    */
-  onDelete: (item: T) => Promise<void>;
+  onDelete: (item: T) => Promise<any>;
   /**
    * Tells if item can be deleted or not. Defaults to true if not specified
    */

@@ -9,9 +9,9 @@ export interface Config<T> {
   onAddTemplate: () => Promise<T>;
   /**
    * Called when process of editing is done and we need to save the newly
-   * edited item.
+   * edited item. Result of the promised is unused.
    */
-  onAddConfirm: (item: T) => Promise<void>;
+  onAddConfirm: (item: T) => Promise<any>;
   /**
    * Label for add button, when using default buttons
    */

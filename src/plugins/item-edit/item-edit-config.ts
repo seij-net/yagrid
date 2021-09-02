@@ -7,7 +7,7 @@ export interface Config<T> {
   /**
    * Called when an item is successfully edited and need to be saved
    */
-  onEdit: (nextItem: T) => Promise<void>;
+  onEdit: (nextItem: T) => Promise<any>;
   /**
    * Tells if an item is editable
    */
