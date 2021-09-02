@@ -6,6 +6,11 @@
 
 📢 = Beaking change
 
+## 0.1.17
+
+* 🐞 fix build issues
+
+
 ## 0.1.16
 
 * 🐞 missing other exports
