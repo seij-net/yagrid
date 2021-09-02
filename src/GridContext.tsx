@@ -164,7 +164,7 @@ const UIActionComponent = (uiActionRendererMap: UIActionRendererMap) => ({action
   let renderer:ReactNode | null = null;
   if (!isNil(actionRenderer.render)) renderer = actionRenderer.render()
   if (!isNil(actionRenderer.renderItem)) renderer = actionRenderer.renderItem(item)
-  return <span style={{border:"1px solid red"}}>{renderer}</span>
+  return <>{renderer}</>
 }
 
 export interface GridItemContext<T> {
