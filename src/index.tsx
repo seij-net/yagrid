@@ -21,6 +21,7 @@ export * as EmptyMessage from "./plugins/empty-message";
 export * as TableFooter from "./plugins/table-footer";
 export * as TableClassNames from "./plugins/table-classnames";
 export * from "./types/plugins";
+export * from "./types/public";
 export * from "./GridContext";
 export {
   Grid,
