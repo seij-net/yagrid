@@ -6,6 +6,10 @@
 
 📢 = Beaking change
 
+## 0.1.15
+
+* 🐞 missing LoadingState export
+
 ## 0.1.14
 
 * ⭐ most plugin UI actions are fully configurable and can be customized
