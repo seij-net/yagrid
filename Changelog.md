@@ -6,6 +6,10 @@
 
 📢 = Beaking change
 
+## 0.1.20
+
+* dynamic columns
+
 ## 0.1.19
 
 * plugin item-add: onAddConfirm can return any payload

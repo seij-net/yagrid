@@ -65,9 +65,10 @@ export const GridProvider: React.FC<GridProviderProps<any>> = (
     editor: col.editor,
   }));
 
-  const [columnDefinitions, setColumnDefinitions] = React.useState<GridColumnDefinitionInternal<any>[]>(
-    columnDefinitionsDefault
-  );
+  const columnDefinitions = columnDefinitionsDefault
+  // const [columnDefinitions, setColumnDefinitions] = React.useState<GridColumnDefinitionInternal<any>[]>(
+  //   columnDefinitionsDefault
+  // );
 
   // loading management
   const [loadingState, setLoadingState] = React.useState<LoadingState>(LoadingState.init);

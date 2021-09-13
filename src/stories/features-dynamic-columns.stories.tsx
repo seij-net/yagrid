@@ -1,28 +1,28 @@
 import { Meta, Story } from "@storybook/react";
-import { isNil } from "lodash-es";
-import React, { FC } from "react";
-
-import { GridProps, ItemAdd, ItemDelete, ItemEdit } from "..";
 import { sampledata, SampleItem, useData } from "./commons/SampleItem";
+import { GridProps } from "../types";
 import { customTypes, YAGridPlayground } from "./YAGridPlayground";
+import { ItemAdd, ItemDelete, ItemEdit } from "../index";
+import { isNil } from "lodash-es";
+import React from "react";
 
 export default {
-  title: "Playground/YAGridPlayground/Components",
-  component: YAGridPlayground
+  title: "Playground/YAGridPlayground/DynamicColumns",
+  component: YAGridPlayground,
+  args: {
+    displayColumnLabel: true,
+    displayColumnDescription: true
+  },
 } as Meta;
-
-const CustomComponent: FC<{}> = ({ children }) => <span style={{ color: "green" }}>{children}</span>;
-
-export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
+export const DynamicColumns:Story<{displayColumnLabel: boolean, displayColumnDescription:boolean}> = (props) => {
   const { data, sampleColumns, handleDelete, handleEdit, handleAddTemplate, handleAddConfirm } = useData(sampledata);
-
+  const columns = sampleColumns.filter(it => {
+    if (it.name === "label") return props.displayColumnLabel
+    if (it.name === "description") return props.displayColumnDescription
+    return true
+  })
   const gridProps: GridProps<SampleItem> = {
-    ...props,
-    columns: [{
-      name: "component",
-      label: <CustomComponent>Component</CustomComponent>,
-      render: (data) => (<CustomComponent>{data.id}</CustomComponent>)
-    }, ...sampleColumns],
+    columns: columns,
     data: data,
     types: customTypes,
     plugins: [
@@ -41,5 +41,4 @@ export const ComponentsInLabelsAndCells: Story<GridProps<any>> = (props) => {
     ]
   };
   return <YAGridPlayground {...gridProps} />;
-};
-
+}
