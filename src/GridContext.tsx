@@ -38,7 +38,7 @@ interface GridProviderProps<T> {
   uiActionRendererList?: UIActionRenderer[]
 }
 
-export const GridProvider: React.FC<GridProviderProps<any>> = (
+export const GridProvider: React.FC<React.PropsWithChildren<GridProviderProps<any>>> = (
   {
     identifierProperty = "id",
     columns: dataProperties,
